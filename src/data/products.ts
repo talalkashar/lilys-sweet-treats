@@ -4,43 +4,52 @@ export type Product = {
   price: number;
   description: string;
   emoji: string;
-  /** Path under /public, e.g. /products/cupcakes.jpg */
+  /** Path under /public */
   image?: string;
   popular?: boolean;
 };
 
 /**
- * Menu items.
- * Drop photos into public/products/ then set image: "/products/filename.jpg"
+ * Real menu photos from Lily.
+ * Prices are placeholders until she confirms.
  */
 export const products: Product[] = [
   {
-    id: "cupcakes-half-dozen",
-    name: "Cupcakes (Half Dozen)",
-    price: 18,
+    id: "cake-pops",
+    name: "Cake Pop Bouquet",
+    price: 35,
     description:
-      "Six soft cupcakes with buttercream. Choose classic vanilla, chocolate, or mixed.",
-    emoji: "🧁",
-    image: "/products/1.jpg",
+      "A stunning gift arrangement of pastel cake pops with florals — perfect for birthdays, showers, and celebrations.",
+    emoji: "🍭",
+    image: "/products/cake-pops.png",
     popular: true,
   },
   {
-    id: "cookie-box",
-    name: "Cookie Box",
-    price: 15,
+    id: "alfajores",
+    name: "Alfajores",
+    price: 16,
     description:
-      "A dozen assorted cookies — chocolate chip, sugar, and seasonal favorites.",
+      "Buttery sandwich cookies filled with rich dulce de leche and dusted with powdered sugar. Soft, sweet, and classic.",
     emoji: "🍪",
-    image: "/products/2.jpg",
+    image: "/products/alfajores.jpg",
+    popular: true,
   },
   {
-    id: "celebration-cake",
-    name: "Celebration Cake (6\")",
-    price: 45,
+    id: "sticky-bun-pecan",
+    name: "Sticky Bun (Pecan)",
+    price: 6,
     description:
-      "Small round cake, perfect for birthdays and get-togethers. Custom message available.",
-    emoji: "🎂",
-    image: "/products/3.jpg",
-    popular: true,
+      "Gooey caramel sticky bun topped with toasted pecans and a touch of sea salt. Warm bakery comfort.",
+    emoji: "🌀",
+    image: "/products/sticky-bun-with-nuts.jpg",
+  },
+  {
+    id: "sticky-bun-classic",
+    name: "Sticky Bun (Classic)",
+    price: 5,
+    description:
+      "Soft cinnamon roll-style sticky bun glazed in shiny caramel — no nuts. Simple and delicious.",
+    emoji: "🍩",
+    image: "/products/sticky-bun-no-nuts.jpg",
   },
 ];

@@ -1,9 +1,12 @@
 /** Business details — update these anytime */
 export const site = {
-  name: "Lily's Sweet Treats",
+  name: "Lily's Sweet Treats & More",
+  shortName: "Lily's Sweet Treats",
   tagline: "Homemade treats, made with love",
   description:
     "Pre-order online and pick up in person. Fresh baked goods for porch pickup — no delivery.",
+  logo: "/brand/logo.png",
+  pattern: "/brand/pattern.png",
   // Update when she provides real info
   phone: "(571) 788-6168",
   email: "sweettreats0077@gmail.com",

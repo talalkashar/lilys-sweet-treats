@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { OrderForm } from "@/components/OrderForm";
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Reveal";
@@ -9,6 +10,14 @@ export default function Home() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-[var(--blush)]/80">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.35]"
+          style={{
+            backgroundImage: `url(${site.pattern})`,
+            backgroundSize: "420px",
+          }}
+          aria-hidden
+        />
         <div
           className="blob pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-[var(--rose)]/25 blur-3xl"
           aria-hidden
@@ -61,18 +70,25 @@ export default function Home() {
 
           <div className="anim-fade-up anim-delay-2 relative mx-auto w-full max-w-md">
             <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-[var(--rose)] via-[var(--lemon)] to-[var(--sky)] opacity-80 blur-[2px]" />
-            <div className="relative rounded-[1.75rem] border-2 border-white bg-white/95 p-8 shadow-xl backdrop-blur">
-              <p className="font-display text-3xl text-[var(--cocoa)]">
-                {site.name}
-              </p>
-              <ul className="mt-6 space-y-4 text-sm text-[var(--cocoa-soft)]">
+            <div className="relative overflow-hidden rounded-[1.75rem] border-2 border-white bg-white/95 p-6 shadow-xl backdrop-blur sm:p-8">
+              <div className="relative mx-auto aspect-square w-full max-w-[280px]">
+                <Image
+                  src={site.logo}
+                  alt={`${site.name} logo`}
+                  fill
+                  className="object-contain"
+                  sizes="280px"
+                  priority
+                />
+              </div>
+              <ul className="mt-4 space-y-3 text-sm text-[var(--cocoa-soft)]">
                 <li className="flex gap-3 rounded-2xl bg-[var(--mint-soft)]/80 px-3 py-2">
                   <span className="text-xl" aria-hidden>
                     🧁
                   </span>
                   <span>
                     <strong className="text-[var(--cocoa)]">Handmade</strong> —
-                    small-batch treats, not grocery-store cakes
+                    cake pops, alfajores, sticky buns & more
                   </span>
                 </li>
                 <li className="flex gap-3 rounded-2xl bg-[var(--blush)]/50 px-3 py-2">
@@ -110,13 +126,13 @@ export default function Home() {
               Today&apos;s favorites
             </h2>
             <p className="mt-3 text-[var(--cocoa-soft)]">
-              Colorful treats ready for porch pickup. Photos and prices update
-              as Lily shares her full menu.
+              Real treats from Lily&apos;s kitchen — pre-order for porch
+              pickup. Prices can be confirmed anytime.
             </p>
           </div>
         </Reveal>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2">
           {products.map((p, i) => (
             <Reveal key={p.id} delayMs={i * 90}>
               <ProductCard product={p} />
