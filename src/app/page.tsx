@@ -33,9 +33,7 @@ export default function Home() {
 
             <h1 className="anim-fade-up anim-delay-1 mt-7 font-display text-[clamp(3rem,7vw,4.75rem)] leading-[1.02] tracking-tight text-[var(--cocoa)]">
               Handmade treats,{" "}
-              <span className="bg-gradient-to-r from-[var(--rose)] via-[#c084fc] to-[var(--sky)] bg-clip-text text-transparent">
-                ready for pickup
-              </span>
+              <span className="hero-accent">ready for pickup</span>
             </h1>
 
             <p className="anim-fade-up anim-delay-2 prose-soft-wide mt-7">

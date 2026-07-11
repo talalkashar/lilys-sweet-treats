@@ -41,6 +41,12 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem; /* sticky header clearance */
+}
+
+/* Smooth section-to-section feel */
+section[id] {
+  scroll-margin-top: 5.5rem;
 }
 
 body {
@@ -161,6 +167,37 @@ body {
 .hero-content {
   position: relative;
   z-index: 2;
+}
+
+/* Readable accent on busy patterned bg — solid rose + soft underline glow */
+.hero-accent {
+  color: var(--rose-deep);
+  position: relative;
+  display: inline;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+  background-image: linear-gradient(
+    120deg,
+    rgba(255, 77, 148, 0.18),
+    rgba(196, 168, 255, 0.22)
+  );
+  background-size: 100% 42%;
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  border-radius: 0.15em;
+  padding-inline: 0.06em;
+  animation: accentShimmer 4.5s ease-in-out infinite;
+}
+
+@keyframes accentShimmer {
+  0%,
+  100% {
+    background-position: 0 88%;
+    filter: brightness(1);
+  }
+  50% {
+    background-position: 100% 88%;
+    filter: brightness(1.05);
+  }
 }
 
 @keyframes heroPatternDrift {
@@ -337,7 +374,7 @@ body {
 }
 
 .card-product:hover {
-  transform: translateY(-10px) rotate(-0.4deg);
+  transform: translateY(-8px);
   box-shadow: var(--shadow-lift);
 }
 
@@ -432,11 +469,20 @@ body {
 @keyframes modalPop {
   from {
     opacity: 0;
-    transform: translateY(24px) scale(0.96);
+    transform: translateY(40px) scale(0.94);
+    filter: blur(4px);
   }
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .modal-panel {
+    animation-duration: 0.55s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
@@ -489,40 +535,49 @@ body {
   }
 }
 
-/* Motion / reveal */
+/* Motion / reveal — longer, flowier easing */
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
     opacity: 0;
-    transform: translateY(28px) scale(0.98);
+    transform: translateY(36px);
+    filter: blur(6px);
     transition:
-      opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+      filter 1s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .reveal-in {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
+    filter: blur(0);
   }
 
   .anim-fade-up {
-    animation: fadeUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .anim-delay-1 {
-    animation-delay: 0.12s;
+    animation-delay: 0.1s;
   }
   .anim-delay-2 {
-    animation-delay: 0.24s;
+    animation-delay: 0.22s;
   }
   .anim-delay-3 {
-    animation-delay: 0.36s;
+    animation-delay: 0.34s;
   }
   .anim-delay-4 {
-    animation-delay: 0.48s;
+    animation-delay: 0.46s;
   }
 
   .float-soft {
     animation: floatSoft 6s ease-in-out infinite;
+  }
+
+  /* Flowy nav underline already on links; smooth all interactive */
+  a,
+  button {
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
@@ -530,6 +585,7 @@ body {
   .reveal {
     opacity: 1;
     transform: none;
+    filter: none;
   }
   html {
     scroll-behavior: auto;
@@ -540,7 +596,8 @@ body {
   .btn-primary,
   .orb,
   .pulse-dot,
-  .step-num {
+  .step-num,
+  .hero-accent {
     animation: none !important;
   }
 }

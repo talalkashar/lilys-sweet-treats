@@ -24,7 +24,8 @@ export function Reveal({ children, className = "", delayMs = 0 }: Props) {
           obs.disconnect();
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+      /* Start earlier so motion feels continuous while scrolling */
+      { threshold: 0.08, rootMargin: "0px 0px -8% 0px" },
     );
 
     obs.observe(el);
