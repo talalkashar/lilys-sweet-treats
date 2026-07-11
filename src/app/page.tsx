@@ -1,53 +1,44 @@
-import Image from "next/image";
 import { MenuGrid } from "@/components/MenuGrid";
 import { OrderForm } from "@/components/OrderForm";
 import { Reveal } from "@/components/Reveal";
-import { products } from "@/data/products";
 import { site } from "@/data/site";
 
 /**
- * Page structure (each block must earn its place):
- * 1. Hero — who we are + what to do next + food proof
- * 2. Menu — the products (core)
- * 3. How it works — pickup model (reduces confusion)
- * 4. Order — conversion (core)
- * 5. Contact — reach Lily (core)
- *
- * Removed as redundant: marquee, 4-up trust strip, floating logo badge,
- * generic long story that only restated the menu.
+ * Page structure:
+ * 1. Hero — brand promise + CTAs (animated purple pattern bg)
+ * 2. Menu — products + click-to-open detail modal
+ * 3. How it works — pickup model
+ * 4. Order — form
+ * 5. Contact
  */
 
 export default function Home() {
-  const featured = products[0];
-  const sideA = products[1];
-  const sideB = products[2];
-
   return (
     <>
-      {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute -right-24 top-0 h-[28rem] w-[28rem] rounded-full bg-[var(--lavender)]/25 blur-3xl" />
-        <div className="pointer-events-none absolute -left-20 bottom-0 h-[22rem] w-[22rem] rounded-full bg-[var(--blush)]/35 blur-3xl" />
+      {/* HERO — full-width copy, moving purple cupcake pattern */}
+      <section className="hero-shell">
+        <div className="hero-pattern" aria-hidden />
+        <div className="hero-pattern-veil" aria-hidden />
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pb-16 pt-10 sm:px-6 sm:pb-20 sm:pt-14 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-6">
-            <p className="anim-fade-up inline-flex items-center gap-2 rounded-full border border-[var(--blush)] bg-white/90 px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-[var(--rose)] shadow-sm">
+        <div className="hero-content mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
+          <div className="max-w-4xl">
+            <p className="anim-fade-up inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/80 px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-[var(--rose)] shadow-sm backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--rose)]" />
               Home bakery · Porch pickup only
             </p>
 
-            <h1 className="anim-fade-up anim-delay-1 mt-6 font-display text-[clamp(2.75rem,6vw,4.1rem)] leading-[1.02] text-[var(--cocoa)]">
+            <h1 className="anim-fade-up anim-delay-1 mt-7 font-display text-[clamp(3rem,7vw,4.75rem)] leading-[1.02] tracking-tight text-[var(--cocoa)]">
               Handmade treats,{" "}
               <span className="text-[var(--rose)]">ready for pickup</span>
             </h1>
 
-            <p className="anim-fade-up anim-delay-2 prose-soft mt-6">
+            <p className="anim-fade-up anim-delay-2 prose-soft-wide mt-7">
               {site.name} makes small-batch sweets you pre-order online and
               collect in person. No delivery — just fresh baking and a simple
               porch pickup.
             </p>
 
-            <div className="anim-fade-up anim-delay-3 mt-9 flex flex-wrap gap-3">
+            <div className="anim-fade-up anim-delay-3 mt-10 flex flex-wrap gap-3">
               <a href="#order" className="btn-primary">
                 Pre-order treats
               </a>
@@ -56,51 +47,11 @@ export default function Home() {
               </a>
             </div>
 
-            {/* One honest trust line — not vanity metrics */}
-            <p className="anim-fade-up anim-delay-4 mt-8 max-w-md border-t border-[var(--blush)]/70 pt-6 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+            <p className="anim-fade-up anim-delay-4 mt-10 max-w-2xl border-t border-[var(--blush)]/60 pt-7 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:text-base">
               <strong className="text-[var(--cocoa)]">{site.leadTime}</strong>
               {" · "}
               {site.locationNote}
             </p>
-          </div>
-
-          {/* Food proof collage — purpose: appetite + brand quality at first glance */}
-          <div className="anim-fade-up anim-delay-2 relative lg:col-span-6">
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              <div className="relative col-span-2 aspect-[16/10] overflow-hidden rounded-[1.75rem] shadow-[var(--shadow-lift)] sm:col-span-1 sm:row-span-2 sm:aspect-auto sm:min-h-[400px]">
-                <Image
-                  src={featured.image!}
-                  alt={featured.name}
-                  fill
-                  quality={90}
-                  className="object-cover object-center"
-                  sizes="(max-width: 768px) 100vw, 40vw"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--cocoa)]/50 via-transparent to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                  <p className="font-display text-2xl">{featured.name}</p>
-                  <p className="mt-0.5 text-sm text-white/85">
-                    From ${featured.price} · Gift-ready
-                  </p>
-                </div>
-              </div>
-              {[sideA, sideB].map((p, i) => (
-                <div
-                  key={p.id}
-                  className={`relative aspect-square overflow-hidden rounded-[1.5rem] shadow-[var(--shadow-soft)] ${i === 1 ? "sm:translate-y-4" : ""}`}
-                >
-                  <Image
-                    src={p.image!}
-                    alt={p.name}
-                    fill
-                    quality={90}
-                    className="object-cover object-center"
-                    sizes="(max-width: 768px) 50vw, 20vw"
-                  />
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>

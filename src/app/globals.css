@@ -109,6 +109,69 @@ body {
   max-width: 36rem;
 }
 
+.prose-soft-wide {
+  color: var(--cocoa-soft);
+  font-size: 1.125rem;
+  line-height: 1.75;
+  max-width: 40rem;
+}
+
+/* Hero: slow-moving purple cupcake pattern */
+.hero-shell {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(
+    165deg,
+    #f3e9ff 0%,
+    #efe4fb 35%,
+    #fce8f0 70%,
+    #fff5f8 100%
+  );
+}
+
+.hero-pattern {
+  position: absolute;
+  inset: -20%;
+  z-index: 0;
+  background-image: url("/brand/pattern.png");
+  background-size: 320px;
+  background-repeat: repeat;
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.hero-pattern-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 70% at 20% 30%, rgba(255, 255, 255, 0.55), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 20%, rgba(201, 184, 232, 0.35), transparent 50%),
+    linear-gradient(180deg, rgba(255, 250, 247, 0.25) 0%, rgba(255, 250, 247, 0.55) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-pattern {
+    animation: heroPatternDrift 45s linear infinite;
+  }
+}
+
+@keyframes heroPatternDrift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-160px, -120px, 0);
+  }
+}
+
 /* Buttons */
 .btn-primary {
   display: inline-flex;
@@ -252,6 +315,9 @@ body {
     scroll-behavior: auto;
   }
   .marquee-track {
+    animation: none;
+  }
+  .hero-pattern {
     animation: none;
   }
 }
