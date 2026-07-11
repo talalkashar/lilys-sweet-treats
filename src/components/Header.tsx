@@ -32,8 +32,8 @@ export function Header() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-[var(--blush)]/50 bg-white/92 shadow-[var(--shadow-soft)] backdrop-blur-xl"
-          : "border-b border-transparent bg-[var(--cream)]/80 backdrop-blur-md"
+          ? "border-b border-[var(--blush)]/60 bg-white/90 shadow-[var(--shadow-soft)] backdrop-blur-xl"
+          : "border-b border-transparent bg-gradient-to-r from-[#f5ecff]/90 via-white/80 to-[#ffe8f5]/90 backdrop-blur-md"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">

@@ -3,33 +3,39 @@ import { OrderForm } from "@/components/OrderForm";
 import { Reveal } from "@/components/Reveal";
 import { site } from "@/data/site";
 
-/**
- * Page structure:
- * 1. Hero — brand promise + CTAs (animated purple pattern bg)
- * 2. Menu — products + click-to-open detail modal
- * 3. How it works — pickup model
- * 4. Order — form
- * 5. Contact
- */
+const stripItems = [
+  "Cake pops",
+  "Alfajores",
+  "Sticky buns",
+  "Porch pickup",
+  "Handmade",
+  "Pre-order",
+  "Gift-ready",
+  "No delivery",
+];
 
 export default function Home() {
   return (
     <>
-      {/* HERO — full-width copy, moving purple cupcake pattern */}
+      {/* HERO */}
       <section className="hero-shell">
         <div className="hero-pattern" aria-hidden />
         <div className="hero-pattern-veil" aria-hidden />
+        <div className="orb orb-a" aria-hidden />
+        <div className="orb orb-b" aria-hidden />
 
         <div className="hero-content mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
           <div className="max-w-4xl">
-            <p className="anim-fade-up inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/80 px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-[var(--rose)] shadow-sm backdrop-blur-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--rose)]" />
+            <p className="anim-fade-up inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/85 px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-[var(--rose)] shadow-sm backdrop-blur-sm">
+              <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[var(--rose)]" />
               Home bakery · Porch pickup only
             </p>
 
             <h1 className="anim-fade-up anim-delay-1 mt-7 font-display text-[clamp(3rem,7vw,4.75rem)] leading-[1.02] tracking-tight text-[var(--cocoa)]">
               Handmade treats,{" "}
-              <span className="text-[var(--rose)]">ready for pickup</span>
+              <span className="bg-gradient-to-r from-[var(--rose)] via-[#c084fc] to-[var(--sky)] bg-clip-text text-transparent">
+                ready for pickup
+              </span>
             </h1>
 
             <p className="anim-fade-up anim-delay-2 prose-soft-wide mt-7">
@@ -56,31 +62,45 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MENU — core purpose: show what you can buy */}
-      <section
-        id="menu"
-        className="section-pad mx-auto max-w-6xl border-t border-[var(--blush)]/40 px-4 sm:px-6"
-      >
-        <Reveal>
-          <div>
-            <p className="section-label">Menu</p>
-            <h2 className="section-title mt-2">What we bake</h2>
-            <p className="prose-soft mt-3">
-              Made to order for porch pickup. Click any treat for full details —
-              prices finalize when we confirm (placeholders until locked in).
-            </p>
-          </div>
-        </Reveal>
+      {/* Colorful animated strip */}
+      <div className="color-strip" aria-hidden>
+        <div className="marquee-track">
+          {[...stripItems, ...stripItems].map((item, i) => (
+            <span
+              key={`${item}-${i}`}
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--cocoa)]"
+            >
+              <span className="text-white/90">✦</span>
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
 
-        <MenuGrid />
+      {/* MENU */}
+      <section id="menu" className="section-menu section-pad">
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="orb orb-c opacity-60" aria-hidden />
+          <Reveal>
+            <div>
+              <p className="section-label">Menu</p>
+              <h2 className="section-title mt-2">What we bake</h2>
+              <p className="prose-soft mt-3">
+                Made to order for porch pickup. Click any treat for full details —
+                prices finalize when we confirm (placeholders until locked in).
+              </p>
+            </div>
+          </Reveal>
+
+          <MenuGrid />
+        </div>
       </section>
 
-      {/* HOW IT WORKS — purpose: explain pickup model for people used to delivery */}
-      <section
-        id="how-it-works"
-        className="section-pad border-y border-[var(--blush)]/40 bg-[var(--lavender-soft)]/40"
-      >
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      {/* HOW IT WORKS */}
+      <section id="how-it-works" className="section-steps section-pad">
+        <div className="orb orb-a opacity-40" aria-hidden />
+        <div className="orb orb-b opacity-40" aria-hidden />
+        <div className="relative z-[1] mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto max-w-xl text-center">
               <p className="section-label">How pickup works</p>
@@ -97,21 +117,31 @@ export default function Home() {
                 n: "1",
                 t: "Choose treats",
                 d: "Pick from the menu and add notes (flavors, allergies, cake messages).",
+                bg: "from-[#ffe4f0] to-white",
+                num: "bg-gradient-to-br from-[var(--rose)] to-[#c084fc]",
               },
               {
                 n: "2",
                 t: "Pick a window",
                 d: "Choose a pickup time that works. We prepare your order for that slot.",
+                bg: "from-[#e0f2fe] to-white",
+                num: "bg-gradient-to-br from-[var(--sky)] to-[var(--lilac)]",
               },
               {
                 n: "3",
                 t: "Pay & pick up",
                 d: "Complete payment online, then collect from the porch. No delivery fees.",
+                bg: "from-[#d4fff0] to-white",
+                num: "bg-gradient-to-br from-[var(--mint)] to-[var(--sky)]",
               },
             ].map((step, i) => (
-              <Reveal key={step.n} delayMs={i * 80}>
-                <li className="h-full rounded-[1.5rem] border border-white bg-white p-6 shadow-[var(--shadow-soft)] sm:p-7">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--rose)] text-sm font-bold text-white">
+              <Reveal key={step.n} delayMs={i * 100}>
+                <li
+                  className={`step-card h-full rounded-[1.5rem] border-2 border-white bg-gradient-to-br ${step.bg} p-6 shadow-[var(--shadow-soft)] sm:p-7`}
+                >
+                  <span
+                    className={`step-num flex h-10 w-10 items-center justify-center rounded-full ${step.num} text-sm font-bold text-white shadow-md`}
+                  >
                     {step.n}
                   </span>
                   <h3 className="mt-4 font-display text-2xl text-[var(--cocoa)]">
@@ -127,9 +157,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ORDER — core purpose: capture the request / (soon) take payment */}
-      <section id="order" className="section-pad bg-[var(--cream)]">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      {/* ORDER */}
+      <section id="order" className="section-order section-pad">
+        <div className="orb orb-c opacity-50" aria-hidden />
+        <div className="relative z-[1] mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto max-w-xl text-center">
               <p className="section-label">Order</p>
@@ -139,7 +170,7 @@ export default function Home() {
               </p>
             </div>
           </Reveal>
-          <Reveal delayMs={60}>
+          <Reveal delayMs={80}>
             <div className="mx-auto mt-10 max-w-2xl">
               <OrderForm />
             </div>
@@ -147,26 +178,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CONTACT — purpose: questions / custom orders (not a second footer) */}
-      <section id="contact" className="border-t border-[var(--blush)]/40 bg-white py-14 sm:py-16">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center sm:px-6">
-          <div>
-            <p className="section-label">Questions?</p>
-            <h2 className="mt-2 font-display text-3xl text-[var(--cocoa)] sm:text-4xl">
-              Call or email us
-            </h2>
-            <p className="mt-2 max-w-md text-[var(--cocoa-soft)]">
-              Custom requests, larger orders, or pickup questions — happy to help.
-            </p>
-          </div>
-          <div className="flex flex-col gap-3 sm:items-end">
-            <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="btn-primary">
-              {site.phone}
-            </a>
-            <a href={`mailto:${site.email}`} className="btn-secondary">
-              {site.email}
-            </a>
-          </div>
+      {/* CONTACT */}
+      <section id="contact" className="section-contact py-14 sm:py-16">
+        <div className="relative z-[1] mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center sm:px-6">
+          <Reveal>
+            <div>
+              <p className="section-label">Questions?</p>
+              <h2 className="mt-2 font-display text-3xl text-[var(--cocoa)] sm:text-4xl">
+                Call or email us
+              </h2>
+              <p className="mt-2 max-w-md text-[var(--cocoa-soft)]">
+                Custom requests, larger orders, or pickup questions — happy to
+                help.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delayMs={80}>
+            <div className="flex flex-col gap-3 sm:items-end">
+              <a
+                href={`tel:${site.phone.replace(/\D/g, "")}`}
+                className="btn-primary"
+              >
+                {site.phone}
+              </a>
+              <a href={`mailto:${site.email}`} className="btn-secondary">
+                {site.email}
+              </a>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>

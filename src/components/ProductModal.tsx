@@ -27,7 +27,7 @@ export function ProductModal({ product, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center p-0 sm:items-center sm:p-6"
+      className="modal-backdrop fixed inset-0 z-[100] flex items-end justify-center p-0 sm:items-center sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-labelledby="product-modal-title"
@@ -39,7 +39,7 @@ export function ProductModal({ product, onClose }: Props) {
         onClick={onClose}
       />
 
-      <div className="relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:max-h-[90vh] sm:rounded-3xl">
+      <div className="modal-panel relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border-2 border-white bg-white shadow-2xl sm:max-h-[90vh] sm:rounded-3xl">
         {/* Fixed height frame: image fits fully (contain) so nothing looks stretched */}
         <div className="relative h-[min(48vh,360px)] shrink-0 bg-[var(--cream-deep)] sm:h-[380px]">
           {product.image ? (

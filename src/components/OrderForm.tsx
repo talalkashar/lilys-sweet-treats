@@ -109,7 +109,7 @@ export function OrderForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-[1.75rem] border border-[var(--blush)] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-9"
+      className="form-shell rounded-[1.75rem] border-2 border-[var(--blush)] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-9"
     >
       <div className="mb-7 rounded-2xl bg-[var(--lavender-soft)] px-4 py-3.5 text-sm text-[var(--cocoa-soft)]">
         <strong className="text-[var(--cocoa)]">Porch pickup only.</strong>{" "}

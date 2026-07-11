@@ -59,7 +59,7 @@ export function ProductCard({ product, onOpen }: Props) {
             <h3 className="font-display text-[1.65rem] leading-tight text-[var(--cocoa)]">
               {product.name}
             </h3>
-            <p className="shrink-0 rounded-full bg-[var(--lavender-soft)] px-3 py-1 text-sm font-semibold text-[var(--cocoa)]">
+            <p className="shrink-0 rounded-full bg-gradient-to-r from-[var(--lavender-soft)] to-[var(--mint-soft)] px-3 py-1 text-sm font-semibold text-[var(--cocoa)]">
               ${product.price.toFixed(0)}
             </p>
           </div>
