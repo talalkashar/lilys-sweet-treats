@@ -3,12 +3,16 @@ export type Product = {
   name: string;
   price: number;
   description: string;
-  /** Emoji placeholder until real photos are added */
   emoji: string;
+  /** Path under /public, e.g. /products/cupcakes.jpg */
+  image?: string;
   popular?: boolean;
 };
 
-/** Starting menu — swap names/prices/photos when Lily sends them */
+/**
+ * Menu items.
+ * Drop photos into public/products/ then set image: "/products/filename.jpg"
+ */
 export const products: Product[] = [
   {
     id: "cupcakes-half-dozen",
@@ -17,6 +21,7 @@ export const products: Product[] = [
     description:
       "Six soft cupcakes with buttercream. Choose classic vanilla, chocolate, or mixed.",
     emoji: "🧁",
+    image: "/products/1.jpg",
     popular: true,
   },
   {
@@ -26,6 +31,7 @@ export const products: Product[] = [
     description:
       "A dozen assorted cookies — chocolate chip, sugar, and seasonal favorites.",
     emoji: "🍪",
+    image: "/products/2.jpg",
   },
   {
     id: "celebration-cake",
@@ -34,6 +40,7 @@ export const products: Product[] = [
     description:
       "Small round cake, perfect for birthdays and get-togethers. Custom message available.",
     emoji: "🎂",
+    image: "/products/3.jpg",
     popular: true,
   },
 ];

@@ -10,7 +10,7 @@ const links = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--blush)]/60 bg-[var(--cream)]/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-white/60 bg-white/75 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href="/" className="group min-w-0">
           <span className="font-display text-xl tracking-tight text-[var(--cocoa)] sm:text-2xl">
@@ -30,7 +30,7 @@ export function Header() {
         </nav>
         <a
           href="#order"
-          className="shrink-0 rounded-full bg-[var(--rose)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--rose-deep)]"
+          className="btn-pop shrink-0 rounded-full bg-[var(--rose)] px-4 py-2 text-sm font-semibold text-white shadow-md"
         >
           Order pickup
         </a>

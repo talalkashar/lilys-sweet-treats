@@ -203,7 +203,7 @@ export function OrderForm() {
         </p>
         <button
           type="submit"
-          className="rounded-full bg-[var(--rose)] px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--rose-deep)]"
+          className="btn-pop rounded-full bg-[var(--rose)] px-8 py-3 text-sm font-semibold text-white shadow-md"
         >
           Request pickup order
         </button>
