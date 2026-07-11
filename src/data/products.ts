@@ -22,7 +22,7 @@ export const products: Product[] = [
       "A stunning gift arrangement of pastel cake pops with florals — perfect for birthdays, showers, and celebrations.",
     emoji: "🍭",
     image: "/products/cake-pops.png",
-    popular: true,
+    // popular: only set when Lily names a true bestseller
   },
   {
     id: "alfajores",
@@ -32,7 +32,6 @@ export const products: Product[] = [
       "Buttery sandwich cookies filled with rich dulce de leche and dusted with powdered sugar. Soft, sweet, and classic.",
     emoji: "🍪",
     image: "/products/alfajores.jpg",
-    popular: true,
   },
   {
     id: "sticky-bun-pecan",

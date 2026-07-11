@@ -5,10 +5,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { site } from "@/data/site";
 
+/**
+ * Nav kept short on purpose:
+ * Menu / How it works / Order / Contact
+ * (Story removed — no real owner story content yet)
+ */
 const links = [
   { href: "#menu", label: "Menu" },
-  { href: "#story", label: "Our story" },
-  { href: "#how-it-works", label: "How it works" },
+  { href: "#how-it-works", label: "Pickup" },
   { href: "#order", label: "Order" },
   { href: "#contact", label: "Contact" },
 ];
@@ -28,8 +32,8 @@ export function Header() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-[var(--blush)]/50 bg-white/90 shadow-[var(--shadow-soft)] backdrop-blur-xl"
-          : "border-b border-transparent bg-[var(--cream)]/70 backdrop-blur-md"
+          ? "border-b border-[var(--blush)]/50 bg-white/92 shadow-[var(--shadow-soft)] backdrop-blur-xl"
+          : "border-b border-transparent bg-[var(--cream)]/80 backdrop-blur-md"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
@@ -38,20 +42,23 @@ export function Header() {
           className="flex min-w-0 items-center gap-3"
           onClick={() => setOpen(false)}
         >
-          <Image
-            src={site.logo}
-            alt={`${site.name} logo`}
-            width={52}
-            height={52}
-            className="h-11 w-11 rounded-full border border-[var(--blush)] object-cover shadow-sm sm:h-12 sm:w-12"
-            priority
-          />
+          {/* White plate so the full logo mark stays readable (not harsh circle crop) */}
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--blush)] bg-white shadow-sm sm:h-13 sm:w-13">
+            <Image
+              src={site.logo}
+              alt={`${site.name} logo`}
+              width={48}
+              height={48}
+              className="h-11 w-11 object-contain"
+              priority
+            />
+          </span>
           <div className="min-w-0 leading-tight">
             <p className="font-display text-lg text-[var(--cocoa)] sm:text-xl">
               {site.shortName}
             </p>
-            <p className="hidden text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--ink-muted)] sm:block">
-              &amp; More · Porch pickup
+            <p className="hidden text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--ink-muted)] sm:block">
+              Porch pickup only
             </p>
           </div>
         </Link>
@@ -69,7 +76,10 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a href="#order" className="btn-primary hidden sm:inline-flex !py-2.5 !px-5 !text-sm">
+          <a
+            href="#order"
+            className="btn-primary hidden sm:inline-flex !px-5 !py-2.5 !text-sm"
+          >
             Order now
           </a>
           <button
@@ -102,7 +112,7 @@ export function Header() {
               <a
                 key={l.href}
                 href={l.href}
-                className="rounded-xl px-3 py-3 text-[var(--cocoa)] font-medium hover:bg-[var(--lavender-soft)]"
+                className="rounded-xl px-3 py-3 font-medium text-[var(--cocoa)] hover:bg-[var(--lavender-soft)]"
                 onClick={() => setOpen(false)}
               >
                 {l.label}

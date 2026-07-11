@@ -4,6 +4,12 @@ import { useMemo, useState } from "react";
 import { products } from "@/data/products";
 import { site } from "@/data/site";
 
+/**
+ * Form purpose (now): capture who / what / when for pickup.
+ * Form purpose (next): hand off to Stripe Checkout with same fields as metadata.
+ * Note: submit does not yet notify Lily — needs email or Stripe (known gap).
+ */
+
 type FormState = {
   name: string;
   phone: string;
@@ -44,26 +50,30 @@ export function OrderForm() {
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    console.log("Order draft (Stripe next):", { ...form, total });
+    // Temporary until Stripe / email notify is wired
+    console.log("Order draft:", { ...form, total });
     setSubmitted(true);
   }
 
   if (submitted) {
     return (
       <div className="rounded-[1.75rem] border border-[var(--mint)] bg-[var(--mint-soft)] p-8 text-center sm:p-10">
-        <div className="text-4xl" aria-hidden>
-          ✨
-        </div>
-        <h3 className="mt-3 font-display text-3xl text-[var(--cocoa)]">
-          You&apos;re on the list
+        <h3 className="font-display text-3xl text-[var(--cocoa)]">
+          Request received
         </h3>
         <p className="mx-auto mt-3 max-w-md text-[var(--cocoa-soft)]">
-          We have your pickup request. Online payment is next — for now Lily
-          will confirm by text or call.
+          Thanks{form.name ? `, ${form.name.split(" ")[0]}` : ""}. We have your
+          pickup request and will confirm by phone or email shortly.
         </p>
         <p className="mt-5 text-sm font-semibold text-[var(--cocoa)]">
           {selected?.name} × {form.quantity} · ${total.toFixed(2)} ·{" "}
           {form.pickupWindow}
+        </p>
+        <p className="mt-3 text-xs text-[var(--cocoa-soft)]">
+          Prefer to talk now?{" "}
+          <a className="font-semibold text-[var(--rose)]" href={`tel:${site.phone.replace(/\D/g, "")}`}>
+            {site.phone}
+          </a>
         </p>
         <button
           type="button"
@@ -73,7 +83,7 @@ export function OrderForm() {
           }}
           className="btn-secondary mt-8"
         >
-          Place another order
+          Submit another request
         </button>
       </div>
     );
@@ -84,9 +94,9 @@ export function OrderForm() {
       onSubmit={onSubmit}
       className="rounded-[1.75rem] border border-[var(--blush)] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-9"
     >
-      <div className="mb-7 rounded-2xl bg-gradient-to-r from-[var(--lavender-soft)] via-[var(--blush)]/40 to-[var(--mint-soft)] px-4 py-3.5 text-sm text-[var(--cocoa-soft)]">
+      <div className="mb-7 rounded-2xl bg-[var(--lavender-soft)] px-4 py-3.5 text-sm text-[var(--cocoa-soft)]">
         <strong className="text-[var(--cocoa)]">Porch pickup only.</strong>{" "}
-        {site.leadTime} Card checkout connects when Stripe is ready.
+        {site.leadTime}
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
@@ -113,7 +123,7 @@ export function OrderForm() {
             value={form.phone}
             onChange={(e) => update("phone", e.target.value)}
             className="field"
-            placeholder="For pickup updates"
+            placeholder="Best number for pickup day"
             autoComplete="tel"
           />
         </label>
@@ -181,13 +191,16 @@ export function OrderForm() {
         </label>
         <label className="block sm:col-span-2">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
-            Notes (flavors, message, allergies…)
+            Notes{" "}
+            <span className="font-normal text-[var(--ink-muted)]">
+              (optional — flavors, allergies, message)
+            </span>
           </span>
           <textarea
             value={form.notes}
             onChange={(e) => update("notes", e.target.value)}
-            className="field min-h-[110px] resize-y"
-            placeholder="Optional"
+            className="field min-h-[100px] resize-y"
+            placeholder="Anything we should know?"
           />
         </label>
       </div>
@@ -200,7 +213,7 @@ export function OrderForm() {
           </span>
         </p>
         <button type="submit" className="btn-primary">
-          Request pickup order
+          Request pickup
         </button>
       </div>
     </form>

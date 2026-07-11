@@ -32,7 +32,6 @@ export function ProductCard({ product }: { product: Product }) {
             Bestseller
           </span>
         ) : null}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/25 to-transparent opacity-0 transition group-hover:opacity-100" />
       </div>
 
       <div className="flex flex-1 flex-col p-5 sm:p-6">
