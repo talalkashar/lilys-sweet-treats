@@ -1,6 +1,6 @@
 import Image from "next/image";
+import { MenuGrid } from "@/components/MenuGrid";
 import { OrderForm } from "@/components/OrderForm";
-import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Reveal";
 import { products } from "@/data/products";
 import { site } from "@/data/site";
@@ -113,19 +113,13 @@ export default function Home() {
             <p className="section-label">Menu</p>
             <h2 className="section-title mt-2">What we bake</h2>
             <p className="prose-soft mt-3">
-              Made to order for porch pickup. Tap a treat to start your order —
+              Made to order for porch pickup. Click any treat for full details —
               prices finalize when we confirm (placeholders until locked in).
             </p>
           </div>
         </Reveal>
 
-        <div className="mt-12 grid gap-7 sm:grid-cols-2">
-          {products.map((p, i) => (
-            <Reveal key={p.id} delayMs={i * 70}>
-              <ProductCard product={p} />
-            </Reveal>
-          ))}
-        </div>
+        <MenuGrid />
       </section>
 
       {/* HOW IT WORKS — purpose: explain pickup model for people used to delivery */}

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ProductCard } from "@/components/ProductCard";
 import { products } from "@/data/products";
 import { site } from "@/data/site";
 
@@ -17,7 +16,6 @@ type FormState = {
 
 function productIdFromHash(): string | null {
   if (typeof window === "undefined") return null;
-  // supports #order?product=cake-pops
   const hash = window.location.hash;
   const q = hash.indexOf("?");
   if (q === -1) return null;
@@ -118,24 +116,6 @@ export function OrderForm() {
         {site.leadTime}
       </div>
 
-      {/* Product cards — every treat is selectable visually */}
-      <fieldset className="mb-7">
-        <legend className="mb-3 text-sm font-medium text-[var(--cocoa)]">
-          Choose a treat
-        </legend>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {products.map((p) => (
-            <ProductCard
-              key={p.id}
-              product={p}
-              variant="select"
-              selected={form.productId === p.id}
-              onSelect={(id) => update("productId", id)}
-            />
-          ))}
-        </div>
-      </fieldset>
-
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
@@ -180,6 +160,23 @@ export function OrderForm() {
         </label>
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
+            Treat
+          </span>
+          <select
+            required
+            value={form.productId}
+            onChange={(e) => update("productId", e.target.value)}
+            className="field"
+          >
+            {products.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name} — ${p.price}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
             Quantity
           </span>
           <input
@@ -192,7 +189,7 @@ export function OrderForm() {
             className="field"
           />
         </label>
-        <label className="block">
+        <label className="block sm:col-span-2">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
             Pickup window
           </span>
@@ -227,20 +224,10 @@ export function OrderForm() {
 
       <div className="mt-8 flex flex-col gap-4 border-t border-[var(--blush)]/70 pt-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--cocoa-soft)]">
-          {selected ? (
-            <>
-              <span className="font-medium text-[var(--cocoa)]">
-                {selected.name}
-              </span>
-              {" · "}
-              Estimated total
-              <span className="ml-2 font-display text-3xl font-medium text-[var(--cocoa)]">
-                ${total.toFixed(2)}
-              </span>
-            </>
-          ) : (
-            "Select a treat"
-          )}
+          Estimated total
+          <span className="ml-2 font-display text-3xl font-medium text-[var(--cocoa)]">
+            ${total.toFixed(2)}
+          </span>
         </p>
         <button type="submit" className="btn-primary">
           Request pickup
