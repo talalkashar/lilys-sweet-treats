@@ -4,12 +4,70 @@ import Image from "next/image";
 import { useState } from "react";
 import type { Product } from "@/data/products";
 
-export function ProductCard({ product }: { product: Product }) {
+type Props = {
+  product: Product;
+  /** Compact card for order picker */
+  variant?: "menu" | "select";
+  selected?: boolean;
+  onSelect?: (productId: string) => void;
+};
+
+export function ProductCard({
+  product,
+  variant = "menu",
+  selected = false,
+  onSelect,
+}: Props) {
   const [imgFailed, setImgFailed] = useState(false);
   const showImage = Boolean(product.image) && !imgFailed;
 
+  if (variant === "select") {
+    return (
+      <button
+        type="button"
+        onClick={() => onSelect?.(product.id)}
+        aria-pressed={selected}
+        className={`flex w-full flex-col overflow-hidden rounded-2xl border-2 bg-white text-left transition ${
+          selected
+            ? "border-[var(--rose)] shadow-[0_0_0_3px_rgba(232,90,139,0.18)]"
+            : "border-[var(--blush)] hover:border-[var(--rose)]/50"
+        }`}
+      >
+        <div className="relative aspect-[5/4] bg-[var(--lavender-soft)]">
+          {showImage ? (
+            <Image
+              src={product.image!}
+              alt=""
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 50vw, 180px"
+              onError={() => setImgFailed(true)}
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-3xl">
+              {product.emoji}
+            </div>
+          )}
+          {selected ? (
+            <span className="absolute right-2 top-2 rounded-full bg-[var(--rose)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+              Selected
+            </span>
+          ) : null}
+        </div>
+        <div className="flex flex-1 flex-col gap-0.5 p-3">
+          <p className="font-display text-lg leading-tight text-[var(--cocoa)]">
+            {product.name}
+          </p>
+          <p className="text-sm font-semibold text-[var(--rose)]">
+            ${product.price.toFixed(0)}
+          </p>
+        </div>
+      </button>
+    );
+  }
+
   return (
-    <article className="card-product group flex flex-col">
+    <article className="card-product group flex flex-col" id={`product-${product.id}`}>
       <div className="relative aspect-[4/5] overflow-hidden bg-[var(--lavender-soft)]">
         {showImage ? (
           <Image
@@ -47,7 +105,7 @@ export function ProductCard({ product }: { product: Product }) {
           {product.description}
         </p>
         <a
-          href="#order"
+          href={`#order?product=${product.id}`}
           className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--rose)] transition hover:gap-3"
         >
           Order for pickup

@@ -1,14 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ProductCard } from "@/components/ProductCard";
 import { products } from "@/data/products";
 import { site } from "@/data/site";
-
-/**
- * Form purpose (now): capture who / what / when for pickup.
- * Form purpose (next): hand off to Stripe Checkout with same fields as metadata.
- * Note: submit does not yet notify Lily — needs email or Stripe (known gap).
- */
 
 type FormState = {
   name: string;
@@ -19,6 +14,18 @@ type FormState = {
   pickupWindow: string;
   notes: string;
 };
+
+function productIdFromHash(): string | null {
+  if (typeof window === "undefined") return null;
+  // supports #order?product=cake-pops
+  const hash = window.location.hash;
+  const q = hash.indexOf("?");
+  if (q === -1) return null;
+  const params = new URLSearchParams(hash.slice(q + 1));
+  const id = params.get("product");
+  if (id && products.some((p) => p.id === id)) return id;
+  return null;
+}
 
 const initial: FormState = {
   name: "",
@@ -33,6 +40,16 @@ const initial: FormState = {
 export function OrderForm() {
   const [form, setForm] = useState<FormState>(initial);
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    const apply = () => {
+      const id = productIdFromHash();
+      if (id) setForm((f) => ({ ...f, productId: id }));
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, []);
 
   const selected = useMemo(
     () => products.find((p) => p.id === form.productId),
@@ -50,7 +67,6 @@ export function OrderForm() {
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // Temporary until Stripe / email notify is wired
     console.log("Order draft:", { ...form, total });
     setSubmitted(true);
   }
@@ -71,7 +87,10 @@ export function OrderForm() {
         </p>
         <p className="mt-3 text-xs text-[var(--cocoa-soft)]">
           Prefer to talk now?{" "}
-          <a className="font-semibold text-[var(--rose)]" href={`tel:${site.phone.replace(/\D/g, "")}`}>
+          <a
+            className="font-semibold text-[var(--rose)]"
+            href={`tel:${site.phone.replace(/\D/g, "")}`}
+          >
             {site.phone}
           </a>
         </p>
@@ -98,6 +117,24 @@ export function OrderForm() {
         <strong className="text-[var(--cocoa)]">Porch pickup only.</strong>{" "}
         {site.leadTime}
       </div>
+
+      {/* Product cards — every treat is selectable visually */}
+      <fieldset className="mb-7">
+        <legend className="mb-3 text-sm font-medium text-[var(--cocoa)]">
+          Choose a treat
+        </legend>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {products.map((p) => (
+            <ProductCard
+              key={p.id}
+              product={p}
+              variant="select"
+              selected={form.productId === p.id}
+              onSelect={(id) => update("productId", id)}
+            />
+          ))}
+        </div>
+      </fieldset>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block">
@@ -143,23 +180,6 @@ export function OrderForm() {
         </label>
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
-            Treat
-          </span>
-          <select
-            required
-            value={form.productId}
-            onChange={(e) => update("productId", e.target.value)}
-            className="field"
-          >
-            {products.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name} — ${p.price}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
             Quantity
           </span>
           <input
@@ -172,7 +192,7 @@ export function OrderForm() {
             className="field"
           />
         </label>
-        <label className="block sm:col-span-2">
+        <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
             Pickup window
           </span>
@@ -207,10 +227,20 @@ export function OrderForm() {
 
       <div className="mt-8 flex flex-col gap-4 border-t border-[var(--blush)]/70 pt-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--cocoa-soft)]">
-          Estimated total
-          <span className="ml-2 font-display text-3xl font-medium text-[var(--cocoa)]">
-            ${total.toFixed(2)}
-          </span>
+          {selected ? (
+            <>
+              <span className="font-medium text-[var(--cocoa)]">
+                {selected.name}
+              </span>
+              {" · "}
+              Estimated total
+              <span className="ml-2 font-display text-3xl font-medium text-[var(--cocoa)]">
+                ${total.toFixed(2)}
+              </span>
+            </>
+          ) : (
+            "Select a treat"
+          )}
         </p>
         <button type="submit" className="btn-primary">
           Request pickup
