@@ -80,7 +80,7 @@ export function OrderForm() {
           pickup request and will confirm by phone or email shortly.
         </p>
         <p className="mt-5 text-sm font-semibold text-[var(--cocoa)]">
-          {selected?.name} × {form.quantity} · ${total.toFixed(2)} ·{" "}
+          {selected?.name} × {form.quantity}, ${total.toFixed(2)},{" "}
           {form.pickupWindow}
         </p>
         <p className="mt-3 text-xs text-[var(--cocoa-soft)]">
@@ -170,7 +170,7 @@ export function OrderForm() {
           >
             {products.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name} — ${p.price}
+                {p.name} (${p.price})
               </option>
             ))}
           </select>
@@ -210,7 +210,7 @@ export function OrderForm() {
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
             Notes{" "}
             <span className="font-normal text-[var(--ink-muted)]">
-              (optional — flavors, allergies, message)
+              (optional: flavors, allergies, message)
             </span>
           </span>
           <textarea

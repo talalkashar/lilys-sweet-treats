@@ -9,20 +9,16 @@ export type Product = {
   popular?: boolean;
 };
 
-/**
- * Real menu photos from Lily.
- * Prices are placeholders until she confirms.
- */
+/** Menu items. Prices are placeholders until confirmed. */
 export const products: Product[] = [
   {
     id: "cake-pops",
     name: "Cake Pop Bouquet",
     price: 35,
     description:
-      "A stunning gift arrangement of pastel cake pops with florals — perfect for birthdays, showers, and celebrations.",
+      "A gift arrangement of pastel cake pops with florals. Perfect for birthdays, showers, and celebrations.",
     emoji: "🍭",
     image: "/products/cake-pops.png",
-    // popular: only set when Lily names a true bestseller
   },
   {
     id: "alfajores",
@@ -47,7 +43,7 @@ export const products: Product[] = [
     name: "Sticky Bun (Classic)",
     price: 5,
     description:
-      "Soft cinnamon roll-style sticky bun glazed in shiny caramel — no nuts. Simple and delicious.",
+      "Soft cinnamon sticky bun glazed in shiny caramel, with no nuts. Simple and delicious.",
     emoji: "🍩",
     image: "/products/sticky-bun-no-nuts.jpg",
   },

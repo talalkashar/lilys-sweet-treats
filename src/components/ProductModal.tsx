@@ -83,7 +83,7 @@ export function ProductModal({ product, onClose }: Props) {
             {product.description}
           </p>
           <p className="mt-4 text-sm text-[var(--ink-muted)]">
-            Porch pickup only · Pre-order required
+            Porch pickup only. Pre-order required.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">

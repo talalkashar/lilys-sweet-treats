@@ -28,7 +28,7 @@ export default function Home() {
           <div className="max-w-4xl">
             <p className="anim-fade-up inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/85 px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-[var(--rose)] shadow-sm backdrop-blur-sm">
               <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[var(--rose)]" />
-              Home bakery · Porch pickup only
+              Home bakery, porch pickup only
             </p>
 
             <h1 className="anim-fade-up anim-delay-1 mt-7 font-display text-[clamp(3rem,7vw,4.75rem)] leading-[1.02] tracking-tight text-[var(--cocoa)]">
@@ -38,7 +38,7 @@ export default function Home() {
 
             <p className="anim-fade-up anim-delay-2 prose-soft-wide mt-7">
               {site.name} makes small-batch sweets you pre-order online and
-              collect in person. No delivery — just fresh baking and a simple
+              collect in person. No delivery. Just fresh baking and a simple
               porch pickup.
             </p>
 
@@ -52,8 +52,7 @@ export default function Home() {
             </div>
 
             <p className="anim-fade-up anim-delay-4 mt-10 max-w-2xl border-t border-[var(--blush)]/60 pt-7 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:text-base">
-              <strong className="text-[var(--cocoa)]">{site.leadTime}</strong>
-              {" · "}
+              <strong className="text-[var(--cocoa)]">{site.leadTime}</strong>{" "}
               {site.locationNote}
             </p>
           </div>
@@ -84,8 +83,8 @@ export default function Home() {
               <p className="section-label">Menu</p>
               <h2 className="section-title mt-2">What we bake</h2>
               <p className="prose-soft mt-3">
-                Made to order for porch pickup. Click any treat for full details —
-                prices finalize when we confirm (placeholders until locked in).
+                Made to order for porch pickup. Click any treat for full details.
+                Prices finalize when we confirm.
               </p>
             </div>
           </Reveal>
@@ -102,7 +101,7 @@ export default function Home() {
           <Reveal>
             <div className="mx-auto max-w-xl text-center">
               <p className="section-label">How pickup works</p>
-              <h2 className="section-title mt-2">Simple as 1–2–3</h2>
+              <h2 className="section-title mt-2">Simple as 1, 2, 3</h2>
               <p className="prose-soft mx-auto mt-3 text-center">
                 We don&apos;t deliver. You order ahead, we bake, you pick up.
               </p>
@@ -186,8 +185,8 @@ export default function Home() {
                 Call or email us
               </h2>
               <p className="mt-2 max-w-md text-[var(--cocoa-soft)]">
-                Custom requests, larger orders, or pickup questions — happy to
-                help.
+                Custom requests, larger orders, or pickup questions? We are happy
+                to help.
               </p>
             </div>
           </Reveal>

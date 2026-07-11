@@ -22,7 +22,7 @@ export function Footer() {
           </span>
           <div>
             <p className="font-display text-xl text-white">{site.name}</p>
-            <p className="text-sm text-white/60">Porch pickup · No delivery</p>
+            <p className="text-sm text-white/60">Porch pickup. No delivery.</p>
           </div>
         </div>
 
