@@ -9,6 +9,11 @@ type Props = {
   onOpen?: (product: Product) => void;
 };
 
+/**
+ * Square frame + object-cover + center:
+ * works for portrait (cake pops, alfajores) and landscape (sticky buns)
+ * without extreme crop or stretch.
+ */
 export function ProductCard({ product, onOpen }: Props) {
   const [imgFailed, setImgFailed] = useState(false);
   const showImage = Boolean(product.image) && !imgFailed;
@@ -21,14 +26,15 @@ export function ProductCard({ product, onOpen }: Props) {
         className="flex flex-1 flex-col text-left"
         aria-label={`View ${product.name} details`}
       >
-        <div className="relative aspect-[4/5] overflow-hidden bg-[var(--lavender-soft)]">
+        <div className="relative aspect-square w-full overflow-hidden bg-[var(--lavender-soft)]">
           {showImage ? (
             <Image
               src={product.image!}
               alt={product.name}
               fill
-              className="card-product-img object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              quality={90}
+              className="card-product-img object-cover object-center"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 480px"
               onError={() => setImgFailed(true)}
             />
           ) : (

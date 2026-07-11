@@ -40,13 +40,15 @@ export function ProductModal({ product, onClose }: Props) {
       />
 
       <div className="relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:max-h-[90vh] sm:rounded-3xl">
-        <div className="relative aspect-[4/3] shrink-0 bg-[var(--lavender-soft)] sm:aspect-[5/4]">
+        {/* Fixed height frame: image fits fully (contain) so nothing looks stretched */}
+        <div className="relative h-[min(48vh,360px)] shrink-0 bg-[var(--cream-deep)] sm:h-[380px]">
           {product.image ? (
             <Image
               src={product.image}
               alt={product.name}
               fill
-              className="object-cover"
+              quality={92}
+              className="object-contain object-center p-2 sm:p-3"
               sizes="(max-width: 640px) 100vw, 512px"
               priority
             />
@@ -92,7 +94,11 @@ export function ProductModal({ product, onClose }: Props) {
             >
               Order for pickup
             </a>
-            <button type="button" onClick={onClose} className="btn-secondary flex-1">
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-secondary flex-1"
+            >
               Keep browsing
             </button>
           </div>

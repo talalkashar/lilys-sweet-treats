@@ -72,7 +72,8 @@ export default function Home() {
                   src={featured.image!}
                   alt={featured.name}
                   fill
-                  className="object-cover"
+                  quality={90}
+                  className="object-cover object-center"
                   sizes="(max-width: 768px) 100vw, 40vw"
                   priority
                 />
@@ -93,7 +94,8 @@ export default function Home() {
                     src={p.image!}
                     alt={p.name}
                     fill
-                    className="object-cover"
+                    quality={90}
+                    className="object-cover object-center"
                     sizes="(max-width: 768px) 50vw, 20vw"
                   />
                 </div>
