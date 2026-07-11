@@ -5,8 +5,8 @@ export const site = {
   description:
     "Pre-order online and pick up in person. Fresh baked goods for porch pickup — no delivery.",
   // Update when she provides real info
-  phone: "(555) 000-0000",
-  email: "hello@lilyssweettreats.com",
+  phone: "(571) 788-6168",
+  email: "sweettreats0077@gmail.com",
   instagram: "", // e.g. https://instagram.com/lilyssweettreats
   locationNote: "Local porch pickup — exact address shared after you order",
   pickupNote: "Porch pickup only. We do not offer delivery.",
