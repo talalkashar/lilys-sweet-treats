@@ -44,27 +44,25 @@ export function OrderForm() {
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // Stripe checkout plugs in here later.
-    // For now we collect the order details so the flow is ready.
     console.log("Order draft (Stripe next):", { ...form, total });
     setSubmitted(true);
   }
 
   if (submitted) {
     return (
-      <div className="rounded-3xl border border-[var(--blush)] bg-white p-8 text-center shadow-sm">
+      <div className="rounded-[1.75rem] border border-[var(--mint)] bg-[var(--mint-soft)] p-8 text-center sm:p-10">
         <div className="text-4xl" aria-hidden>
           ✨
         </div>
-        <h3 className="mt-3 font-display text-2xl text-[var(--cocoa)]">
-          Order details received
+        <h3 className="mt-3 font-display text-3xl text-[var(--cocoa)]">
+          You&apos;re on the list
         </h3>
-        <p className="mt-2 text-[var(--cocoa-soft)]">
-          Online card checkout is coming next (Stripe). For now we&apos;ve saved
-          your pickup request — Lily will confirm by phone or text.
+        <p className="mx-auto mt-3 max-w-md text-[var(--cocoa-soft)]">
+          We have your pickup request. Online payment is next — for now Lily
+          will confirm by text or call.
         </p>
-        <p className="mt-4 text-sm font-medium text-[var(--cocoa)]">
-          {selected?.name} × {form.quantity} · ~${total.toFixed(2)} ·{" "}
+        <p className="mt-5 text-sm font-semibold text-[var(--cocoa)]">
+          {selected?.name} × {form.quantity} · ${total.toFixed(2)} ·{" "}
           {form.pickupWindow}
         </p>
         <button
@@ -73,7 +71,7 @@ export function OrderForm() {
             setSubmitted(false);
             setForm(initial);
           }}
-          className="mt-6 rounded-full border border-[var(--blush)] px-5 py-2 text-sm font-semibold text-[var(--cocoa)] hover:bg-[var(--cream)]"
+          className="btn-secondary mt-8"
         >
           Place another order
         </button>
@@ -84,15 +82,15 @@ export function OrderForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-3xl border border-[var(--blush)] bg-white p-6 shadow-sm sm:p-8"
+      className="rounded-[1.75rem] border border-[var(--blush)] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-9"
     >
-      <div className="mb-6 rounded-2xl bg-[var(--cream)] px-4 py-3 text-sm text-[var(--cocoa-soft)]">
+      <div className="mb-7 rounded-2xl bg-gradient-to-r from-[var(--lavender-soft)] via-[var(--blush)]/40 to-[var(--mint-soft)] px-4 py-3.5 text-sm text-[var(--cocoa-soft)]">
         <strong className="text-[var(--cocoa)]">Porch pickup only.</strong>{" "}
-        {site.leadTime} Payment online will be enabled once Stripe is connected.
+        {site.leadTime} Card checkout connects when Stripe is ready.
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <label className="block sm:col-span-1">
+        <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
             Your name
           </span>
@@ -183,28 +181,25 @@ export function OrderForm() {
         </label>
         <label className="block sm:col-span-2">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
-            Notes (flavors, message on cake, allergies…)
+            Notes (flavors, message, allergies…)
           </span>
           <textarea
             value={form.notes}
             onChange={(e) => update("notes", e.target.value)}
-            className="field min-h-[100px] resize-y"
+            className="field min-h-[110px] resize-y"
             placeholder="Optional"
           />
         </label>
       </div>
 
-      <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-8 flex flex-col gap-4 border-t border-[var(--blush)]/70 pt-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--cocoa-soft)]">
-          Estimated total:{" "}
-          <span className="text-lg font-semibold text-[var(--cocoa)]">
+          Estimated total
+          <span className="ml-2 font-display text-3xl font-medium text-[var(--cocoa)]">
             ${total.toFixed(2)}
           </span>
         </p>
-        <button
-          type="submit"
-          className="btn-pop rounded-full bg-[var(--rose)] px-8 py-3 text-sm font-semibold text-white shadow-md"
-        >
+        <button type="submit" className="btn-primary">
           Request pickup order
         </button>
       </div>

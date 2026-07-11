@@ -9,46 +9,51 @@ export function ProductCard({ product }: { product: Product }) {
   const showImage = Boolean(product.image) && !imgFailed;
 
   return (
-    <article className="card-lift group flex flex-col overflow-hidden rounded-3xl border-2 border-white bg-white/95 shadow-md">
-      <div className="relative flex h-44 items-center justify-center overflow-hidden bg-gradient-to-br from-[var(--blush)] via-[var(--lemon)]/50 to-[var(--sky)]/60">
+    <article className="card-product group flex flex-col">
+      <div className="relative aspect-[4/5] overflow-hidden bg-[var(--lavender-soft)]">
         {showImage ? (
           <Image
             src={product.image!}
             alt={product.name}
             fill
-            className="object-cover transition duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, 33vw"
+            className="card-product-img object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
             onError={() => setImgFailed(true)}
           />
         ) : (
-          <span className="text-6xl float-soft" aria-hidden>
-            {product.emoji}
-          </span>
+          <div className="flex h-full items-center justify-center text-6xl">
+            <span className="float-soft" aria-hidden>
+              {product.emoji}
+            </span>
+          </div>
         )}
         {product.popular ? (
-          <span className="absolute left-3 top-3 z-10 rounded-full bg-[var(--lemon)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[var(--cocoa)] shadow-sm">
-            Popular
+          <span className="absolute left-4 top-4 z-10 rounded-full bg-white/95 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--rose)] shadow-sm backdrop-blur">
+            Bestseller
           </span>
         ) : null}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/25 to-transparent opacity-0 transition group-hover:opacity-100" />
       </div>
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-display text-2xl text-[var(--cocoa)]">
-          {product.name}
-        </h3>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-display text-[1.65rem] leading-tight text-[var(--cocoa)]">
+            {product.name}
+          </h3>
+          <p className="shrink-0 rounded-full bg-[var(--lavender-soft)] px-3 py-1 text-sm font-semibold text-[var(--cocoa)]">
+            ${product.price.toFixed(0)}
+          </p>
+        </div>
+        <p className="mt-2.5 flex-1 text-[0.95rem] leading-relaxed text-[var(--cocoa-soft)]">
           {product.description}
         </p>
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-lg font-bold text-[var(--rose)]">
-            ${product.price.toFixed(2)}
-          </p>
-          <a
-            href="#order"
-            className="rounded-full bg-[var(--mint-soft)] px-3 py-1.5 text-sm font-semibold text-[var(--cocoa)] transition hover:bg-[var(--mint)]"
-          >
-            Order →
-          </a>
-        </div>
+        <a
+          href="#order"
+          className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--rose)] transition hover:gap-3"
+        >
+          Order for pickup
+          <span aria-hidden>→</span>
+        </a>
       </div>
     </article>
   );

@@ -1,20 +1,32 @@
 @import "tailwindcss";
 
+/*
+  Lily's Sweet Treats — premium home bakery aesthetic
+  Inspired by: Magnolia (pastel blocks), Little Tart (whitespace + photo),
+  A Spoon Fulla Sugar (pink + mint elegance), modern dopamine pastels (2026)
+*/
+
 :root {
-  /* Colorful candy palette */
-  --cream: #fff9f4;
-  --cream-deep: #ffe8d6;
-  --blush: #ffd0e0;
-  --rose: #ff4d8d;
-  --rose-deep: #e63675;
-  --lavender: #c9b6ff;
-  --sky: #7ec8ff;
-  --mint: #7dffc3;
-  --mint-soft: #d4fff0;
-  --lemon: #ffe566;
-  --peach: #ffb38a;
-  --cocoa: #2d1f2f;
-  --cocoa-soft: #5c4a5e;
+  --cream: #fffaf7;
+  --cream-deep: #f7ebe6;
+  --blush: #f8d4e0;
+  --blush-deep: #f0b8cb;
+  --rose: #e85a8b;
+  --rose-deep: #d13f74;
+  --lavender: #c9b8e8;
+  --lavender-soft: #efe8fb;
+  --lilac: #b8a0e0;
+  --mint: #b8e8d4;
+  --mint-soft: #e6f7f0;
+  --peach: #ffd4c2;
+  --gold: #e8c47a;
+  --cocoa: #2a1f2d;
+  --cocoa-soft: #6a5668;
+  --ink-muted: #8a7486;
+  --white: #ffffff;
+  --shadow-soft: 0 4px 24px rgba(42, 31, 45, 0.06);
+  --shadow-lift: 0 20px 50px rgba(42, 31, 45, 0.1);
+  --radius-card: 1.5rem;
   --background: var(--cream);
   --foreground: var(--cocoa);
 }
@@ -31,50 +43,177 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--cream);
+  color: var(--cocoa);
   font-family: var(--font-body), system-ui, sans-serif;
-  /* Soft colorful wash */
-  background-image:
-    radial-gradient(ellipse 80% 50% at 0% -10%, rgba(255, 77, 141, 0.12), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(126, 200, 255, 0.18), transparent),
-    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(201, 182, 255, 0.15), transparent);
-  background-attachment: fixed;
+  font-feature-settings: "ss01" on, "kern" on;
+  line-height: 1.6;
 }
 
 .font-display {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
+/* Elegant form fields */
 .field {
   width: 100%;
-  border-radius: 0.9rem;
-  border: 2px solid var(--blush);
-  background: #fff;
-  padding: 0.7rem 0.9rem;
+  border-radius: 1rem;
+  border: 1.5px solid var(--blush);
+  background: var(--white);
+  padding: 0.85rem 1rem;
   color: var(--cocoa);
+  font-size: 0.95rem;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .field:focus {
   border-color: var(--rose);
-  box-shadow: 0 0 0 4px rgba(255, 77, 141, 0.18);
+  box-shadow: 0 0 0 4px rgba(232, 90, 139, 0.12);
 }
 
 ::selection {
-  background: var(--lemon);
+  background: var(--blush);
   color: var(--cocoa);
 }
 
-/* ----- Motion: readable, calm ----- */
+/* Section rhythm */
+.section-pad {
+  padding-block: clamp(3.5rem, 8vw, 6.5rem);
+}
+
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rose);
+}
+
+.section-title {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  line-height: 1.1;
+  color: var(--cocoa);
+  letter-spacing: -0.02em;
+}
+
+.prose-soft {
+  color: var(--cocoa-soft);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 36rem;
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, var(--rose) 0%, #f06a9a 100%);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.85rem 1.6rem;
+  box-shadow: 0 8px 24px rgba(232, 90, 139, 0.28);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(232, 90, 139, 0.35);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1.5px solid var(--blush-deep);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--cocoa);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.85rem 1.6rem;
+  backdrop-filter: blur(8px);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  background: white;
+  border-color: var(--rose);
+}
+
+/* Cards */
+.card-product {
+  border-radius: var(--radius-card);
+  background: white;
+  border: 1px solid rgba(248, 212, 224, 0.8);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s ease;
+}
+
+.card-product:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lift);
+}
+
+.card-product:hover .card-product-img {
+  transform: scale(1.06);
+}
+
+.card-product-img {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Marquee */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 2.5rem;
+  animation: marquee 28s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Motion */
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
     opacity: 0;
-    transform: translateY(22px);
+    transform: translateY(28px);
     transition:
-      opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .reveal-in {
@@ -83,20 +222,24 @@ body {
   }
 
   .anim-fade-up {
-    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: fadeUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .anim-delay-1 { animation-delay: 0.1s; }
-  .anim-delay-2 { animation-delay: 0.2s; }
-  .anim-delay-3 { animation-delay: 0.32s; }
-  .anim-delay-4 { animation-delay: 0.44s; }
+  .anim-delay-1 {
+    animation-delay: 0.12s;
+  }
+  .anim-delay-2 {
+    animation-delay: 0.24s;
+  }
+  .anim-delay-3 {
+    animation-delay: 0.36s;
+  }
+  .anim-delay-4 {
+    animation-delay: 0.48s;
+  }
 
   .float-soft {
-    animation: floatSoft 5s ease-in-out infinite;
-  }
-
-  .blob {
-    animation: blobPulse 8s ease-in-out infinite;
+    animation: floatSoft 6s ease-in-out infinite;
   }
 }
 
@@ -108,12 +251,15 @@ body {
   html {
     scroll-behavior: auto;
   }
+  .marquee-track {
+    animation: none;
+  }
 }
 
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -122,30 +268,22 @@ body {
 }
 
 @keyframes floatSoft {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
-@keyframes blobPulse {
-  0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.55; }
-  50% { transform: scale(1.08) translate(4px, -6px); opacity: 0.75; }
-}
-
-.btn-pop {
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-}
-.btn-pop:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 10px 24px rgba(255, 77, 141, 0.28);
-}
-.btn-pop:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.card-lift {
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
-}
-.card-lift:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 40px rgba(45, 31, 47, 0.12);
+/* Soft divider */
+.divider-soft {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--blush-deep),
+    transparent
+  );
 }
