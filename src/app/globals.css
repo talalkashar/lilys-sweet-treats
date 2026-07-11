@@ -132,13 +132,16 @@ body {
 
 .hero-pattern {
   position: absolute;
-  inset: -20%;
+  /* Oversized so edges never show while drifting */
+  inset: -40%;
   z-index: 0;
   background-image: url("/brand/pattern.png");
-  background-size: 320px;
+  background-size: 280px;
   background-repeat: repeat;
-  opacity: 0.55;
+  opacity: 0.72;
   will-change: transform;
+  /* Visible slow drift — one full tile over ~22s */
+  animation: heroPatternDrift 22s linear infinite;
 }
 
 .hero-pattern-veil {
@@ -146,10 +149,10 @@ body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  /* Lighter veil so the moving pattern stays readable */
   background:
-    radial-gradient(ellipse 80% 70% at 20% 30%, rgba(255, 255, 255, 0.55), transparent 55%),
-    radial-gradient(ellipse 60% 50% at 90% 20%, rgba(201, 184, 232, 0.35), transparent 50%),
-    linear-gradient(180deg, rgba(255, 250, 247, 0.25) 0%, rgba(255, 250, 247, 0.55) 100%);
+    radial-gradient(ellipse 70% 60% at 15% 25%, rgba(255, 255, 255, 0.4), transparent 55%),
+    linear-gradient(180deg, rgba(255, 250, 247, 0.15) 0%, rgba(255, 250, 247, 0.4) 100%);
 }
 
 .hero-content {
@@ -157,18 +160,13 @@ body {
   z-index: 2;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .hero-pattern {
-    animation: heroPatternDrift 45s linear infinite;
-  }
-}
-
 @keyframes heroPatternDrift {
   0% {
     transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translate3d(-160px, -120px, 0);
+    /* Match background-size tile for a seamless loop */
+    transform: translate3d(-280px, -280px, 0);
   }
 }
 
