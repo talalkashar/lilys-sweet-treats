@@ -1,26 +1,52 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --cream: #fff8f3;
+  --cream-deep: #f7ebe3;
+  --blush: #f0d6cc;
+  --rose: #c45c6a;
+  --rose-deep: #a84555;
+  --cocoa: #3d2c29;
+  --cocoa-soft: #6b534e;
+  --mint: #e8f2ee;
+  --background: var(--cream);
+  --foreground: var(--cocoa);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.field {
+  width: 100%;
+  border-radius: 0.9rem;
+  border: 1px solid var(--blush);
+  background: var(--cream);
+  padding: 0.7rem 0.9rem;
+  color: var(--cocoa);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field:focus {
+  border-color: var(--rose);
+  box-shadow: 0 0 0 3px rgba(196, 92, 106, 0.15);
+}
+
+::selection {
+  background: var(--blush);
+  color: var(--cocoa);
 }
