@@ -114,7 +114,7 @@ export default function Home() {
             <h2 className="section-title mt-2">What we bake</h2>
             <p className="prose-soft mt-3">
               Made to order for porch pickup. Tap a treat to start your order —
-              prices finalize when Lily confirms (placeholders until locked in).
+              prices finalize when we confirm (placeholders until locked in).
             </p>
           </div>
         </Reveal>
@@ -206,7 +206,7 @@ export default function Home() {
           <div>
             <p className="section-label">Questions?</p>
             <h2 className="mt-2 font-display text-3xl text-[var(--cocoa)] sm:text-4xl">
-              Call or email Lily
+              Call or email us
             </h2>
             <p className="mt-2 max-w-md text-[var(--cocoa-soft)]">
               Custom requests, larger orders, or pickup questions — happy to help.
