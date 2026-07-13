@@ -4,22 +4,49 @@ export type Product = {
   price: number;
   description: string;
   emoji: string;
+  category: "rolls" | "sticky" | "specialty";
   /** Path under /public */
   image?: string;
   popular?: boolean;
 };
 
+export type MenuCategory = {
+  id: Product["category"];
+  title: string;
+  blurb: string;
+};
+
+/** Category order for the menu page */
+export const menuCategories: MenuCategory[] = [
+  {
+    id: "rolls",
+    title: "Cinnamon rolls",
+    blurb: "Soft rolls with seasonal fillings.",
+  },
+  {
+    id: "sticky",
+    title: "Sticky buns",
+    blurb: "Caramel glazed. With nuts or without.",
+  },
+  {
+    id: "specialty",
+    title: "Specialty treats",
+    blurb: "Giftable favorites beyond the rolls.",
+  },
+];
+
 /**
- * Live menu. Prices are placeholders until confirmed.
- * Photos: sticky bun shots used for rolls until dedicated product photos arrive.
+ * Full menu. Prices are placeholders until confirmed.
+ * Some photos are stand-ins until dedicated shots arrive.
  */
 export const products: Product[] = [
+  // Cinnamon rolls
   {
     id: "apple-caramel-cinnamon-rolls",
     name: "Apple Caramel Cinnamon Rolls",
     price: 6,
-    description:
-      "Soft cinnamon rolls with warm apple and rich caramel. Sweet, gooey, and made to order for pickup.",
+    category: "rolls",
+    description: "Warm apple, rich caramel, and soft cinnamon dough.",
     emoji: "🍎",
     image: "/products/sticky-bun-no-nuts.jpg",
   },
@@ -27,17 +54,18 @@ export const products: Product[] = [
     id: "peach-cobbler-cinnamon-rolls",
     name: "Peach Cobbler Cinnamon Rolls",
     price: 6,
-    description:
-      "Cinnamon rolls inspired by peach cobbler. Soft dough, peach flavor, and a bakery finish you will want again.",
+    category: "rolls",
+    description: "Peach cobbler flavor in a soft cinnamon roll.",
     emoji: "🍑",
     image: "/products/sticky-bun-with-nuts.jpg",
   },
+  // Sticky buns
   {
     id: "sticky-buns-with-nuts",
     name: "Sticky Buns with Nuts",
     price: 6,
-    description:
-      "Classic sticky buns with caramel glaze and toasted nuts. Gooey, crunchy, and baked fresh for pickup.",
+    category: "sticky",
+    description: "Caramel glaze topped with toasted nuts.",
     emoji: "🥜",
     image: "/products/sticky-bun-with-nuts.jpg",
   },
@@ -45,9 +73,32 @@ export const products: Product[] = [
     id: "sticky-buns-without-nuts",
     name: "Sticky Buns without Nuts",
     price: 5,
-    description:
-      "Same soft sticky bun and shiny caramel glaze, with no nuts. Simple and delicious.",
+    category: "sticky",
+    description: "Classic sticky bun and caramel, no nuts.",
     emoji: "🌀",
     image: "/products/sticky-bun-no-nuts.jpg",
   },
+  // Specialty (kept on the menu)
+  {
+    id: "cake-pops",
+    name: "Cake Pop Bouquet",
+    price: 35,
+    category: "specialty",
+    description: "Pastel cake pops arranged as a gift bouquet.",
+    emoji: "🍭",
+    image: "/products/cake-pops.png",
+  },
+  {
+    id: "alfajores",
+    name: "Alfajores",
+    price: 16,
+    category: "specialty",
+    description: "Buttery cookies filled with dulce de leche.",
+    emoji: "🍪",
+    image: "/products/alfajores.jpg",
+  },
 ];
+
+export function productsInCategory(categoryId: Product["category"]) {
+  return products.filter((p) => p.category === categoryId);
+}

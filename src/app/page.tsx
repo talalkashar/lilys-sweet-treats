@@ -4,14 +4,13 @@ import { Reveal } from "@/components/Reveal";
 import { site } from "@/data/site";
 
 const stripItems = [
-  "Apple caramel cinnamon rolls",
-  "Peach cobbler cinnamon rolls",
-  "Sticky buns with nuts",
-  "Sticky buns without nuts",
+  "Cinnamon rolls",
+  "Sticky buns",
+  "Cake pops",
+  "Alfajores",
   "Porch pickup",
   "Handmade",
   "Pre-order",
-  "No delivery",
 ];
 
 export default function Home() {
@@ -83,8 +82,7 @@ export default function Home() {
               <p className="section-label">Menu</p>
               <h2 className="section-title mt-2">What we bake</h2>
               <p className="prose-soft mt-3">
-                Made to order for porch pickup. Click any treat for full details.
-                Prices finalize when we confirm.
+                Browse by category. Tap a treat for details and to start an order.
               </p>
             </div>
           </Reveal>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { products } from "@/data/products";
+import { menuCategories, products, productsInCategory } from "@/data/products";
 import { site } from "@/data/site";
 
 type FormState = {
@@ -168,11 +168,19 @@ export function OrderForm() {
             onChange={(e) => update("productId", e.target.value)}
             className="field"
           >
-            {products.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name} (${p.price})
-              </option>
-            ))}
+            {menuCategories.map((cat) => {
+              const items = productsInCategory(cat.id);
+              if (items.length === 0) return null;
+              return (
+                <optgroup key={cat.id} label={cat.title}>
+                  {items.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} (${p.price})
+                    </option>
+                  ))}
+                </optgroup>
+              );
+            })}
           </select>
         </label>
         <label className="block">

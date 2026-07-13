@@ -9,11 +9,6 @@ type Props = {
   onOpen?: (product: Product) => void;
 };
 
-/**
- * Square frame + object-cover + center:
- * works for portrait (cake pops, alfajores) and landscape (sticky buns)
- * without extreme crop or stretch.
- */
 export function ProductCard({ product, onOpen }: Props) {
   const [imgFailed, setImgFailed] = useState(false);
   const showImage = Boolean(product.image) && !imgFailed;
@@ -24,9 +19,9 @@ export function ProductCard({ product, onOpen }: Props) {
         type="button"
         onClick={() => onOpen?.(product)}
         className="flex flex-1 flex-col text-left"
-        aria-label={`View ${product.name} details`}
+        aria-label={`View ${product.name}`}
       >
-        <div className="relative aspect-square w-full overflow-hidden bg-[var(--lavender-soft)]">
+        <div className="relative aspect-[5/4] w-full overflow-hidden bg-[var(--lavender-soft)] sm:aspect-square">
           {showImage ? (
             <Image
               src={product.image!}
@@ -38,38 +33,27 @@ export function ProductCard({ product, onOpen }: Props) {
               onError={() => setImgFailed(true)}
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-6xl">
-              <span className="float-soft" aria-hidden>
-                {product.emoji}
-              </span>
+            <div className="flex h-full items-center justify-center text-5xl">
+              <span aria-hidden>{product.emoji}</span>
             </div>
           )}
-          {product.popular ? (
-            <span className="absolute left-4 top-4 z-10 rounded-full bg-white/95 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--rose)] shadow-sm backdrop-blur">
-              Bestseller
-            </span>
-          ) : null}
           <span className="absolute bottom-3 right-3 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-[var(--cocoa)] shadow-sm opacity-0 transition group-hover:opacity-100">
-            View details
+            Details
           </span>
         </div>
 
-        <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <div className="flex flex-1 flex-col gap-2 p-5">
           <div className="flex items-start justify-between gap-3">
-            <h3 className="font-display text-[1.65rem] leading-tight text-[var(--cocoa)]">
+            <h3 className="font-display text-xl leading-snug text-[var(--cocoa)] sm:text-[1.4rem]">
               {product.name}
             </h3>
-            <p className="shrink-0 rounded-full bg-gradient-to-r from-[var(--lavender-soft)] to-[var(--mint-soft)] px-3 py-1 text-sm font-semibold text-[var(--cocoa)]">
+            <p className="shrink-0 rounded-full bg-[var(--lavender-soft)] px-2.5 py-1 text-sm font-semibold text-[var(--cocoa)]">
               ${product.price.toFixed(0)}
             </p>
           </div>
-          <p className="mt-2.5 line-clamp-2 flex-1 text-[0.95rem] leading-relaxed text-[var(--cocoa-soft)]">
+          <p className="line-clamp-2 text-sm leading-relaxed text-[var(--cocoa-soft)]">
             {product.description}
           </p>
-          <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--rose)]">
-            View product
-            <span aria-hidden>→</span>
-          </span>
         </div>
       </button>
     </article>
