@@ -5,16 +5,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { site } from "@/data/site";
 
-/**
- * Nav kept short on purpose:
- * Menu / How it works / Order / Contact
- * (Story removed — no real owner story content yet)
- */
 const links = [
-  { href: "#menu", label: "Menu" },
-  { href: "#how-it-works", label: "Pickup" },
-  { href: "#order", label: "Order" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#menu", label: "Menu" },
+  { href: "/#how-it-works", label: "Pickup" },
+  { href: "/order", label: "Order" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export function Header() {
@@ -42,8 +37,7 @@ export function Header() {
           className="flex min-w-0 items-center gap-3"
           onClick={() => setOpen(false)}
         >
-          {/* White plate so the full logo mark stays readable (not harsh circle crop) */}
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--blush)] bg-white shadow-sm sm:h-13 sm:w-13">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--blush)] bg-white shadow-sm">
             <Image
               src={site.logo}
               alt={`${site.name} logo`}
@@ -65,23 +59,23 @@ export function Header() {
 
         <nav className="hidden items-center gap-7 text-[0.9rem] font-medium text-[var(--cocoa-soft)] lg:flex">
           {links.map((l) => (
-            <a
+            <Link
               key={l.href}
               href={l.href}
               className="relative transition-colors hover:text-[var(--rose)] after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-[var(--rose)] after:transition-all hover:after:w-full"
             >
               {l.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
-          <a
-            href="#order"
+          <Link
+            href="/order"
             className="btn-primary hidden sm:inline-flex !px-5 !py-2.5 !text-sm"
           >
             Order now
-          </a>
+          </Link>
           <button
             type="button"
             className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--blush)] bg-white text-[var(--cocoa)] lg:hidden"
@@ -109,22 +103,22 @@ export function Header() {
         <div className="border-t border-[var(--blush)]/40 bg-white px-4 py-4 lg:hidden">
           <nav className="flex flex-col gap-1">
             {links.map((l) => (
-              <a
+              <Link
                 key={l.href}
                 href={l.href}
                 className="rounded-xl px-3 py-3 font-medium text-[var(--cocoa)] hover:bg-[var(--lavender-soft)]"
                 onClick={() => setOpen(false)}
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
-            <a
-              href="#order"
-              className="btn-primary mt-2"
+            <Link
+              href="/order"
+              className="btn-primary mt-2 text-center"
               onClick={() => setOpen(false)}
             >
               Order now
-            </a>
+            </Link>
           </nav>
         </div>
       ) : null}

@@ -88,7 +88,7 @@ export function ProductModal({ product, onClose }: Props) {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
-              href={`#order?product=${product.id}`}
+              href={`/order?product=${product.id}`}
               onClick={onClose}
               className="btn-primary flex-1 text-center"
             >

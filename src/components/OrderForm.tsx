@@ -2,6 +2,7 @@
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { CheckoutPayment } from "@/components/CheckoutPayment";
 import { menuCategories, products, productsInCategory } from "@/data/products";
@@ -22,17 +23,6 @@ type FormState = {
 };
 
 type Step = "details" | "pay";
-
-function productIdFromHash(): string | null {
-  if (typeof window === "undefined") return null;
-  const hash = window.location.hash;
-  const q = hash.indexOf("?");
-  if (q === -1) return null;
-  const params = new URLSearchParams(hash.slice(q + 1));
-  const id = params.get("product");
-  if (id && products.some((p) => p.id === id)) return id;
-  return null;
-}
 
 const initial: FormState = {
   name: "",
@@ -58,6 +48,7 @@ const elementsAppearance: StripeElementsOptions["appearance"] = {
 };
 
 export function OrderForm() {
+  const searchParams = useSearchParams();
   const [form, setForm] = useState<FormState>(initial);
   const [step, setStep] = useState<Step>("details");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -65,14 +56,11 @@ export function OrderForm() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const apply = () => {
-      const id = productIdFromHash();
-      if (id) setForm((f) => ({ ...f, productId: id }));
-    };
-    apply();
-    window.addEventListener("hashchange", apply);
-    return () => window.removeEventListener("hashchange", apply);
-  }, []);
+    const id = searchParams.get("product");
+    if (id && products.some((p) => p.id === id)) {
+      setForm((f) => ({ ...f, productId: id }));
+    }
+  }, [searchParams]);
 
   const selected = useMemo(
     () => products.find((p) => p.id === form.productId),

@@ -36,7 +36,7 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
           <Link href="/#menu" className="btn-secondary">
             Back to menu
           </Link>
-          <Link href="/#order" className="btn-primary">
+          <Link href="/order" className="btn-primary">
             Order again
           </Link>
         </div>

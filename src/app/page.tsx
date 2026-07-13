@@ -1,5 +1,5 @@
+import Link from "next/link";
 import { MenuGrid } from "@/components/MenuGrid";
-import { OrderForm } from "@/components/OrderForm";
 import { Reveal } from "@/components/Reveal";
 import { site } from "@/data/site";
 
@@ -10,7 +10,6 @@ const stripItems = [
   "Alfajores",
   "Porch pickup",
   "Handmade",
-  "Pre-order",
 ];
 
 export default function Home() {
@@ -42,9 +41,9 @@ export default function Home() {
             </p>
 
             <div className="anim-fade-up anim-delay-3 mt-10 flex flex-wrap gap-3">
-              <a href="#order" className="btn-primary">
-                Pre-order treats
-              </a>
+              <Link href="/order" className="btn-primary">
+                Order and pay
+              </Link>
               <a href="#menu" className="btn-secondary">
                 See the menu
               </a>
@@ -58,7 +57,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Colorful animated strip */}
       <div className="color-strip" aria-hidden>
         <div className="marquee-track">
           {[...stripItems, ...stripItems].map((item, i) => (
@@ -78,12 +76,18 @@ export default function Home() {
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
           <div className="orb orb-c opacity-60" aria-hidden />
           <Reveal>
-            <div>
-              <p className="section-label">Menu</p>
-              <h2 className="section-title mt-2">What we bake</h2>
-              <p className="prose-soft mt-3">
-                Browse by category. Tap a treat for details and to start an order.
-              </p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="section-label">Menu</p>
+                <h2 className="section-title mt-2">What we bake</h2>
+                <p className="prose-soft mt-3">
+                  Browse by category. Open a treat for details, then order when
+                  you are ready.
+                </p>
+              </div>
+              <Link href="/order" className="btn-primary shrink-0 self-start sm:self-auto">
+                Order and pay
+              </Link>
             </div>
           </Reveal>
 
@@ -93,8 +97,6 @@ export default function Home() {
 
       {/* HOW IT WORKS */}
       <section id="how-it-works" className="section-steps section-pad">
-        <div className="orb orb-a opacity-40" aria-hidden />
-        <div className="orb orb-b opacity-40" aria-hidden />
         <div className="relative z-[1] mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <div className="mx-auto max-w-xl text-center">
@@ -111,21 +113,21 @@ export default function Home() {
               {
                 n: "1",
                 t: "Choose treats",
-                d: "Pick from the menu and add notes (flavors, allergies, cake messages).",
+                d: "Pick from the menu and add any notes you need.",
                 bg: "from-[#ffe4f0] to-white",
                 num: "bg-gradient-to-br from-[var(--rose)] to-[#c084fc]",
               },
               {
                 n: "2",
-                t: "Pick a window",
-                d: "Choose a pickup time that works. We prepare your order for that slot.",
+                t: "Pay online",
+                d: "Checkout on a dedicated order page. Secure and simple.",
                 bg: "from-[#e0f2fe] to-white",
                 num: "bg-gradient-to-br from-[var(--sky)] to-[var(--lilac)]",
               },
               {
                 n: "3",
-                t: "Pay & pick up",
-                d: "Pay securely on this site, then collect from the porch. No delivery fees.",
+                t: "Porch pickup",
+                d: "We confirm your window. You collect when ready.",
                 bg: "from-[#d4fff0] to-white",
                 num: "bg-gradient-to-br from-[var(--mint)] to-[var(--sky)]",
               },
@@ -149,25 +151,12 @@ export default function Home() {
               </Reveal>
             ))}
           </ol>
-        </div>
-      </section>
 
-      {/* ORDER */}
-      <section id="order" className="section-order section-pad">
-        <div className="orb orb-c opacity-50" aria-hidden />
-        <div className="relative z-[1] mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
-            <div className="mx-auto max-w-xl text-center">
-              <p className="section-label">Order</p>
-              <h2 className="section-title mt-2">Reserve your pickup</h2>
-              <p className="prose-soft mx-auto mt-3 text-center">
-                {site.pickupNote} We&apos;ll confirm details by text or email.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal delayMs={80}>
-            <div className="mx-auto mt-10 max-w-2xl">
-              <OrderForm />
+            <div className="mt-12 text-center">
+              <Link href="/order" className="btn-primary">
+                Start your order
+              </Link>
             </div>
           </Reveal>
         </div>
