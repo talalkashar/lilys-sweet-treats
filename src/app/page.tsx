@@ -4,13 +4,13 @@ import { Reveal } from "@/components/Reveal";
 import { site } from "@/data/site";
 
 const stripItems = [
-  "Cake pops",
-  "Alfajores",
-  "Sticky buns",
+  "Apple caramel cinnamon rolls",
+  "Peach cobbler cinnamon rolls",
+  "Sticky buns with nuts",
+  "Sticky buns without nuts",
   "Porch pickup",
   "Handmade",
   "Pre-order",
-  "Gift-ready",
   "No delivery",
 ];
 

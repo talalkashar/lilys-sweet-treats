@@ -9,42 +9,45 @@ export type Product = {
   popular?: boolean;
 };
 
-/** Menu items. Prices are placeholders until confirmed. */
+/**
+ * Live menu. Prices are placeholders until confirmed.
+ * Photos: sticky bun shots used for rolls until dedicated product photos arrive.
+ */
 export const products: Product[] = [
   {
-    id: "cake-pops",
-    name: "Cake Pop Bouquet",
-    price: 35,
-    description:
-      "A gift arrangement of pastel cake pops with florals. Perfect for birthdays, showers, and celebrations.",
-    emoji: "🍭",
-    image: "/products/cake-pops.png",
-  },
-  {
-    id: "alfajores",
-    name: "Alfajores",
-    price: 16,
-    description:
-      "Buttery sandwich cookies filled with rich dulce de leche and dusted with powdered sugar. Soft, sweet, and classic.",
-    emoji: "🍪",
-    image: "/products/alfajores.jpg",
-  },
-  {
-    id: "sticky-bun-pecan",
-    name: "Sticky Bun (Pecan)",
+    id: "apple-caramel-cinnamon-rolls",
+    name: "Apple Caramel Cinnamon Rolls",
     price: 6,
     description:
-      "Gooey caramel sticky bun topped with toasted pecans and a touch of sea salt. Warm bakery comfort.",
-    emoji: "🌀",
+      "Soft cinnamon rolls with warm apple and rich caramel. Sweet, gooey, and made to order for pickup.",
+    emoji: "🍎",
+    image: "/products/sticky-bun-no-nuts.jpg",
+  },
+  {
+    id: "peach-cobbler-cinnamon-rolls",
+    name: "Peach Cobbler Cinnamon Rolls",
+    price: 6,
+    description:
+      "Cinnamon rolls inspired by peach cobbler. Soft dough, peach flavor, and a bakery finish you will want again.",
+    emoji: "🍑",
     image: "/products/sticky-bun-with-nuts.jpg",
   },
   {
-    id: "sticky-bun-classic",
-    name: "Sticky Bun (Classic)",
+    id: "sticky-buns-with-nuts",
+    name: "Sticky Buns with Nuts",
+    price: 6,
+    description:
+      "Classic sticky buns with caramel glaze and toasted nuts. Gooey, crunchy, and baked fresh for pickup.",
+    emoji: "🥜",
+    image: "/products/sticky-bun-with-nuts.jpg",
+  },
+  {
+    id: "sticky-buns-without-nuts",
+    name: "Sticky Buns without Nuts",
     price: 5,
     description:
-      "Soft cinnamon sticky bun glazed in shiny caramel, with no nuts. Simple and delicious.",
-    emoji: "🍩",
+      "Same soft sticky bun and shiny caramel glaze, with no nuts. Simple and delicious.",
+    emoji: "🌀",
     image: "/products/sticky-bun-no-nuts.jpg",
   },
 ];
