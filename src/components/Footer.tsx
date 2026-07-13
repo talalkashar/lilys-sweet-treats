@@ -1,32 +1,35 @@
 import Image from "next/image";
+import Link from "next/link";
 import { site } from "@/data/site";
 
-/**
- * Footer purpose: identity + legal quiet end + contact backup.
- * No decorative pattern (was competing with content).
- * No long link tree — page is short enough already.
- */
 export function Footer() {
   return (
-    <footer className="border-t border-[var(--blush)]/50 bg-[var(--cocoa)] text-white">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <footer className="border-t border-[var(--cocoa)] bg-[var(--cocoa)] text-white">
+      <div className="shell flex flex-col gap-10 py-12 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <span className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white sm:h-20 sm:w-20">
+          <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-white sm:h-[4.5rem] sm:w-[4.5rem]">
             <Image
               src={site.logo}
               alt=""
-              width={80}
-              height={80}
-              className="h-full w-full object-cover object-center"
+              fill
+              className="object-cover object-center"
+              sizes="72px"
             />
           </span>
           <div>
-            <p className="font-display text-xl text-white sm:text-2xl">{site.name}</p>
-            <p className="text-sm text-white/60">Porch pickup. No delivery.</p>
+            <p className="font-display text-xl text-white sm:text-2xl">
+              {site.name}
+            </p>
+            <p className="mt-0.5 text-sm text-white/55">
+              Porch pickup. No delivery.
+            </p>
           </div>
         </div>
 
-        <div className="flex flex-col gap-1 text-sm text-white/70 sm:items-end">
+        <div className="flex flex-col gap-2 text-sm text-white/70 sm:items-end">
+          <Link className="hover:text-white" href="/order">
+            Order and pay
+          </Link>
           <a className="hover:text-white" href={`tel:${site.phone.replace(/\D/g, "")}`}>
             {site.phone}
           </a>

@@ -10,11 +10,8 @@ export const metadata = {
 
 export default function OrderPage() {
   return (
-    <div className="relative min-h-[70vh] overflow-hidden bg-gradient-to-b from-[#f5ecff] via-[#fff8fc] to-white">
-      <div className="pointer-events-none absolute -right-20 top-10 h-64 w-64 rounded-full bg-[var(--rose)]/10 blur-3xl" />
-      <div className="pointer-events-none absolute -left-16 bottom-20 h-56 w-56 rounded-full bg-[var(--sky)]/15 blur-3xl" />
-
-      <div className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+    <div className="min-h-[70vh] bg-[var(--cream)]">
+      <div className="shell py-10 sm:py-14">
         <Link
           href="/#menu"
           className="text-sm font-medium text-[var(--cocoa-soft)] transition hover:text-[var(--rose)]"
@@ -22,29 +19,32 @@ export default function OrderPage() {
           ← Back to menu
         </Link>
 
-        <div className="mt-6 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-12">
+        <div className="mt-8 grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-14">
           <aside className="lg:sticky lg:top-28">
             <p className="section-label">Checkout</p>
             <h1 className="section-title mt-2">Order for pickup</h1>
             <p className="prose-soft mt-4">
-              Choose your treats, pick a window, and pay on this page. We bake
-              for your slot. No delivery.
+              Choose your treats, pick a window, and pay here. We bake for your
+              slot. No delivery.
             </p>
 
-            <ul className="mt-8 space-y-4 text-sm text-[var(--cocoa-soft)]">
-              <li className="flex gap-3 rounded-2xl border border-white bg-white/80 px-4 py-3 shadow-[var(--shadow-soft)]">
-                <span className="font-semibold text-[var(--rose)]">1</span>
-                <span>Enter your details and choose a treat</span>
-              </li>
-              <li className="flex gap-3 rounded-2xl border border-white bg-white/80 px-4 py-3 shadow-[var(--shadow-soft)]">
-                <span className="font-semibold text-[var(--rose)]">2</span>
-                <span>Pay securely without leaving this site</span>
-              </li>
-              <li className="flex gap-3 rounded-2xl border border-white bg-white/80 px-4 py-3 shadow-[var(--shadow-soft)]">
-                <span className="font-semibold text-[var(--rose)]">3</span>
-                <span>We confirm and you pick up at the porch</span>
-              </li>
-            </ul>
+            <ol className="mt-8 space-y-3 text-sm text-[var(--cocoa-soft)]">
+              {[
+                "Enter your details and choose a treat",
+                "Pay securely on this page",
+                "Pick up at the porch when ready",
+              ].map((line, i) => (
+                <li
+                  key={line}
+                  className="flex gap-3 rounded-xl border border-[var(--blush)]/40 bg-white px-4 py-3"
+                >
+                  <span className="font-semibold text-[var(--rose)]">
+                    {i + 1}
+                  </span>
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ol>
 
             <p className="mt-8 text-sm text-[var(--ink-muted)]">
               {site.leadTime}
@@ -56,7 +56,7 @@ export default function OrderPage() {
           <div className="min-w-0">
             <Suspense
               fallback={
-                <div className="rounded-[1.75rem] border-2 border-[var(--blush)] bg-white p-10 text-center text-[var(--cocoa-soft)]">
+                <div className="form-shell p-10 text-center text-[var(--cocoa-soft)]">
                   Loading checkout…
                 </div>
               }

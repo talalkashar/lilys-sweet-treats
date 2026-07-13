@@ -4,62 +4,47 @@ import { MenuGrid } from "@/components/MenuGrid";
 import { Reveal } from "@/components/Reveal";
 import { site } from "@/data/site";
 
-const stripItems = [
-  "Cinnamon rolls",
-  "Sticky buns",
-  "Cake pops",
-  "Alfajores",
-  "Porch pickup",
-  "Handmade",
-];
-
 export default function Home() {
   return (
     <>
-      {/* HERO — big brand logo + copy */}
+      {/* HERO */}
       <section className="hero-shell">
         <div className="hero-pattern" aria-hidden />
         <div className="hero-pattern-veil" aria-hidden />
-        <div className="orb orb-a" aria-hidden />
-        <div className="orb orb-b" aria-hidden />
 
-        <div className="hero-content mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:py-24">
-          <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-            <div className="max-w-2xl">
-              <p className="anim-fade-up inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/85 px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-[var(--rose)] shadow-sm backdrop-blur-sm">
-                <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[var(--rose)]" />
-                Home bakery, porch pickup only
+        <div className="hero-content shell section-pad">
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+            <div>
+              <p className="anim-fade-up section-label">
+                Home bakery · Porch pickup
               </p>
 
-              <h1 className="anim-fade-up anim-delay-1 mt-6 font-display text-[clamp(2.75rem,6vw,4.25rem)] leading-[1.02] tracking-tight text-[var(--cocoa)]">
+              <h1 className="anim-fade-up anim-delay-1 mt-4 font-display text-[clamp(2.6rem,5.5vw,3.75rem)] leading-[1.05] tracking-tight text-[var(--cocoa)]">
                 Handmade treats,{" "}
                 <span className="hero-accent">ready for pickup</span>
               </h1>
 
-              <p className="anim-fade-up anim-delay-2 prose-soft-wide mt-6">
-                {site.name} makes small-batch sweets you pre-order online and
-                collect in person. No delivery. Just fresh baking and a simple
-                porch pickup.
+              <p className="anim-fade-up anim-delay-2 prose-soft mt-5">
+                Pre-order cinnamon rolls, sticky buns, and specialty sweets.
+                Pay online, pick up in person. No delivery.
               </p>
 
-              <div className="anim-fade-up anim-delay-3 mt-9 flex flex-wrap gap-3">
+              <div className="anim-fade-up anim-delay-3 mt-8 flex flex-wrap gap-3">
                 <Link href="/order" className="btn-primary">
                   Order and pay
                 </Link>
                 <a href="#menu" className="btn-secondary">
-                  See the menu
+                  Browse the menu
                 </a>
               </div>
 
-              <p className="anim-fade-up anim-delay-4 mt-9 max-w-2xl border-t border-[var(--blush)]/60 pt-6 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:text-base">
-                <strong className="text-[var(--cocoa)]">{site.leadTime}</strong>{" "}
-                {site.locationNote}
+              <p className="anim-fade-up anim-delay-4 mt-8 text-sm text-[var(--cocoa-soft)]">
+                {site.leadTime}
               </p>
             </div>
 
-            {/* Large brand logo */}
-            <div className="anim-fade-up anim-delay-2 mx-auto w-full max-w-md lg:max-w-none">
-              <div className="relative mx-auto aspect-[17/10] w-full overflow-hidden rounded-[1.75rem] border-4 border-white shadow-[var(--shadow-lift)] sm:aspect-[16/10]">
+            <div className="anim-fade-up anim-delay-2">
+              <div className="logo-frame relative mx-auto aspect-[17/10] w-full max-w-lg lg:max-w-none">
                 <Image
                   src={site.logoFull}
                   alt={`${site.name} logo`}
@@ -67,7 +52,7 @@ export default function Home() {
                   priority
                   quality={95}
                   className="object-cover object-center"
-                  sizes="(max-width: 1024px) 90vw, 480px"
+                  sizes="(max-width: 1024px) 90vw, 520px"
                 />
               </div>
             </div>
@@ -75,35 +60,22 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="color-strip" aria-hidden>
-        <div className="marquee-track">
-          {[...stripItems, ...stripItems].map((item, i) => (
-            <span
-              key={`${item}-${i}`}
-              className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--cocoa)]"
-            >
-              <span className="text-white/90">✦</span>
-              {item}
-            </span>
-          ))}
-        </div>
-      </div>
+      <div className="brand-divider" aria-hidden />
 
       {/* MENU */}
       <section id="menu" className="section-menu section-pad">
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="orb orb-c opacity-60" aria-hidden />
+        <div className="shell">
           <Reveal>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="section-label">Menu</p>
                 <h2 className="section-title mt-2">What we bake</h2>
                 <p className="prose-soft mt-3">
-                  Browse by category. Open a treat for details, then order when
-                  you are ready.
+                  Open any treat for details. When you are ready, head to
+                  checkout.
                 </p>
               </div>
-              <Link href="/order" className="btn-primary shrink-0 self-start sm:self-auto">
+              <Link href="/order" className="btn-primary shrink-0 self-start">
                 Order and pay
               </Link>
             </div>
@@ -115,13 +87,13 @@ export default function Home() {
 
       {/* HOW IT WORKS */}
       <section id="how-it-works" className="section-steps section-pad">
-        <div className="relative z-[1] mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="shell">
           <Reveal>
             <div className="mx-auto max-w-xl text-center">
-              <p className="section-label">How pickup works</p>
-              <h2 className="section-title mt-2">Simple as 1, 2, 3</h2>
+              <p className="section-label">How it works</p>
+              <h2 className="section-title mt-2">Order in three steps</h2>
               <p className="prose-soft mx-auto mt-3 text-center">
-                We don&apos;t deliver. You order ahead, we bake, you pick up.
+                Simple porch pickup. No delivery, no hassle.
               </p>
             </div>
           </Reveal>
@@ -131,35 +103,25 @@ export default function Home() {
               {
                 n: "1",
                 t: "Choose treats",
-                d: "Pick from the menu and add any notes you need.",
-                bg: "from-[#ffe4f0] to-white",
-                num: "bg-gradient-to-br from-[var(--rose)] to-[#c084fc]",
+                d: "Browse the menu and pick what you want.",
               },
               {
                 n: "2",
                 t: "Pay online",
-                d: "Checkout on a dedicated order page. Secure and simple.",
-                bg: "from-[#e0f2fe] to-white",
-                num: "bg-gradient-to-br from-[var(--sky)] to-[var(--lilac)]",
+                d: "Secure checkout on our order page.",
               },
               {
                 n: "3",
                 t: "Porch pickup",
-                d: "We confirm your window. You collect when ready.",
-                bg: "from-[#d4fff0] to-white",
-                num: "bg-gradient-to-br from-[var(--mint)] to-[var(--sky)]",
+                d: "We bake for your window. You pick up.",
               },
             ].map((step, i) => (
-              <Reveal key={step.n} delayMs={i * 100}>
-                <li
-                  className={`step-card h-full rounded-[1.5rem] border-2 border-white bg-gradient-to-br ${step.bg} p-6 shadow-[var(--shadow-soft)] sm:p-7`}
-                >
-                  <span
-                    className={`step-num flex h-10 w-10 items-center justify-center rounded-full ${step.num} text-sm font-bold text-white shadow-md`}
-                  >
+              <Reveal key={step.n} delayMs={i * 80}>
+                <li className="step-card h-full p-6 sm:p-7">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--rose)] text-sm font-bold text-white">
                     {step.n}
                   </span>
-                  <h3 className="mt-4 font-display text-2xl text-[var(--cocoa)]">
+                  <h3 className="mt-4 font-display text-xl text-[var(--cocoa)] sm:text-2xl">
                     {step.t}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-[var(--cocoa-soft)]">
@@ -171,7 +133,7 @@ export default function Home() {
           </ol>
 
           <Reveal>
-            <div className="mt-12 text-center">
+            <div className="mt-11 text-center">
               <Link href="/order" className="btn-primary">
                 Start your order
               </Link>
@@ -181,21 +143,18 @@ export default function Home() {
       </section>
 
       {/* CONTACT */}
-      <section id="contact" className="section-contact py-14 sm:py-16">
-        <div className="relative z-[1] mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center sm:px-6">
+      <section id="contact" className="section-contact section-pad">
+        <div className="shell flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
           <Reveal>
             <div>
-              <p className="section-label">Questions?</p>
-              <h2 className="mt-2 font-display text-3xl text-[var(--cocoa)] sm:text-4xl">
-                Call or email us
-              </h2>
-              <p className="mt-2 max-w-md text-[var(--cocoa-soft)]">
-                Custom requests, larger orders, or pickup questions? We are happy
-                to help.
+              <p className="section-label">Contact</p>
+              <h2 className="section-title mt-2">Questions?</h2>
+              <p className="prose-soft mt-3">
+                Custom orders or pickup details? Reach out anytime.
               </p>
             </div>
           </Reveal>
-          <Reveal delayMs={80}>
+          <Reveal delayMs={60}>
             <div className="flex flex-col gap-3 sm:items-end">
               <a
                 href={`tel:${site.phone.replace(/\D/g, "")}`}

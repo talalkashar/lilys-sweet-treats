@@ -17,7 +17,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -25,25 +25,25 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`sticky top-0 z-50 border-b transition-all duration-300 ${
         scrolled
-          ? "border-b border-[var(--blush)]/60 bg-white/90 shadow-[var(--shadow-soft)] backdrop-blur-xl"
-          : "border-b border-transparent bg-gradient-to-r from-[#f5ecff]/90 via-white/80 to-[#ffe8f5]/90 backdrop-blur-md"
+          ? "border-[var(--blush)]/50 bg-white/95 shadow-[var(--shadow-soft)] backdrop-blur-md"
+          : "border-transparent bg-white/80 backdrop-blur-md"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+      <div className="shell flex items-center justify-between gap-4 py-3">
         <Link
           href="/"
           className="flex min-w-0 items-center gap-3"
           onClick={() => setOpen(false)}
         >
-          <span className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[var(--blush)] bg-white shadow-sm sm:h-16 sm:w-16">
+          <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-[var(--blush)]/60 bg-white sm:h-[3.75rem] sm:w-[3.75rem]">
             <Image
               src={site.logo}
               alt={`${site.name} logo`}
-              width={64}
-              height={64}
-              className="h-full w-full object-cover object-center"
+              fill
+              className="object-cover object-center"
+              sizes="60px"
               priority
             />
           </span>
@@ -57,12 +57,12 @@ export function Header() {
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-7 text-[0.9rem] font-medium text-[var(--cocoa-soft)] lg:flex">
+        <nav className="hidden items-center gap-8 text-[0.9rem] font-medium text-[var(--cocoa-soft)] lg:flex">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="relative transition-colors hover:text-[var(--rose)] after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-[var(--rose)] after:transition-all hover:after:w-full"
+              className="transition-colors hover:text-[var(--rose)]"
             >
               {l.label}
             </Link>
@@ -72,13 +72,13 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Link
             href="/order"
-            className="btn-primary hidden sm:inline-flex !px-5 !py-2.5 !text-sm"
+            className="btn-primary hidden !px-5 !py-2.5 !text-sm sm:inline-flex"
           >
             Order now
           </Link>
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--blush)] bg-white text-[var(--cocoa)] lg:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--blush)] bg-white lg:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
@@ -100,13 +100,13 @@ export function Header() {
       </div>
 
       {open ? (
-        <div className="border-t border-[var(--blush)]/40 bg-white px-4 py-4 lg:hidden">
+        <div className="border-t border-[var(--blush)]/40 bg-white px-5 py-4 lg:hidden">
           <nav className="flex flex-col gap-1">
             {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-xl px-3 py-3 font-medium text-[var(--cocoa)] hover:bg-[var(--lavender-soft)]"
+                className="rounded-lg px-3 py-3 font-medium text-[var(--cocoa)] hover:bg-[var(--lavender-soft)]"
                 onClick={() => setOpen(false)}
               >
                 {l.label}

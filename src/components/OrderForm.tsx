@@ -116,11 +116,9 @@ export function OrderForm() {
 
   if (step === "pay" && clientSecret) {
     return (
-      <div className="form-shell rounded-[1.75rem] border-2 border-[var(--blush)] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-9">
+      <div className="form-shell p-6 sm:p-8">
         <div className="mb-6">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--rose)]">
-            Step 2 of 2
-          </p>
+          <p className="section-label">Step 2 of 2</p>
           <h3 className="mt-1 font-display text-2xl text-[var(--cocoa)]">
             Payment
           </h3>
@@ -151,20 +149,16 @@ export function OrderForm() {
   return (
     <form
       onSubmit={onContinueToPayment}
-      className="form-shell rounded-[1.75rem] border-2 border-[var(--blush)] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-9"
+      className="form-shell p-6 sm:p-8"
     >
       <div className="mb-6">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--rose)]">
-          Step 1 of 2
-        </p>
+        <p className="section-label">Step 1 of 2</p>
         <h3 className="mt-1 font-display text-2xl text-[var(--cocoa)]">
           Your order
         </h3>
-      </div>
-
-      <div className="mb-7 rounded-2xl bg-[var(--lavender-soft)] px-4 py-3.5 text-sm text-[var(--cocoa-soft)]">
-        <strong className="text-[var(--cocoa)]">Porch pickup only.</strong>{" "}
-        {site.leadTime} Pay securely on this page (no redirect to another site).
+        <p className="mt-2 text-sm text-[var(--cocoa-soft)]">
+          Porch pickup only. Pay on the next step.
+        </p>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
