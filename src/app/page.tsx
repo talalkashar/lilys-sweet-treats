@@ -125,7 +125,7 @@ export default function Home() {
               {
                 n: "3",
                 t: "Pay & pick up",
-                d: "Complete payment online, then collect from the porch. No delivery fees.",
+                d: "Pay securely on this site, then collect from the porch. No delivery fees.",
                 bg: "from-[#d4fff0] to-white",
                 num: "bg-gradient-to-br from-[var(--mint)] to-[var(--sky)]",
               },

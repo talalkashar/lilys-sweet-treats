@@ -1,8 +1,15 @@
 "use client";
 
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import { useEffect, useMemo, useState } from "react";
+import { CheckoutPayment } from "@/components/CheckoutPayment";
 import { menuCategories, products, productsInCategory } from "@/data/products";
 import { site } from "@/data/site";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "",
+);
 
 type FormState = {
   name: string;
@@ -13,6 +20,8 @@ type FormState = {
   pickupWindow: string;
   notes: string;
 };
+
+type Step = "details" | "pay";
 
 function productIdFromHash(): string | null {
   if (typeof window === "undefined") return null;
@@ -35,9 +44,25 @@ const initial: FormState = {
   notes: "",
 };
 
+const elementsAppearance: StripeElementsOptions["appearance"] = {
+  theme: "stripe",
+  variables: {
+    colorPrimary: "#ff4d94",
+    colorBackground: "#ffffff",
+    colorText: "#2a1f2d",
+    colorDanger: "#df1b41",
+    fontFamily: "system-ui, sans-serif",
+    borderRadius: "12px",
+    spacingUnit: "4px",
+  },
+};
+
 export function OrderForm() {
   const [form, setForm] = useState<FormState>(initial);
-  const [submitted, setSubmitted] = useState(false);
+  const [step, setStep] = useState<Step>("details");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const apply = () => {
@@ -63,57 +88,95 @@ export function OrderForm() {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
-  function onSubmit(e: React.FormEvent) {
+  async function onContinueToPayment(e: React.FormEvent) {
     e.preventDefault();
-    console.log("Order draft:", { ...form, total });
-    setSubmitted(true);
+    setBusy(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: form.productId,
+          quantity: Number(form.quantity) || 1,
+          name: form.name,
+          phone: form.phone,
+          email: form.email,
+          pickupWindow: form.pickupWindow,
+          notes: form.notes,
+        }),
+      });
+
+      const data = (await res.json()) as {
+        clientSecret?: string;
+        error?: string;
+      };
+
+      if (!res.ok || !data.clientSecret) {
+        throw new Error(data.error || "Could not start payment");
+      }
+
+      setClientSecret(data.clientSecret);
+      setStep("pay");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setBusy(false);
+    }
   }
 
-  if (submitted) {
+  if (step === "pay" && clientSecret) {
     return (
-      <div className="rounded-[1.75rem] border border-[var(--mint)] bg-[var(--mint-soft)] p-8 text-center sm:p-10">
-        <h3 className="font-display text-3xl text-[var(--cocoa)]">
-          Request received
-        </h3>
-        <p className="mx-auto mt-3 max-w-md text-[var(--cocoa-soft)]">
-          Thanks{form.name ? `, ${form.name.split(" ")[0]}` : ""}. We have your
-          pickup request and will confirm by phone or email shortly.
-        </p>
-        <p className="mt-5 text-sm font-semibold text-[var(--cocoa)]">
-          {selected?.name} × {form.quantity}, ${total.toFixed(2)},{" "}
-          {form.pickupWindow}
-        </p>
-        <p className="mt-3 text-xs text-[var(--cocoa-soft)]">
-          Prefer to talk now?{" "}
-          <a
-            className="font-semibold text-[var(--rose)]"
-            href={`tel:${site.phone.replace(/\D/g, "")}`}
-          >
-            {site.phone}
-          </a>
-        </p>
-        <button
-          type="button"
-          onClick={() => {
-            setSubmitted(false);
-            setForm(initial);
+      <div className="form-shell rounded-[1.75rem] border-2 border-[var(--blush)] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-9">
+        <div className="mb-6">
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--rose)]">
+            Step 2 of 2
+          </p>
+          <h3 className="mt-1 font-display text-2xl text-[var(--cocoa)]">
+            Payment
+          </h3>
+          <p className="mt-2 text-sm text-[var(--cocoa-soft)]">
+            {selected?.name} × {form.quantity}, {form.pickupWindow}
+          </p>
+        </div>
+
+        <Elements
+          stripe={stripePromise}
+          options={{
+            clientSecret,
+            appearance: elementsAppearance,
           }}
-          className="btn-secondary mt-8"
         >
-          Submit another request
-        </button>
+          <CheckoutPayment
+            totalLabel={`$${total.toFixed(2)}`}
+            onBack={() => {
+              setStep("details");
+              setClientSecret(null);
+            }}
+          />
+        </Elements>
       </div>
     );
   }
 
   return (
     <form
-      onSubmit={onSubmit}
+      onSubmit={onContinueToPayment}
       className="form-shell rounded-[1.75rem] border-2 border-[var(--blush)] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-9"
     >
+      <div className="mb-6">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--rose)]">
+          Step 1 of 2
+        </p>
+        <h3 className="mt-1 font-display text-2xl text-[var(--cocoa)]">
+          Your order
+        </h3>
+      </div>
+
       <div className="mb-7 rounded-2xl bg-[var(--lavender-soft)] px-4 py-3.5 text-sm text-[var(--cocoa-soft)]">
         <strong className="text-[var(--cocoa)]">Porch pickup only.</strong>{" "}
-        {site.leadTime}
+        {site.leadTime} Pay securely on this page (no redirect to another site).
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
@@ -230,6 +293,12 @@ export function OrderForm() {
         </label>
       </div>
 
+      {error ? (
+        <p className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </p>
+      ) : null}
+
       <div className="mt-8 flex flex-col gap-4 border-t border-[var(--blush)]/70 pt-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--cocoa-soft)]">
           Estimated total
@@ -237,8 +306,8 @@ export function OrderForm() {
             ${total.toFixed(2)}
           </span>
         </p>
-        <button type="submit" className="btn-primary">
-          Request pickup
+        <button type="submit" className="btn-primary" disabled={busy}>
+          {busy ? "Preparing…" : "Continue to payment"}
         </button>
       </div>
     </form>

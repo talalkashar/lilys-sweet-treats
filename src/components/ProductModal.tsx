@@ -92,7 +92,7 @@ export function ProductModal({ product, onClose }: Props) {
               onClick={onClose}
               className="btn-primary flex-1 text-center"
             >
-              Order for pickup
+              Order and pay
             </a>
             <button
               type="button"
