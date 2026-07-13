@@ -6,6 +6,8 @@ export const site = {
   description:
     "Pre-order online and pick up in person. Fresh baked goods for porch pickup. No delivery.",
   logo: "/brand/logo.png",
+  /** Full brand board for large display (hero) */
+  logoFull: "/brand/logo-full.png",
   pattern: "/brand/pattern.png",
   phone: "(571) 788-6168",
   email: "sweettreats0077@gmail.com",

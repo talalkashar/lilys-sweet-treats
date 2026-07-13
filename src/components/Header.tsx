@@ -37,13 +37,13 @@ export function Header() {
           className="flex min-w-0 items-center gap-3"
           onClick={() => setOpen(false)}
         >
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--blush)] bg-white shadow-sm">
+          <span className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[var(--blush)] bg-white shadow-sm sm:h-16 sm:w-16">
             <Image
               src={site.logo}
               alt={`${site.name} logo`}
-              width={48}
-              height={48}
-              className="h-11 w-11 object-contain"
+              width={64}
+              height={64}
+              className="h-full w-full object-cover object-center"
               priority
             />
           </span>

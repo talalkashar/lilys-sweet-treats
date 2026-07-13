@@ -10,18 +10,18 @@ export function Footer() {
   return (
     <footer className="border-t border-[var(--blush)]/50 bg-[var(--cocoa)] text-white">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <div className="flex items-center gap-3">
-          <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-white">
+        <div className="flex items-center gap-4">
+          <span className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white sm:h-20 sm:w-20">
             <Image
               src={site.logo}
               alt=""
-              width={44}
-              height={44}
-              className="h-11 w-11 object-contain"
+              width={80}
+              height={80}
+              className="h-full w-full object-cover object-center"
             />
           </span>
           <div>
-            <p className="font-display text-xl text-white">{site.name}</p>
+            <p className="font-display text-xl text-white sm:text-2xl">{site.name}</p>
             <p className="text-sm text-white/60">Porch pickup. No delivery.</p>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { MenuGrid } from "@/components/MenuGrid";
 import { Reveal } from "@/components/Reveal";
@@ -15,44 +16,61 @@ const stripItems = [
 export default function Home() {
   return (
     <>
-      {/* HERO */}
+      {/* HERO — big brand logo + copy */}
       <section className="hero-shell">
         <div className="hero-pattern" aria-hidden />
         <div className="hero-pattern-veil" aria-hidden />
         <div className="orb orb-a" aria-hidden />
         <div className="orb orb-b" aria-hidden />
 
-        <div className="hero-content mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
-          <div className="max-w-4xl">
-            <p className="anim-fade-up inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/85 px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-[var(--rose)] shadow-sm backdrop-blur-sm">
-              <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[var(--rose)]" />
-              Home bakery, porch pickup only
-            </p>
+        <div className="hero-content mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:py-24">
+          <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+            <div className="max-w-2xl">
+              <p className="anim-fade-up inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/85 px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-[var(--rose)] shadow-sm backdrop-blur-sm">
+                <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[var(--rose)]" />
+                Home bakery, porch pickup only
+              </p>
 
-            <h1 className="anim-fade-up anim-delay-1 mt-7 font-display text-[clamp(3rem,7vw,4.75rem)] leading-[1.02] tracking-tight text-[var(--cocoa)]">
-              Handmade treats,{" "}
-              <span className="hero-accent">ready for pickup</span>
-            </h1>
+              <h1 className="anim-fade-up anim-delay-1 mt-6 font-display text-[clamp(2.75rem,6vw,4.25rem)] leading-[1.02] tracking-tight text-[var(--cocoa)]">
+                Handmade treats,{" "}
+                <span className="hero-accent">ready for pickup</span>
+              </h1>
 
-            <p className="anim-fade-up anim-delay-2 prose-soft-wide mt-7">
-              {site.name} makes small-batch sweets you pre-order online and
-              collect in person. No delivery. Just fresh baking and a simple
-              porch pickup.
-            </p>
+              <p className="anim-fade-up anim-delay-2 prose-soft-wide mt-6">
+                {site.name} makes small-batch sweets you pre-order online and
+                collect in person. No delivery. Just fresh baking and a simple
+                porch pickup.
+              </p>
 
-            <div className="anim-fade-up anim-delay-3 mt-10 flex flex-wrap gap-3">
-              <Link href="/order" className="btn-primary">
-                Order and pay
-              </Link>
-              <a href="#menu" className="btn-secondary">
-                See the menu
-              </a>
+              <div className="anim-fade-up anim-delay-3 mt-9 flex flex-wrap gap-3">
+                <Link href="/order" className="btn-primary">
+                  Order and pay
+                </Link>
+                <a href="#menu" className="btn-secondary">
+                  See the menu
+                </a>
+              </div>
+
+              <p className="anim-fade-up anim-delay-4 mt-9 max-w-2xl border-t border-[var(--blush)]/60 pt-6 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:text-base">
+                <strong className="text-[var(--cocoa)]">{site.leadTime}</strong>{" "}
+                {site.locationNote}
+              </p>
             </div>
 
-            <p className="anim-fade-up anim-delay-4 mt-10 max-w-2xl border-t border-[var(--blush)]/60 pt-7 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:text-base">
-              <strong className="text-[var(--cocoa)]">{site.leadTime}</strong>{" "}
-              {site.locationNote}
-            </p>
+            {/* Large brand logo */}
+            <div className="anim-fade-up anim-delay-2 mx-auto w-full max-w-md lg:max-w-none">
+              <div className="relative mx-auto aspect-[17/10] w-full overflow-hidden rounded-[1.75rem] border-4 border-white shadow-[var(--shadow-lift)] sm:aspect-[16/10]">
+                <Image
+                  src={site.logoFull}
+                  alt={`${site.name} logo`}
+                  fill
+                  priority
+                  quality={95}
+                  className="object-cover object-center"
+                  sizes="(max-width: 1024px) 90vw, 480px"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
