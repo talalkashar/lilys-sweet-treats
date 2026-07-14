@@ -11,7 +11,7 @@ export const site = {
   pattern: "/brand/pattern.png",
   phone: "(571) 788-6168",
   email: "sweettreats0077@gmail.com",
-  instagram: "",
+  instagram: "https://www.instagram.com/lilys_sweet_treats_va/",
   /** Pickup address */
   address: {
     line1: "14658 Gap Way",

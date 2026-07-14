@@ -588,6 +588,40 @@ body {
   height: var(--logo-footer);
 }
 
+/* Compact footer social icons */
+.footer-social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.footer-social-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  display: block;
+}
+
+.footer-social:hover {
+  color: white;
+  background: linear-gradient(
+    135deg,
+    rgba(232, 74, 136, 0.5),
+    rgba(167, 139, 207, 0.5)
+  );
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
 /* ---------- Buttons (one size system) ---------- */
 .btn-primary,
 .btn-secondary {
