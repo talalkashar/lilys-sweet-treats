@@ -168,36 +168,70 @@ body {
   color: var(--cocoa);
 }
 
-/* ---------- Hero ---------- */
+/* ---------- Hero: logo as the background ---------- */
 .hero-shell {
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  background: linear-gradient(165deg, #f6efff 0%, #fff5f9 50%, #fffaf8 100%);
+  min-height: min(88vh, 42rem);
+  background: #f7c2d6; /* matches logo pink so edges never look empty */
 }
 
-.hero-pattern {
+/* Full-bleed logo board */
+.hero-logo-bg {
   position: absolute;
-  inset: -25%;
+  inset: 0;
   z-index: 0;
-  background-image: url("/brand/pattern.png");
-  background-size: 260px;
-  background-repeat: repeat;
-  opacity: 0.28;
-  animation: heroPatternDrift 45s linear infinite;
 }
 
-.hero-pattern-veil {
+.hero-logo-bg img {
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* Soft wash so copy stays readable without hiding the logo */
+.hero-logo-veil {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(
-    100deg,
-    rgba(255, 250, 248, 0.92) 0%,
-    rgba(255, 250, 248, 0.62) 48%,
-    rgba(255, 250, 248, 0.4) 100%
-  );
+  background:
+    linear-gradient(
+      105deg,
+      rgba(255, 250, 248, 0.94) 0%,
+      rgba(255, 250, 248, 0.78) 34%,
+      rgba(255, 250, 248, 0.28) 62%,
+      rgba(255, 250, 248, 0.12) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 248, 0.2) 0%,
+      transparent 30%,
+      transparent 70%,
+      rgba(255, 250, 248, 0.35) 100%
+    );
+}
+
+@media (max-width: 767px) {
+  .hero-shell {
+    min-height: auto;
+  }
+
+  .hero-logo-bg {
+    /* On mobile, show more of the logo as a banner under the text block feel */
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-logo-veil {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 250, 248, 0.92) 0%,
+      rgba(255, 250, 248, 0.82) 42%,
+      rgba(255, 250, 248, 0.45) 70%,
+      rgba(255, 250, 248, 0.25) 100%
+    );
+  }
 }
 
 .hero-content {
@@ -218,8 +252,8 @@ body {
   color: var(--rose-deep);
   background-image: linear-gradient(
     120deg,
-    rgba(232, 74, 136, 0.12),
-    rgba(201, 180, 232, 0.14)
+    rgba(232, 74, 136, 0.14),
+    rgba(201, 180, 232, 0.16)
   );
   background-size: 100% 36%;
   background-repeat: no-repeat;
@@ -227,31 +261,27 @@ body {
   padding-inline: 0.02em;
 }
 
-/* Hero logo: must be position:relative + real height for next/image fill */
-.logo-frame {
+/* Optional floating logo chip on mobile for brand clarity */
+.hero-logo-chip {
   position: relative;
-  display: block;
-  width: 100%;
-  max-width: min(28rem, 100%); /* ~448px — crisp, not tiny-then-upscaled */
-  margin-inline: auto;
+  width: min(100%, 18rem);
   aspect-ratio: 17 / 10;
-  min-height: 14rem;
+  margin-inline: auto;
+  margin-top: var(--space-8);
   overflow: hidden;
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(245, 198, 214, 0.55);
-  background: var(--white);
+  border: 2px solid rgba(255, 255, 255, 0.95);
   box-shadow: var(--shadow-lift);
+  background: #f7c2d6;
 }
 
-@media (min-width: 1024px) {
-  .logo-frame {
-    max-width: min(28rem, 100%);
-    margin-inline: auto 0;
-    min-height: 16rem;
+@media (min-width: 768px) {
+  .hero-logo-chip {
+    display: none; /* desktop: logo already fills the hero background */
   }
 }
 
-/* Header/footer logo mark — relative required for fill */
+/* Header/footer logo mark */
 .logo-mark {
   position: relative;
   display: block;
@@ -267,15 +297,6 @@ body {
 .logo-mark--footer {
   width: var(--logo-footer);
   height: var(--logo-footer);
-}
-
-@keyframes heroPatternDrift {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-130px, -130px, 0);
-  }
 }
 
 /* ---------- Buttons (one size system) ---------- */
@@ -525,7 +546,6 @@ body {
   html {
     scroll-behavior: auto;
   }
-  .hero-pattern,
   .marquee-track {
     animation: none;
   }

@@ -12,53 +12,60 @@ export default function Home() {
 
   return (
     <>
-      {/* HERO — identity + logo (inspired by Dolce: clear “who we are” + order CTA) */}
+      {/* HERO — full-bleed brand logo as the background */}
       <section className="hero-shell">
-        <div className="hero-pattern" aria-hidden />
-        <div className="hero-pattern-veil" aria-hidden />
+        <div className="hero-logo-bg" aria-hidden>
+          <Image
+            src={site.logoFull}
+            alt=""
+            fill
+            priority
+            quality={95}
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+        </div>
+        <div className="hero-logo-veil" aria-hidden />
 
-        <div className="hero-content shell section-pad">
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-            <div className="max-w-xl">
-              <p className="anim-fade-up section-label">We are {site.shortName}</p>
+        <div className="hero-content shell section-pad flex min-h-[inherit] items-center">
+          <div className="max-w-xl py-6 sm:py-10 lg:py-14">
+            <p className="anim-fade-up section-label">We are {site.shortName}</p>
 
-              <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
-                A home bakery made to{" "}
-                <span className="hero-accent">sweeten your day</span>
-              </h1>
+            <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
+              A home bakery made to{" "}
+              <span className="hero-accent">sweeten your day</span>
+            </h1>
 
-              <p className="anim-fade-up anim-delay-2 prose-soft mt-4">
-                Small-batch cinnamon rolls, sticky buns, cake pops, and
-                alfajores. Pre-order online and pick up in person. Every bite is
-                baked fresh for you.
-              </p>
+            <p className="anim-fade-up anim-delay-2 prose-soft mt-4">
+              Small-batch cinnamon rolls, sticky buns, cake pops, and
+              alfajores. Pre-order online and pick up in person. Every bite is
+              baked fresh for you.
+            </p>
 
-              <div className="anim-fade-up anim-delay-3 mt-7 flex flex-wrap gap-2.5">
-                <Link href="/order" className="btn-primary">
-                  Order pickup
-                </Link>
-                <a href="#menu" className="btn-secondary">
-                  View menu
-                </a>
-              </div>
-
-              <p className="anim-fade-up anim-delay-4 mt-6 text-sm text-[var(--cocoa-soft)]">
-                {site.leadTime} {site.pickupNote}
-              </p>
+            <div className="anim-fade-up anim-delay-3 mt-7 flex flex-wrap gap-2.5">
+              <Link href="/order" className="btn-primary">
+                Order pickup
+              </Link>
+              <a href="#menu" className="btn-secondary">
+                View menu
+              </a>
             </div>
 
-            <div className="anim-fade-up anim-delay-2 w-full">
-              <div className="logo-frame">
-                <Image
-                  src={site.logoFull}
-                  alt={`${site.name} logo`}
-                  fill
-                  priority
-                  quality={95}
-                  className="object-contain object-center"
-                  sizes="(max-width: 768px) 90vw, 448px"
-                />
-              </div>
+            <p className="anim-fade-up anim-delay-4 mt-6 text-sm text-[var(--cocoa-soft)]">
+              {site.leadTime} {site.pickupNote}
+            </p>
+
+            {/* Mobile: extra clear logo card so brand still reads sharp up close */}
+            <div className="hero-logo-chip anim-fade-up anim-delay-2">
+              <Image
+                src={site.logoFull}
+                alt={`${site.name} logo`}
+                fill
+                priority
+                quality={95}
+                className="object-cover object-center"
+                sizes="(max-width: 767px) 18rem, 1px"
+              />
             </div>
           </div>
         </div>
