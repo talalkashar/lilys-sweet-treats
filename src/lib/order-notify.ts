@@ -1,6 +1,6 @@
 import type Stripe from "stripe";
 import { site } from "@/data/site";
-import { sendOrderEmails } from "@/lib/email";
+import { sendOrderEmails, type SendOrderEmailResult } from "@/lib/email";
 import { getStripe } from "@/lib/stripe";
 
 /**
@@ -22,35 +22,56 @@ export function orderPayloadFromIntent(pi: Stripe.PaymentIntent) {
   };
 }
 
+export type NotifyResult =
+  | SendOrderEmailResult
+  | { sent: false; reason: "not_paid" | "already_sent" };
+
 /**
  * Send owner + customer emails once per successful payment.
  * Uses Stripe metadata as a lock so webhook + success page don't double-send.
  */
-export async function notifyOrderPaidOnce(pi: Stripe.PaymentIntent) {
+export async function notifyOrderPaidOnce(
+  pi: Stripe.PaymentIntent,
+): Promise<NotifyResult> {
   if (pi.status !== "succeeded" && pi.status !== "processing") {
-    return { sent: false as const, reason: "not_paid" };
+    return { sent: false, reason: "not_paid" };
   }
 
   if (pi.metadata?.emailsSent === "true") {
-    return { sent: false as const, reason: "already_sent" };
+    return { sent: false, reason: "already_sent" };
   }
 
   const stripe = getStripe();
 
-  // Claim the send (best-effort lock)
+  // Claim the send (best-effort lock) BEFORE sending so parallel paths don't double
   try {
     await stripe.paymentIntents.update(pi.id, {
       metadata: {
         ...pi.metadata,
-        emailsSent: "true",
-        emailsSentAt: new Date().toISOString(),
+        emailsSent: "pending",
       },
     });
   } catch (err) {
-    console.error("[order-notify] could not set emailsSent metadata", err);
+    console.error("[order-notify] could not set emailsSent pending", err);
   }
 
   const result = await sendOrderEmails(orderPayloadFromIntent(pi));
-  console.log("[order-notify] result", pi.id, result);
+  console.log("[order-notify] result", pi.id, JSON.stringify(result));
+
+  try {
+    await stripe.paymentIntents.update(pi.id, {
+      metadata: {
+        ...pi.metadata,
+        emailsSent: result.sent ? "true" : "failed",
+        emailsSentAt: new Date().toISOString(),
+        emailError: result.sent
+          ? ""
+          : ("reason" in result ? result.reason : "unknown").slice(0, 450),
+      },
+    });
+  } catch (err) {
+    console.error("[order-notify] could not finalize emailsSent metadata", err);
+  }
+
   return result;
 }

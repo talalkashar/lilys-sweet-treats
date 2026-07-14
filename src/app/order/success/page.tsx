@@ -7,25 +7,48 @@ type Props = {
   searchParams: Promise<{ payment_intent?: string; redirect_status?: string }>;
 };
 
+function isTestMode() {
+  return (
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.startsWith("pk_test") ??
+    false
+  );
+}
+
 export default async function OrderSuccessPage({ searchParams }: Props) {
   const params = await searchParams;
   const paymentIntentId = params.payment_intent?.trim();
+  const testMode = isTestMode();
 
   let status: "succeeded" | "processing" | "failed" | "unknown" = "unknown";
-  let emailNote: string | null = null;
+  let emailDebug: string | null = null;
 
-  // Prefer server-side Stripe verification over trusting query params alone
   if (paymentIntentId && /^pi_[a-zA-Z0-9_]+$/.test(paymentIntentId)) {
     try {
       const stripe = getStripe();
       const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
       if (pi.status === "succeeded") {
         status = "succeeded";
-        // Backup path: send emails even if Stripe webhook never arrives
         const notify = await notifyOrderPaidOnce(pi);
-        console.log("[success] notify", notify);
         if (notify.sent) {
-          emailNote = "Confirmation emails were sent.";
+          emailDebug = testMode
+            ? `Emails OK → owner: ${notify.ownerTo}${notify.customerTo ? ` · customer: ${notify.customerTo}` : ""}`
+            : "Confirmation emails were sent.";
+        } else if (notify.reason === "already_sent") {
+          emailDebug = testMode
+            ? "Emails already sent for this payment (not sent again)."
+            : null;
+        } else if (notify.reason === "missing_resend_key") {
+          emailDebug = testMode
+            ? "Email failed: RESEND_API_KEY missing on Vercel Production."
+            : null;
+        } else if (notify.reason === "resend_rejected") {
+          emailDebug = testMode
+            ? `Email failed (Resend): owner=${notify.ownerError || "n/a"} customer=${notify.customerError || "n/a"} (to: ${notify.ownerTo || "?"})`
+            : "We could not send confirmation email automatically. We still have your order.";
+        } else {
+          emailDebug = testMode
+            ? `Email not sent: ${"reason" in notify ? notify.reason : "unknown"}`
+            : null;
         }
       } else if (
         pi.status === "processing" ||
@@ -38,6 +61,9 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
     } catch (err) {
       console.error("[success] payment verify failed", err);
       status = "unknown";
+      if (testMode) {
+        emailDebug = `Payment verify error: ${err instanceof Error ? err.message : "unknown"}`;
+      }
     }
   } else if (params.redirect_status === "succeeded") {
     status = "succeeded";
@@ -80,8 +106,12 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
           {title}
         </h1>
         <p className="mt-3 text-[var(--cocoa-soft)]">{body}</p>
-        {emailNote ? (
-          <p className="mt-2 text-sm text-[var(--cocoa-soft)]">{emailNote}</p>
+        {emailDebug ? (
+          <p className="mt-3 rounded-lg bg-white/80 px-3 py-2 text-left text-xs leading-relaxed text-[var(--cocoa-soft)]">
+            <strong className="text-[var(--cocoa)]">Email status (test mode):</strong>
+            <br />
+            {emailDebug}
+          </p>
         ) : null}
         {ok ? (
           <p className="mt-4 text-sm leading-relaxed text-[var(--cocoa-soft)]">
