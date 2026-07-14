@@ -66,44 +66,117 @@ function escapeHtml(value: string) {
 
 function ownerHtml(order: OrderEmailPayload) {
   const notes = order.notes
-    ? `<p><strong>Notes:</strong> ${escapeHtml(order.notes)}</p>`
+    ? `<tr><td style="padding:10px 0;border-top:1px solid #f5c6d6;"><strong>Notes</strong><br/>${escapeHtml(order.notes)}</td></tr>`
     : "";
   return `
-  <div style="font-family: system-ui, sans-serif; line-height: 1.5; color: #2c2228;">
-    <h2 style="color: #c93670;">New paid order — ${escapeHtml(site.shortName)}</h2>
-    <p>A customer just completed payment for porch pickup.</p>
-    <table style="border-collapse: collapse; width: 100%; max-width: 480px;">
-      <tr><td style="padding: 6px 0;"><strong>Product</strong></td><td>${escapeHtml(order.productName)} × ${escapeHtml(order.quantity)}</td></tr>
-      <tr><td style="padding: 6px 0;"><strong>Total paid</strong></td><td>${formatMoney(order.amountCents)}</td></tr>
-      <tr><td style="padding: 6px 0;"><strong>Pickup window</strong></td><td>${escapeHtml(order.pickupWindow)}</td></tr>
-      <tr><td style="padding: 6px 0;"><strong>Customer</strong></td><td>${escapeHtml(order.customerName)}</td></tr>
-      <tr><td style="padding: 6px 0;"><strong>Phone</strong></td><td>${escapeHtml(order.customerPhone)}</td></tr>
-      <tr><td style="padding: 6px 0;"><strong>Email</strong></td><td>${escapeHtml(order.customerEmail)}</td></tr>
-      <tr><td style="padding: 6px 0;"><strong>Pickup at</strong></td><td>${escapeHtml(order.pickupAddress)}</td></tr>
-      <tr><td style="padding: 6px 0;"><strong>Stripe ID</strong></td><td style="font-size: 12px;">${escapeHtml(order.paymentIntentId)}</td></tr>
-    </table>
-    ${notes}
-    <p style="margin-top: 20px; font-size: 13px; color: #5c4f56;">Confirm the order with the customer by text or email when you can.</p>
+  <div style="margin:0;padding:24px 16px;background:#f7ebe6;font-family:Georgia,'Times New Roman',serif;">
+    <div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #f5c6d6;">
+      <div style="background:linear-gradient(135deg,#e84a88,#c93670);padding:20px 24px;color:#fff;">
+        <p style="margin:0;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.9;">New sale</p>
+        <h1 style="margin:8px 0 0;font-size:24px;font-weight:600;">Paid order ready to bake</h1>
+      </div>
+      <div style="padding:24px;color:#2c2228;font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55;">
+        <p style="margin:0 0 16px;">Someone just paid online for porch pickup.</p>
+        <table style="width:100%;border-collapse:collapse;">
+          <tr><td style="padding:8px 0;color:#8a7a82;width:38%;">Order</td><td style="padding:8px 0;font-weight:600;">${escapeHtml(order.productName)} × ${escapeHtml(order.quantity)}</td></tr>
+          <tr><td style="padding:8px 0;color:#8a7a82;">Paid</td><td style="padding:8px 0;font-weight:600;color:#c93670;">${formatMoney(order.amountCents)}</td></tr>
+          <tr><td style="padding:8px 0;color:#8a7a82;">Pickup window</td><td style="padding:8px 0;font-weight:600;">${escapeHtml(order.pickupWindow)}</td></tr>
+          <tr><td style="padding:8px 0;color:#8a7a82;">Customer</td><td style="padding:8px 0;">${escapeHtml(order.customerName)}</td></tr>
+          <tr><td style="padding:8px 0;color:#8a7a82;">Phone</td><td style="padding:8px 0;"><a href="tel:${escapeHtml(order.customerPhone.replace(/\D/g, ""))}" style="color:#c93670;text-decoration:none;">${escapeHtml(order.customerPhone)}</a></td></tr>
+          <tr><td style="padding:8px 0;color:#8a7a82;">Email</td><td style="padding:8px 0;"><a href="mailto:${escapeHtml(order.customerEmail)}" style="color:#c93670;text-decoration:none;">${escapeHtml(order.customerEmail)}</a></td></tr>
+          <tr><td style="padding:8px 0;color:#8a7a82;">Pickup at</td><td style="padding:8px 0;">${escapeHtml(order.pickupAddress)}</td></tr>
+          ${notes}
+        </table>
+        <p style="margin:20px 0 0;font-size:13px;color:#8a7a82;">Stripe: ${escapeHtml(order.paymentIntentId)}</p>
+      </div>
+    </div>
   </div>`;
 }
 
 function customerHtml(order: OrderEmailPayload) {
   const notes = order.notes
-    ? `<p><strong>Your notes:</strong> ${escapeHtml(order.notes)}</p>`
+    ? `<p style="margin:16px 0 0;padding:12px 14px;background:#fffaf8;border-radius:10px;border:1px solid #f5c6d6;"><strong>Your notes:</strong> ${escapeHtml(order.notes)}</p>`
     : "";
+  const preheader = `Order confirmed: ${order.productName} × ${order.quantity}. Pickup ${order.pickupWindow}.`;
   return `
-  <div style="font-family: system-ui, sans-serif; line-height: 1.5; color: #2c2228;">
-    <h2 style="color: #c93670;">Thanks for your order!</h2>
-    <p>Hi ${escapeHtml(order.customerName)},</p>
-    <p>We received your payment for <strong>${escapeHtml(order.productName)} × ${escapeHtml(order.quantity)}</strong> (${formatMoney(order.amountCents)}).</p>
-    <p><strong>Pickup window:</strong> ${escapeHtml(order.pickupWindow)}<br/>
-    <strong>Pickup address:</strong> ${escapeHtml(order.pickupAddress)}</p>
-    ${notes}
-    <p>We'll follow up by phone or email if we need anything. Porch pickup only — no delivery.</p>
-    <p style="margin-top: 20px;">Questions? Call or text <a href="tel:${site.phone.replace(/\D/g, "")}">${escapeHtml(site.phone)}</a>
-    or email <a href="mailto:${escapeHtml(site.email)}">${escapeHtml(site.email)}</a>.</p>
-    <p style="color: #5c4f56;">— ${escapeHtml(site.name)}</p>
+  <div style="margin:0;padding:0;background:#f7ebe6;">
+    <!-- preheader (inbox preview text) -->
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
+      ${escapeHtml(preheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+    </div>
+    <div style="padding:28px 16px;font-family:Georgia,'Times New Roman',serif;">
+      <div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:18px;overflow:hidden;border:1px solid #f0d4de;box-shadow:0 8px 28px rgba(44,34,40,0.08);">
+        <div style="background:linear-gradient(135deg,#fff5f8 0%,#f3ecfa 100%);padding:28px 24px 20px;text-align:center;border-bottom:1px solid #f5c6d6;">
+          <p style="margin:0;font-family:system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#c93670;">
+            ${escapeHtml(site.shortName)}
+          </p>
+          <h1 style="margin:12px 0 0;font-size:28px;font-weight:600;color:#2c2228;line-height:1.2;">
+            You&apos;re all set
+          </h1>
+          <p style="margin:10px 0 0;font-family:system-ui,sans-serif;font-size:15px;color:#5c4f56;">
+            Payment received · porch pickup only
+          </p>
+        </div>
+
+        <div style="padding:24px;font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55;color:#2c2228;">
+          <p style="margin:0 0 16px;">Hi ${escapeHtml(order.customerName.split(" ")[0] || order.customerName)},</p>
+          <p style="margin:0 0 18px;">Thanks for ordering from us. Here&apos;s your confirmation so it&apos;s easy to find later.</p>
+
+          <div style="border-radius:14px;background:#fffaf8;border:1px solid #f5c6d6;padding:16px 18px;margin-bottom:18px;">
+            <p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#c93670;">Your order</p>
+            <p style="margin:0;font-size:18px;font-weight:700;">${escapeHtml(order.productName)}</p>
+            <p style="margin:6px 0 0;color:#5c4f56;">Qty ${escapeHtml(order.quantity)} · <strong style="color:#c93670;">${formatMoney(order.amountCents)} paid</strong></p>
+          </div>
+
+          <div style="border-radius:14px;background:#f3ecfa;border:1px solid #e0d4f0;padding:16px 18px;margin-bottom:18px;">
+            <p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#7a5fad;">Pickup</p>
+            <p style="margin:0;font-size:16px;font-weight:700;">${escapeHtml(order.pickupWindow)}</p>
+            <p style="margin:8px 0 0;color:#5c4f56;font-size:14px;">${escapeHtml(order.pickupAddress)}</p>
+            <p style="margin:10px 0 0;font-size:13px;color:#8a7a82;">We&apos;ll text or email if anything changes. Please arrive in your window.</p>
+          </div>
+
+          ${notes}
+
+          <p style="margin:20px 0 0;font-size:14px;color:#5c4f56;">
+            Questions? Call or text
+            <a href="tel:${site.phone.replace(/\D/g, "")}" style="color:#c93670;font-weight:600;text-decoration:none;">${escapeHtml(site.phone)}</a>
+            or email
+            <a href="mailto:${escapeHtml(site.email)}" style="color:#c93670;font-weight:600;text-decoration:none;">${escapeHtml(site.email)}</a>.
+          </p>
+          <p style="margin:18px 0 0;font-family:Georgia,serif;font-size:16px;color:#2c2228;">
+            See you soon,<br/>
+            <span style="color:#c93670;">${escapeHtml(site.name)}</span>
+          </p>
+        </div>
+
+        <div style="padding:14px 20px 18px;text-align:center;background:#faf7f8;border-top:1px solid #f0d4de;font-family:system-ui,sans-serif;font-size:11px;color:#8a7a82;">
+          You received this because you ordered on lilyssweettreatsva.com<br/>
+          Tip: search your inbox for &quot;Lily&apos;s Sweet Treats&quot; if this landed in Spam or Promotions.
+        </div>
+      </div>
+    </div>
   </div>`;
+}
+
+function customerText(order: OrderEmailPayload) {
+  return [
+    `You're all set — ${site.shortName}`,
+    "",
+    `Hi ${order.customerName.split(" ")[0] || order.customerName},`,
+    "",
+    `Payment received for ${order.productName} × ${order.quantity} (${formatMoney(order.amountCents)}).`,
+    "",
+    `PICKUP WINDOW: ${order.pickupWindow}`,
+    `ADDRESS: ${order.pickupAddress}`,
+    order.notes ? `NOTES: ${order.notes}` : "",
+    "",
+    "Porch pickup only — no delivery.",
+    `Questions? ${site.phone} or ${site.email}`,
+    "",
+    `— ${site.name}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 /**
@@ -133,7 +206,7 @@ export async function sendOrderEmails(
       from,
       to: [ownerTo],
       replyTo: order.customerEmail || undefined,
-      subject: `New order: ${order.productName} × ${order.quantity} — ${formatMoney(order.amountCents)}`,
+      subject: `🧁 New order · ${order.productName} × ${order.quantity} · ${formatMoney(order.amountCents)}`,
       html: ownerHtml(order),
     });
     if (ownerResult.error) {
@@ -151,12 +224,17 @@ export async function sendOrderEmails(
 
   if (order.customerEmail) {
     try {
+      const first = order.customerName.split(" ")[0] || "there";
       const customerResult = await resend.emails.send({
         from,
         to: [order.customerEmail],
         replyTo: site.email,
-        subject: `Order confirmed — ${site.shortName}`,
+        subject: `Your Lily's Sweet Treats order is confirmed · ${order.productName}`,
         html: customerHtml(order),
+        text: customerText(order),
+        headers: {
+          "X-Entity-Ref-ID": order.paymentIntentId,
+        },
       });
       if (customerResult.error) {
         customerError =
@@ -173,6 +251,7 @@ export async function sendOrderEmails(
           customerId,
           "→",
           order.customerEmail,
+          `(hi ${first})`,
         );
       }
     } catch (err) {

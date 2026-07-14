@@ -21,19 +21,26 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
 
   let status: "succeeded" | "processing" | "failed" | "unknown" = "unknown";
   let emailDebug: string | null = null;
+  let customerEmail: string | null = null;
+  let emailSentToCustomer = false;
 
   if (paymentIntentId && /^pi_[a-zA-Z0-9_]+$/.test(paymentIntentId)) {
     try {
       const stripe = getStripe();
       const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+      customerEmail =
+        pi.metadata?.customerEmail || pi.receipt_email || null;
+
       if (pi.status === "succeeded") {
         status = "succeeded";
         const notify = await notifyOrderPaidOnce(pi);
         if (notify.sent) {
+          emailSentToCustomer = Boolean(notify.customerId || notify.customerTo);
           emailDebug = testMode
             ? `Emails OK → owner: ${notify.ownerTo}${notify.customerTo ? ` · customer: ${notify.customerTo}` : ""}`
-            : "Confirmation emails were sent.";
+            : null;
         } else if (notify.reason === "already_sent") {
+          emailSentToCustomer = Boolean(customerEmail);
           emailDebug = testMode
             ? "Emails already sent for this payment (not sent again)."
             : null;
@@ -44,7 +51,7 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
         } else if (notify.reason === "resend_rejected") {
           emailDebug = testMode
             ? `Email failed (Resend): owner=${notify.ownerError || "n/a"} customer=${notify.customerError || "n/a"} (to: ${notify.ownerTo || "?"})`
-            : "We could not send confirmation email automatically. We still have your order.";
+            : null;
         } else {
           emailDebug = testMode
             ? `Email not sent: ${"reason" in notify ? notify.reason : "unknown"}`
@@ -74,7 +81,7 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
   const ok = status === "succeeded" || status === "processing";
   const title =
     status === "succeeded"
-      ? "Payment received"
+      ? "You're all set"
       : status === "processing"
         ? "Payment processing"
         : status === "failed"
@@ -83,9 +90,9 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
 
   const body =
     status === "succeeded"
-      ? "Thanks for your order. We will confirm your pickup window by phone or email soon. Porch pickup only."
+      ? "Thanks for your order. Save this page or check your email for pickup details."
       : status === "processing"
-        ? "Your payment is still processing. We will confirm by phone or email when it clears. Porch pickup only."
+        ? "Your payment is still processing. We will confirm by phone or email when it clears."
         : status === "failed"
           ? "We could not confirm a successful payment. If you were charged, contact us and we will sort it out."
           : "If you were charged, we will still receive your order. Contact us if you need help.";
@@ -106,15 +113,53 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
           {title}
         </h1>
         <p className="mt-3 text-[var(--cocoa-soft)]">{body}</p>
+
+        {/* Customer-facing: make the email easy to find */}
+        {ok && customerEmail ? (
+          <div className="mt-5 rounded-xl border border-[var(--blush)]/60 bg-white px-4 py-4 text-left shadow-[var(--shadow-soft)]">
+            <p className="text-xs font-bold uppercase tracking-wider text-[var(--rose)]">
+              Check your email
+            </p>
+            <p className="mt-1.5 text-sm leading-relaxed text-[var(--cocoa)]">
+              We sent a confirmation to{" "}
+              <strong className="break-all">{customerEmail}</strong>
+              {emailSentToCustomer ? "." : " (if delivery succeeded)."}
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-4 text-xs leading-relaxed text-[var(--cocoa-soft)]">
+              <li>
+                Subject looks like:{" "}
+                <em>Your Lily&apos;s Sweet Treats order is confirmed</em>
+              </li>
+              <li>
+                From: <em>Lily&apos;s Sweet Treats</em>
+              </li>
+              <li>Also check <strong>Spam</strong> and <strong>Promotions</strong></li>
+              <li>
+                Search Gmail for:{" "}
+                <code className="rounded bg-[var(--cream-deep)] px-1">
+                  from:Lily
+                </code>{" "}
+                or{" "}
+                <code className="rounded bg-[var(--cream-deep)] px-1">
+                  Sweet Treats
+                </code>
+              </li>
+            </ul>
+          </div>
+        ) : null}
+
         {emailDebug ? (
           <p className="mt-3 rounded-lg bg-white/80 px-3 py-2 text-left text-xs leading-relaxed text-[var(--cocoa-soft)]">
-            <strong className="text-[var(--cocoa)]">Email status (test mode):</strong>
+            <strong className="text-[var(--cocoa)]">
+              Email status (test mode):
+            </strong>
             <br />
             {emailDebug}
           </p>
         ) : null}
+
         {ok ? (
-          <p className="mt-4 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+          <p className="mt-5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
             <span className="font-semibold text-[var(--cocoa)]">Pickup at</span>
             <br />
             <a
