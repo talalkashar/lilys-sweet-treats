@@ -40,18 +40,15 @@ function getResend() {
   return new Resend(key);
 }
 
-/**
- * From address.
- * Default uses Resend's test sender so emails work before a custom domain is verified.
- * After verifying lilyssweettreatsva.com in Resend, set:
- *   EMAIL_FROM="Lily's Sweet Treats <orders@lilyssweettreatsva.com>"
- */
+/** From address — branded domain (verified in Resend). */
 function fromAddress() {
   return (
-    process.env.EMAIL_FROM || "Lily's Sweet Treats <onboarding@resend.dev>"
+    process.env.EMAIL_FROM ||
+    `Lily's Sweet Treats <orders@lilyssweettreatsva.com>`
   );
 }
 
+/** Owner inbox — Lily by default. */
 function ownerInbox() {
   return (process.env.ORDER_NOTIFY_EMAIL || site.email).trim();
 }
@@ -150,8 +147,8 @@ function customerHtml(order: OrderEmailPayload) {
         </div>
 
         <div style="padding:14px 20px 18px;text-align:center;background:#faf7f8;border-top:1px solid #f0d4de;font-family:system-ui,sans-serif;font-size:11px;color:#8a7a82;">
-          You received this because you ordered on lilyssweettreatsva.com<br/>
-          Tip: search your inbox for &quot;Lily&apos;s Sweet Treats&quot; if this landed in Spam or Promotions.
+          ${escapeHtml(site.name)} · Porch pickup in Haymarket, VA<br/>
+          <a href="https://www.lilyssweettreatsva.com" style="color:#c93670;text-decoration:none;">www.lilyssweettreatsva.com</a>
         </div>
       </div>
     </div>
@@ -206,7 +203,7 @@ export async function sendOrderEmails(
       from,
       to: [ownerTo],
       replyTo: order.customerEmail || undefined,
-      subject: `🧁 New order · ${order.productName} × ${order.quantity} · ${formatMoney(order.amountCents)}`,
+      subject: `New order: ${order.productName} × ${order.quantity} — ${formatMoney(order.amountCents)}`,
       html: ownerHtml(order),
     });
     if (ownerResult.error) {
@@ -229,12 +226,9 @@ export async function sendOrderEmails(
         from,
         to: [order.customerEmail],
         replyTo: site.email,
-        subject: `Your Lily's Sweet Treats order is confirmed · ${order.productName}`,
+        subject: `Order confirmed — ${order.productName}`,
         html: customerHtml(order),
         text: customerText(order),
-        headers: {
-          "X-Entity-Ref-ID": order.paymentIntentId,
-        },
       });
       if (customerResult.error) {
         customerError =
