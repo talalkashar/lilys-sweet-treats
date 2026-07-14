@@ -150,20 +150,20 @@ export function OrderForm() {
   return (
     <form
       onSubmit={onContinueToPayment}
-      className="form-shell p-5 sm:p-6"
+      className="form-shell p-4 sm:p-6"
     >
       <div className="mb-5">
         <p className="section-label">Step 1 of 2</p>
-        <h3 className="mt-1 font-display text-xl text-[var(--cocoa)]">
+        <h3 className="mt-1 font-display text-xl text-[var(--cocoa)] sm:text-2xl">
           Your order
         </h3>
-        <p className="mt-1.5 text-sm text-[var(--cocoa-soft)]">
-          Porch pickup at {site.address.line1}, {site.address.city}. Pay on the
-          next step.
+        <p className="mt-1.5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+          Porch pickup at {site.address.line1}, {site.address.city}. Pay
+          securely on the next step.
         </p>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
             Your name
@@ -290,7 +290,11 @@ export function OrderForm() {
             ${total.toFixed(2)}
           </span>
         </p>
-        <button type="submit" className="btn-primary" disabled={busy}>
+        <button
+          type="submit"
+          className="btn-primary w-full sm:w-auto"
+          disabled={busy}
+        >
           {busy ? "Preparing…" : "Continue to payment"}
         </button>
       </div>

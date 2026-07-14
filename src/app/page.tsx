@@ -104,12 +104,16 @@ export default function Home() {
               almost every week, so the menu stays fresh.
             </p>
 
-            <div className="anim-fade-up anim-delay-3 mt-8 flex flex-wrap gap-2.5">
-              <Link href="/order" className="btn-primary">
-                Order pickup
+            <p className="anim-fade-up anim-delay-2 hero-week-pill mt-4">
+              This week&apos;s menu is up · Pre-order for porch pickup
+            </p>
+
+            <div className="anim-fade-up anim-delay-3 mt-7 flex w-full flex-col gap-2.5 sm:w-auto sm:flex-row sm:flex-wrap">
+              <Link href="/order" className="btn-primary w-full sm:w-auto">
+                Order this week&apos;s treats
               </Link>
-              <a href="#menu" className="btn-secondary">
-                View menu
+              <a href="#menu" className="btn-secondary w-full sm:w-auto">
+                Browse the menu
               </a>
             </div>
 
@@ -222,15 +226,18 @@ export default function Home() {
         <div className="shell">
           <Reveal>
             <div className="max-w-xl">
-              <p className="section-label">Menu</p>
+              <p className="section-label">This week&apos;s menu</p>
               <h2 className="section-title mt-2">
-                From scratch treats for pickup
+                Fresh bakes for porch pickup
               </h2>
               <p className="prose-soft mt-2.5">
-                Browse what we are baking this week. Tap a treat for details,
-                then order when you are ready.
+                Browse what we are baking right now. Tap a treat for details and
+                ingredients, then pre-order when you are ready.
               </p>
               <p className="menu-flex-note mt-3">{site.menuNote}</p>
+              <Link href="/order" className="btn-primary mt-5 inline-flex">
+                Pre-order pickup
+              </Link>
             </div>
           </Reveal>
 

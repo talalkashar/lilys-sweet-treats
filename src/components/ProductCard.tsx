@@ -51,8 +51,8 @@ export function ProductCard({ product, onOpen }: Props) {
           <p className="line-clamp-2 text-sm leading-relaxed text-[var(--cocoa-soft)]">
             {product.description}
           </p>
-          <span className="mt-auto pt-2 text-sm font-semibold text-[var(--rose)]">
-            View details →
+          <span className="mt-auto pt-3 text-sm font-semibold text-[var(--rose)]">
+            View details &amp; ingredients →
           </span>
         </div>
       </button>

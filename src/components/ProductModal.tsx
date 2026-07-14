@@ -93,6 +93,12 @@ export function ProductModal({ product, onClose }: Props) {
               <p className="mt-2 text-xs text-[var(--ink-muted)]">
                 Major ingredients listed. Weekly specials may vary slightly.
               </p>
+              <p className="product-allergen-note mt-2.5">
+                <strong>Contains / may contain:</strong> wheat (flour), eggs,
+                milk (butter, cream cheese powder), and soy. Sticky buns with
+                nuts contain tree nuts or peanuts. Baked in a home kitchen that
+                handles shared equipment. Ask us if you have a serious allergy.
+              </p>
             </div>
           ) : null}
 
@@ -104,14 +110,14 @@ export function ProductModal({ product, onClose }: Props) {
             <a
               href={`/order?product=${product.id}`}
               onClick={onClose}
-              className="btn-primary flex-1 text-center"
+              className="btn-primary min-h-11 flex-1 text-center"
             >
               Order and pay
             </a>
             <button
               type="button"
               onClick={onClose}
-              className="btn-secondary flex-1"
+              className="btn-secondary min-h-11 flex-1"
             >
               Keep browsing
             </button>
