@@ -48,7 +48,7 @@ export function ProductModal({ product, onClose }: Props) {
               fill
               quality={90}
               className="object-contain object-center p-3"
-              sizes="(max-width: 640px) 100vw, 28rem"
+              sizes="(max-width: 640px) 100vw, 448px"
               priority
             />
           ) : (

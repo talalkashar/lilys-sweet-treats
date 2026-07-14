@@ -50,8 +50,8 @@ export default function Home() {
                   fill
                   priority
                   quality={95}
-                  className="object-cover object-center"
-                  sizes="(max-width: 1024px) min(90vw, 22rem), 22rem"
+                  className="object-contain object-center"
+                  sizes="(max-width: 768px) 90vw, 448px"
                 />
               </div>
             </div>

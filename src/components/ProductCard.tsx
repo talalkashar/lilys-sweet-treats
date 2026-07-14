@@ -29,7 +29,7 @@ export function ProductCard({ product, onOpen }: Props) {
               fill
               quality={90}
               className="card-product-img object-cover object-center"
-              sizes="(max-width: 640px) 100vw, 320px"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
               onError={() => setImgFailed(true)}
             />
           ) : (

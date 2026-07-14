@@ -59,7 +59,7 @@
   /* Logo */
   --logo-header: 2.75rem; /* 44px */
   --logo-footer: 3rem; /* 48px */
-  --logo-hero-max: 22rem; /* ~352px — large but not oversized */
+  --logo-hero-max: 28rem; /* ~448px */
 
   --max: 64rem; /* 1024px */
   --background: var(--cream);
@@ -227,13 +227,15 @@ body {
   padding-inline: 0.02em;
 }
 
-/* Hero logo: large but capped so it never overwhelms type */
+/* Hero logo: must be position:relative + real height for next/image fill */
 .logo-frame {
   position: relative;
+  display: block;
   width: 100%;
-  max-width: var(--logo-hero-max);
+  max-width: min(28rem, 100%); /* ~448px — crisp, not tiny-then-upscaled */
   margin-inline: auto;
   aspect-ratio: 17 / 10;
+  min-height: 14rem;
   overflow: hidden;
   border-radius: var(--radius-xl);
   border: 1px solid rgba(245, 198, 214, 0.55);
@@ -243,9 +245,28 @@ body {
 
 @media (min-width: 1024px) {
   .logo-frame {
-    max-width: min(var(--logo-hero-max), 100%);
-    margin-inline: 0 0 0 auto; /* sit to the right column end */
+    max-width: min(28rem, 100%);
+    margin-inline: auto 0;
+    min-height: 16rem;
   }
+}
+
+/* Header/footer logo mark — relative required for fill */
+.logo-mark {
+  position: relative;
+  display: block;
+  width: var(--logo-header);
+  height: var(--logo-header);
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(245, 198, 214, 0.55);
+  background: var(--white);
+}
+
+.logo-mark--footer {
+  width: var(--logo-footer);
+  height: var(--logo-footer);
 }
 
 @keyframes heroPatternDrift {
@@ -368,23 +389,6 @@ body {
   border: 1px solid rgba(245, 198, 214, 0.6);
   background: white;
   box-shadow: var(--shadow-soft);
-}
-
-/* ---------- Header / footer logo marks ---------- */
-.logo-mark {
-  position: relative;
-  width: var(--logo-header);
-  height: var(--logo-header);
-  flex-shrink: 0;
-  overflow: hidden;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(245, 198, 214, 0.55);
-  background: var(--white);
-}
-
-.logo-mark--footer {
-  width: var(--logo-footer);
-  height: var(--logo-footer);
 }
 
 /* ---------- Modal ---------- */
