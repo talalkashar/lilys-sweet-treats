@@ -12,10 +12,74 @@ export default function Home() {
 
   return (
     <>
-      {/* HERO — Dolce-inspired: copy + floating logo cutout */}
+      {/* HERO — Dolce-inspired: copy + floating logo, treats on the sides */}
       <section className="hero-shell">
         <div className="hero-deco hero-deco--blob" aria-hidden />
         <div className="hero-deco hero-deco--dot" aria-hidden />
+
+        {/* Bakery treats: left of text · right of logo */}
+        <div className="hero-treats" aria-hidden>
+          <div className="hero-treat hero-treat--L1">
+            <Image
+              src="/brand/hero/macaron-tower.png"
+              alt=""
+              width={225}
+              height={239}
+              className="hero-treat-img"
+              sizes="(max-width: 899px) 3.5rem, 5.75rem"
+            />
+          </div>
+          <div className="hero-treat hero-treat--L2">
+            <Image
+              src="/brand/hero/cinnamon-roll.png"
+              alt=""
+              width={208}
+              height={156}
+              className="hero-treat-img"
+              sizes="(max-width: 899px) 3.25rem, 5.25rem"
+            />
+          </div>
+          <div className="hero-treat hero-treat--L3">
+            <Image
+              src="/brand/hero/macaron-bow.png"
+              alt=""
+              width={196}
+              height={224}
+              className="hero-treat-img"
+              sizes="(max-width: 899px) 3.1rem, 5rem"
+            />
+          </div>
+          <div className="hero-treat hero-treat--R1">
+            <Image
+              src="/brand/hero/cookie-bow.png"
+              alt=""
+              width={164}
+              height={229}
+              className="hero-treat-img"
+              sizes="(max-width: 899px) 3.25rem, 5.25rem"
+            />
+          </div>
+          <div className="hero-treat hero-treat--R2">
+            <Image
+              src="/brand/hero/floral-cake.png"
+              alt=""
+              width={151}
+              height={253}
+              className="hero-treat-img"
+              sizes="(max-width: 899px) 3.1rem, 5rem"
+            />
+          </div>
+          <div className="hero-treat hero-treat--R3">
+            <Image
+              src="/brand/hero/swiss-rolls.png"
+              alt=""
+              width={205}
+              height={146}
+              className="hero-treat-img"
+              sizes="(max-width: 899px) 3.5rem, 5.5rem"
+            />
+          </div>
+        </div>
 
         <div className="shell hero-grid">
           {/* Copy sits beside the logo, never on top of it */}
@@ -241,55 +305,6 @@ export default function Home() {
                 Call {site.phone}
               </a>
             </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* CONTACT */}
-      <section id="contact" className="section-contact section-pad">
-        <div className="shell grid gap-8 sm:grid-cols-2 sm:items-start sm:gap-12">
-          <Reveal>
-            <div>
-              <p className="section-label">Contact</p>
-              <h2 className="section-title mt-2">Say hello</h2>
-              <p className="prose-soft mt-2.5">
-                Questions about custom orders or pickup? We are happy to help.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal delayMs={50}>
-            <ul className="space-y-4 text-sm sm:text-base">
-              <li>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
-                  Email
-                </p>
-                <a
-                  className="font-medium text-[var(--cocoa)] hover:text-[var(--rose)]"
-                  href={`mailto:${site.email}`}
-                >
-                  {site.email}
-                </a>
-              </li>
-              <li>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
-                  Phone
-                </p>
-                <a
-                  className="font-medium text-[var(--cocoa)] hover:text-[var(--rose)]"
-                  href={`tel:${site.phone.replace(/\D/g, "")}`}
-                >
-                  {site.phone}
-                </a>
-              </li>
-              <li>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
-                  Pickup
-                </p>
-                <p className="font-medium text-[var(--cocoa)]">
-                  {site.pickupNote}
-                </p>
-              </li>
-            </ul>
           </Reveal>
         </div>
       </section>

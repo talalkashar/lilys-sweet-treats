@@ -85,7 +85,8 @@ section[id] {
 
 body {
   position: relative;
-  background: #f0e4f5; /* matches purple wall base */
+  /* Clean cream base — Dolce-style readability first */
+  background: var(--cream);
   color: var(--cocoa);
   font-family: var(--font-body), system-ui, sans-serif;
   font-size: var(--text-base);
@@ -93,73 +94,56 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ---------- Animated cupcake wallpaper (PURPLE WALL) ---------- */
+/* ============================================================
+   Sitewide bakery backdrop (Dolce-inspired)
+   Soft cream + faint purple cupcake pattern, barely in motion
+   ============================================================ */
 .site-wallpaper {
   position: fixed;
   inset: 0;
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
+  background: var(--cream);
 }
 
 .site-wallpaper-layer {
   position: absolute;
-  /* Extra room so vertical drift never flashes empty edges */
-  inset: -30% -10%;
+  inset: -8%;
   background-image: url("/brand/pattern.png");
   background-repeat: repeat;
   background-position: center top;
+  /* Pattern as quiet texture, not the main event */
+  background-size: min(42vw, 22rem) auto;
+  opacity: 0.28;
+  /* Ultra-slow, tiny bob — living but not distracting */
+  animation: wallpaper-breathe 28s ease-in-out infinite;
   will-change: transform;
 }
 
-/* Primary layer — gentle up/down float */
-.site-wallpaper-layer--a {
-  background-size: min(46vw, 28rem) auto;
-  opacity: 0.72;
-  animation: wallpaper-float-a 14s ease-in-out infinite;
-}
-
-/* Second layer — opposite drift + slight scale for depth (jitter-flow feel) */
-.site-wallpaper-layer--b {
-  background-size: min(52vw, 32rem) auto;
-  opacity: 0.28;
-  mix-blend-mode: multiply;
-  animation: wallpaper-float-b 18s ease-in-out infinite;
-}
-
-/* Soft cream veil so content stays readable over the pattern */
+/* Cream wash so type and cards stay crisp (Dolce clean-surface feel) */
 .site-wallpaper-veil {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 250, 248, 0.55), transparent 55%),
+    radial-gradient(ellipse 90% 55% at 50% 0%, rgba(255, 250, 248, 0.72), transparent 58%),
     linear-gradient(
       180deg,
-      rgba(255, 250, 248, 0.42) 0%,
-      rgba(255, 250, 248, 0.28) 40%,
-      rgba(255, 250, 248, 0.38) 100%
+      rgba(255, 250, 248, 0.62) 0%,
+      rgba(255, 250, 248, 0.52) 45%,
+      rgba(255, 250, 248, 0.65) 100%
     );
 }
 
-@keyframes wallpaper-float-a {
+@keyframes wallpaper-breathe {
   0%,
   100% {
     transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translate3d(0, -36px, 0);
-  }
-}
-
-@keyframes wallpaper-float-b {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1.02);
-  }
-  50% {
-    transform: translate3d(0, 28px, 0) scale(1.05);
+    transform: translate3d(0, -14px, 0);
   }
 }
 
@@ -243,18 +227,31 @@ body {
 .hero-shell {
   position: relative;
   overflow: hidden;
-  /* Translucent so the floating wallpaper peeks through */
+  /* Soft cream panel — pattern peeks quietly behind (Dolce-style clean) */
   background:
-    radial-gradient(ellipse 70% 55% at 88% 42%, rgba(245, 198, 214, 0.35), transparent 58%),
-    radial-gradient(ellipse 50% 45% at 12% 70%, rgba(201, 180, 232, 0.22), transparent 55%),
-    radial-gradient(ellipse 40% 35% at 40% 10%, rgba(232, 247, 241, 0.4), transparent 50%),
+    radial-gradient(ellipse 70% 55% at 88% 42%, rgba(245, 198, 214, 0.28), transparent 58%),
+    radial-gradient(ellipse 50% 45% at 12% 70%, rgba(201, 180, 232, 0.18), transparent 55%),
+    radial-gradient(ellipse 40% 35% at 40% 10%, rgba(232, 247, 241, 0.3), transparent 50%),
     linear-gradient(
       180deg,
-      rgba(255, 248, 245, 0.72) 0%,
-      rgba(255, 250, 248, 0.55) 55%,
-      rgba(255, 246, 249, 0.68) 100%
+      rgba(255, 250, 248, 0.88) 0%,
+      rgba(255, 250, 248, 0.78) 55%,
+      rgba(255, 246, 249, 0.9) 100%
     );
   padding-block: clamp(2.25rem, 5vw, 4rem);
+  /* Room for side treats so copy/logo stay clear */
+  padding-inline: clamp(0rem, 2vw, 0.5rem);
+}
+
+@media (min-width: 900px) {
+  .hero-shell {
+    padding-inline: 0;
+  }
+
+  .hero-shell > .shell {
+    /* Inset content so treats sit in the outer gutters */
+    padding-inline: clamp(5.5rem, 9vw, 7.5rem);
+  }
 }
 
 /* Soft decorative shapes (Dolce-like atmosphere, not their art) */
@@ -426,6 +423,109 @@ body {
   pointer-events: none;
 }
 
+/* ----------------------------------------------------------
+   Hero side treats — left of text, right of logo
+   Sit at the outer edges of the hero (bundle-style framing)
+   ---------------------------------------------------------- */
+.hero-treats {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.hero-treat {
+  position: absolute;
+  filter: drop-shadow(0 8px 16px rgba(44, 34, 40, 0.12));
+  animation: treat-float ease-in-out infinite;
+  will-change: transform;
+}
+
+.hero-treat-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Left of hero text */
+.hero-treat--L1 {
+  left: clamp(0.25rem, 1.5vw, 1.25rem);
+  top: 10%;
+  width: clamp(3.25rem, 9vw, 5.75rem);
+  animation-duration: 3.4s;
+  animation-delay: 0s;
+}
+
+.hero-treat--L2 {
+  left: clamp(0.5rem, 2.5vw, 2rem);
+  top: 42%;
+  width: clamp(3rem, 8.5vw, 5.25rem);
+  animation-duration: 4s;
+  animation-delay: -1.2s;
+}
+
+.hero-treat--L3 {
+  left: clamp(0.35rem, 1.8vw, 1.5rem);
+  bottom: 8%;
+  width: clamp(2.9rem, 8vw, 5rem);
+  animation-duration: 3.7s;
+  animation-delay: -2.1s;
+}
+
+/* Right of hero logo */
+.hero-treat--R1 {
+  right: clamp(0.25rem, 1.5vw, 1.25rem);
+  top: 8%;
+  width: clamp(3rem, 8.5vw, 5.25rem);
+  animation-duration: 3.9s;
+  animation-delay: -0.5s;
+}
+
+.hero-treat--R2 {
+  right: clamp(0.5rem, 2.2vw, 1.75rem);
+  top: 40%;
+  width: clamp(2.9rem, 8vw, 5rem);
+  animation-duration: 4.2s;
+  animation-delay: -1.7s;
+}
+
+.hero-treat--R3 {
+  right: clamp(0.35rem, 1.8vw, 1.5rem);
+  bottom: 10%;
+  width: clamp(3.25rem, 9vw, 5.5rem);
+  animation-duration: 3.5s;
+  animation-delay: -2.5s;
+}
+
+/* On small screens, keep treats small so they don’t crowd copy */
+@media (max-width: 899px) {
+  .hero-treat--L1,
+  .hero-treat--L2,
+  .hero-treat--L3 {
+    left: 0.15rem;
+    opacity: 0.9;
+  }
+  .hero-treat--R1,
+  .hero-treat--R2,
+  .hero-treat--R3 {
+    right: 0.15rem;
+    opacity: 0.9;
+  }
+  .hero-treat--L1,
+  .hero-treat--R1 {
+    width: 2.85rem;
+  }
+  .hero-treat--L2,
+  .hero-treat--R2 {
+    width: 2.65rem;
+  }
+  .hero-treat--L3,
+  .hero-treat--R3 {
+    width: 2.75rem;
+  }
+}
+
 @keyframes logo-float {
   0%,
   100% {
@@ -433,6 +533,16 @@ body {
   }
   50% {
     transform: translateY(-14px);
+  }
+}
+
+@keyframes treat-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
   }
 }
 
@@ -542,23 +652,16 @@ body {
   padding: var(--space-5);
 }
 
-/* ---------- Sections ---------- */
+/* ---------- Sections — solid-ish cream bands for readability ---------- */
 .section-menu {
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.82);
   border-block: 1px solid rgba(245, 198, 214, 0.3);
-  backdrop-filter: blur(3px);
 }
 
 .section-steps {
-  background: rgba(243, 236, 250, 0.62);
-  backdrop-filter: blur(2px);
+  background: rgba(243, 236, 250, 0.72);
 }
 
-.section-contact {
-  background: rgba(255, 255, 255, 0.75);
-  border-top: 1px solid rgba(245, 198, 214, 0.35);
-  backdrop-filter: blur(3px);
-}
 
 .brand-divider {
   height: 2px;
@@ -673,8 +776,7 @@ body {
 
 /* Story / photo band */
 .story-band {
-  background: rgba(255, 250, 248, 0.55);
-  backdrop-filter: blur(2px);
+  background: rgba(255, 250, 248, 0.78);
 }
 
 .story-photo {
@@ -696,12 +798,11 @@ body {
 .cta-band {
   background: linear-gradient(
     135deg,
-    rgba(246, 239, 255, 0.78) 0%,
-    rgba(255, 245, 249, 0.72) 55%,
-    rgba(255, 250, 248, 0.8) 100%
+    rgba(246, 239, 255, 0.88) 0%,
+    rgba(255, 245, 249, 0.9) 55%,
+    rgba(255, 250, 248, 0.92) 100%
   );
   border-block: 1px solid rgba(245, 198, 214, 0.35);
-  backdrop-filter: blur(2px);
 }
 
 .form-shell {
@@ -790,8 +891,8 @@ body {
   }
   .hero-logo-float,
   .hero-deco--blob,
-  .site-wallpaper-layer--a,
-  .site-wallpaper-layer--b {
+  .hero-treat,
+  .site-wallpaper-layer {
     animation: none;
   }
 }

@@ -48,7 +48,7 @@ export const products: Product[] = [
     category: "rolls",
     description: "Warm apple, rich caramel, and soft cinnamon dough.",
     emoji: "🍎",
-    image: "/products/sticky-bun-no-nuts.jpg",
+    image: "/products/apple-caramel-cinnamon-rolls.png",
   },
   {
     id: "peach-cobbler-cinnamon-rolls",
@@ -57,7 +57,7 @@ export const products: Product[] = [
     category: "rolls",
     description: "Peach cobbler flavor in a soft cinnamon roll.",
     emoji: "🍑",
-    image: "/products/sticky-bun-with-nuts.jpg",
+    image: "/products/peach-cobbler-cinnamon-rolls.png",
   },
   // Sticky buns
   {
@@ -67,7 +67,7 @@ export const products: Product[] = [
     category: "sticky",
     description: "Caramel glaze topped with toasted nuts.",
     emoji: "🥜",
-    image: "/products/sticky-bun-with-nuts.jpg",
+    image: "/products/sticky-bun-with-nuts.png",
   },
   {
     id: "sticky-buns-without-nuts",
@@ -76,7 +76,7 @@ export const products: Product[] = [
     category: "sticky",
     description: "Classic sticky bun and caramel, no nuts.",
     emoji: "🌀",
-    image: "/products/sticky-bun-no-nuts.jpg",
+    image: "/products/sticky-bun-no-nuts.png",
   },
   // Specialty (kept on the menu)
   {
@@ -95,7 +95,7 @@ export const products: Product[] = [
     category: "specialty",
     description: "Buttery cookies filled with dulce de leche.",
     emoji: "🍪",
-    image: "/products/alfajores.jpg",
+    image: "/products/alfajores.png",
   },
 ];
 

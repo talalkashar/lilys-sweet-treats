@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function OrderPage() {
   return (
-    <div className="min-h-[70vh] bg-[var(--cream)]">
+    <div className="min-h-[70vh] bg-[var(--cream)]/80">
       <div className="shell py-8 sm:py-12">
         <Link
           href="/#menu"

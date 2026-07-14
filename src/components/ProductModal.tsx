@@ -40,14 +40,14 @@ export function ProductModal({ product, onClose }: Props) {
       />
 
       <div className="modal-panel relative z-10 flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-t-2xl border border-white bg-white shadow-[var(--shadow-lift)] sm:max-h-[85vh] sm:rounded-2xl">
-        <div className="relative h-52 shrink-0 bg-[var(--cream-deep)] sm:h-56">
+        <div className="relative aspect-[3/2] shrink-0 bg-[var(--cream-deep)]">
           {product.image ? (
             <Image
               src={product.image}
               alt={product.name}
               fill
               quality={90}
-              className="object-contain object-center p-3"
+              className="object-cover object-center"
               sizes="(max-width: 640px) 100vw, 448px"
               priority
             />

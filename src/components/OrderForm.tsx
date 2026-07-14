@@ -3,7 +3,7 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { CheckoutPayment } from "@/components/CheckoutPayment";
 import { menuCategories, products, productsInCategory } from "@/data/products";
 import { site } from "@/data/site";
@@ -49,18 +49,19 @@ const elementsAppearance: StripeElementsOptions["appearance"] = {
 
 export function OrderForm() {
   const searchParams = useSearchParams();
-  const [form, setForm] = useState<FormState>(initial);
+  const productParam = searchParams.get("product");
+  const initialProductId =
+    productParam && products.some((p) => p.id === productParam)
+      ? productParam
+      : initial.productId;
+  const [form, setForm] = useState<FormState>(() => ({
+    ...initial,
+    productId: initialProductId,
+  }));
   const [step, setStep] = useState<Step>("details");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const id = searchParams.get("product");
-    if (id && products.some((p) => p.id === id)) {
-      setForm((f) => ({ ...f, productId: id }));
-    }
-  }, [searchParams]);
 
   const selected = useMemo(
     () => products.find((p) => p.id === form.productId),

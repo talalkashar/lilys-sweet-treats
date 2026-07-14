@@ -4,7 +4,7 @@ import { site } from "@/data/site";
 
 export function Footer() {
   return (
-    <footer className="relative z-[1] bg-[var(--cocoa)] text-white">
+    <footer id="contact" className="relative z-[1] bg-[var(--cocoa)] text-white">
       <div className="shell flex flex-col gap-8 py-10 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <span className="logo-mark logo-mark--footer">
