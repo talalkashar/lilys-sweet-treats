@@ -24,11 +24,16 @@ function getResend() {
   return new Resend(key);
 }
 
-/** From address — must be on a domain verified in Resend (or Resend onboarding sender). */
+/**
+ * From address.
+ * Default uses Resend's test sender so emails work before a custom domain is verified.
+ * After verifying lilyssweettreatsva.com in Resend, set:
+ *   EMAIL_FROM="Lily's Sweet Treats <orders@lilyssweettreatsva.com>"
+ */
 function fromAddress() {
   return (
     process.env.EMAIL_FROM ||
-    `${site.shortName} <orders@lilyssweettreatsva.com>`
+    "Lily's Sweet Treats <onboarding@resend.dev>"
   );
 }
 
@@ -113,9 +118,10 @@ export async function sendOrderEmails(order: OrderEmailPayload) {
   });
   if (ownerResult.error) {
     console.error("[email] owner notify failed", ownerResult.error);
-    results.owner = "error";
+    results.owner = `error: ${ownerResult.error.message || "unknown"}`;
   } else {
     results.owner = ownerResult.data?.id || "sent";
+    console.log("[email] owner notify ok", results.owner, "→", ownerTo);
   }
 
   if (order.customerEmail) {
@@ -128,9 +134,15 @@ export async function sendOrderEmails(order: OrderEmailPayload) {
     });
     if (customerResult.error) {
       console.error("[email] customer confirm failed", customerResult.error);
-      results.customer = "error";
+      results.customer = `error: ${customerResult.error.message || "unknown"}`;
     } else {
       results.customer = customerResult.data?.id || "sent";
+      console.log(
+        "[email] customer confirm ok",
+        results.customer,
+        "→",
+        order.customerEmail,
+      );
     }
   }
 
