@@ -30,8 +30,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable} h-full`}>
       <body className="flex min-h-full flex-col antialiased">
+        {/* Soft cupcake wallpaper — drifts for a living bakery feel */}
+        <div className="site-wallpaper" aria-hidden>
+          <div className="site-wallpaper-layer site-wallpaper-layer--a" />
+          <div className="site-wallpaper-layer site-wallpaper-layer--b" />
+        </div>
+        <div className="site-wallpaper-veil" aria-hidden />
+
         <Header />
-        <main className="flex-1">{children}</main>
+        <main className="relative z-[1] flex-1">{children}</main>
         <Footer />
       </body>
     </html>

@@ -27,8 +27,8 @@ export function Header() {
     <header
       className={`sticky top-0 z-50 border-b transition-[background,box-shadow,border-color] duration-200 ${
         scrolled
-          ? "border-[var(--blush)]/45 bg-white/95 shadow-[var(--shadow-soft)] backdrop-blur-md"
-          : "border-transparent bg-white/90 backdrop-blur-md"
+          ? "border-[var(--blush)]/45 bg-white/92 shadow-[var(--shadow-soft)] backdrop-blur-md"
+          : "border-transparent bg-white/80 backdrop-blur-md"
       }`}
     >
       <div className="shell flex h-14 items-center justify-between gap-3 sm:h-[3.75rem]">

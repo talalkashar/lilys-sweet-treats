@@ -84,12 +84,83 @@ section[id] {
 }
 
 body {
-  background: var(--cream);
+  position: relative;
+  background: #f0e4f5; /* matches purple wall base */
   color: var(--cocoa);
   font-family: var(--font-body), system-ui, sans-serif;
   font-size: var(--text-base);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Animated cupcake wallpaper (PURPLE WALL) ---------- */
+.site-wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.site-wallpaper-layer {
+  position: absolute;
+  /* Extra room so vertical drift never flashes empty edges */
+  inset: -30% -10%;
+  background-image: url("/brand/pattern.png");
+  background-repeat: repeat;
+  background-position: center top;
+  will-change: transform;
+}
+
+/* Primary layer — gentle up/down float */
+.site-wallpaper-layer--a {
+  background-size: min(46vw, 28rem) auto;
+  opacity: 0.72;
+  animation: wallpaper-float-a 14s ease-in-out infinite;
+}
+
+/* Second layer — opposite drift + slight scale for depth (jitter-flow feel) */
+.site-wallpaper-layer--b {
+  background-size: min(52vw, 32rem) auto;
+  opacity: 0.28;
+  mix-blend-mode: multiply;
+  animation: wallpaper-float-b 18s ease-in-out infinite;
+}
+
+/* Soft cream veil so content stays readable over the pattern */
+.site-wallpaper-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 250, 248, 0.55), transparent 55%),
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 248, 0.42) 0%,
+      rgba(255, 250, 248, 0.28) 40%,
+      rgba(255, 250, 248, 0.38) 100%
+    );
+}
+
+@keyframes wallpaper-float-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -36px, 0);
+  }
+}
+
+@keyframes wallpaper-float-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.02);
+  }
+  50% {
+    transform: translate3d(0, 28px, 0) scale(1.05);
+  }
 }
 
 .font-display {
@@ -172,11 +243,17 @@ body {
 .hero-shell {
   position: relative;
   overflow: hidden;
+  /* Translucent so the floating wallpaper peeks through */
   background:
-    radial-gradient(ellipse 70% 55% at 88% 42%, rgba(245, 198, 214, 0.45), transparent 58%),
-    radial-gradient(ellipse 50% 45% at 12% 70%, rgba(201, 180, 232, 0.28), transparent 55%),
-    radial-gradient(ellipse 40% 35% at 40% 10%, rgba(232, 247, 241, 0.5), transparent 50%),
-    linear-gradient(180deg, #fff8f5 0%, var(--cream) 55%, #fff6f9 100%);
+    radial-gradient(ellipse 70% 55% at 88% 42%, rgba(245, 198, 214, 0.35), transparent 58%),
+    radial-gradient(ellipse 50% 45% at 12% 70%, rgba(201, 180, 232, 0.22), transparent 55%),
+    radial-gradient(ellipse 40% 35% at 40% 10%, rgba(232, 247, 241, 0.4), transparent 50%),
+    linear-gradient(
+      180deg,
+      rgba(255, 248, 245, 0.72) 0%,
+      rgba(255, 250, 248, 0.55) 55%,
+      rgba(255, 246, 249, 0.68) 100%
+    );
   padding-block: clamp(2.25rem, 5vw, 4rem);
 }
 
@@ -467,17 +544,20 @@ body {
 
 /* ---------- Sections ---------- */
 .section-menu {
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.72);
   border-block: 1px solid rgba(245, 198, 214, 0.3);
+  backdrop-filter: blur(3px);
 }
 
 .section-steps {
-  background: var(--lavender-soft);
+  background: rgba(243, 236, 250, 0.62);
+  backdrop-filter: blur(2px);
 }
 
 .section-contact {
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.75);
   border-top: 1px solid rgba(245, 198, 214, 0.35);
+  backdrop-filter: blur(3px);
 }
 
 .brand-divider {
@@ -593,7 +673,8 @@ body {
 
 /* Story / photo band */
 .story-band {
-  background: var(--cream);
+  background: rgba(255, 250, 248, 0.55);
+  backdrop-filter: blur(2px);
 }
 
 .story-photo {
@@ -613,8 +694,14 @@ body {
 }
 
 .cta-band {
-  background: linear-gradient(135deg, #f6efff 0%, #fff5f9 55%, #fffaf8 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(246, 239, 255, 0.78) 0%,
+    rgba(255, 245, 249, 0.72) 55%,
+    rgba(255, 250, 248, 0.8) 100%
+  );
   border-block: 1px solid rgba(245, 198, 214, 0.35);
+  backdrop-filter: blur(2px);
 }
 
 .form-shell {
@@ -702,7 +789,9 @@ body {
     background-position: 0% 50%;
   }
   .hero-logo-float,
-  .hero-deco--blob {
+  .hero-deco--blob,
+  .site-wallpaper-layer--a,
+  .site-wallpaper-layer--b {
     animation: none;
   }
 }
