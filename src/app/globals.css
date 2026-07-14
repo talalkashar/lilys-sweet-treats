@@ -384,6 +384,70 @@ body {
   opacity: 0.65;
 }
 
+/* Dolce-inspired marquee: calm cream bar, not rainbow */
+.marquee-bar {
+  overflow: hidden;
+  background: var(--cocoa);
+  color: var(--white);
+  border-block: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 2.5rem;
+  padding-block: 0.7rem;
+  animation: marquee 32s linear infinite;
+}
+
+.marquee-track span {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.92;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Story / photo band */
+.story-band {
+  background: var(--cream);
+}
+
+.story-photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--lavender-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.story-photo--main {
+  aspect-ratio: 4 / 5;
+}
+
+.story-photo--wide {
+  aspect-ratio: 5 / 4;
+}
+
+.cta-band {
+  background: linear-gradient(135deg, #f6efff 0%, #fff5f9 55%, #fffaf8 100%);
+  border-block: 1px solid rgba(245, 198, 214, 0.35);
+}
+
 .form-shell {
   border-radius: var(--radius-xl);
   border: 1px solid rgba(245, 198, 214, 0.6);
@@ -461,7 +525,8 @@ body {
   html {
     scroll-behavior: auto;
   }
-  .hero-pattern {
+  .hero-pattern,
+  .marquee-track {
     animation: none;
   }
 }

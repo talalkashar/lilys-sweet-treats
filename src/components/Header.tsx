@@ -71,7 +71,7 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <Link href="/order" className="btn-primary hidden sm:inline-flex">
-            Order now
+            Order pickup
           </Link>
           <button
             type="button"
@@ -114,7 +114,7 @@ export function Header() {
               className="btn-primary mt-2 text-center"
               onClick={() => setOpen(false)}
             >
-              Order now
+              Order pickup
             </Link>
           </nav>
         </div>
