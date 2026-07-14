@@ -12,54 +12,57 @@ export default function Home() {
 
   return (
     <>
-      {/* HERO — big logo panel + text panel (no overlay on logo) */}
+      {/* HERO — Dolce-inspired: copy + floating logo cutout */}
       <section className="hero-shell">
-        <div className="hero-grid">
-          {/* Logo: full panel, no text on top */}
-          <div className="hero-logo-panel">
-            <Image
-              src={site.logoFull}
-              alt={`${site.name} logo`}
-              fill
-              priority
-              quality={95}
-              className="object-cover object-center"
-              sizes="(max-width: 899px) 100vw, 55vw"
-            />
+        <div className="hero-deco hero-deco--blob" aria-hidden />
+        <div className="hero-deco hero-deco--dot" aria-hidden />
+
+        <div className="shell hero-grid">
+          {/* Copy sits beside the logo, never on top of it */}
+          <div className="hero-copy">
+            <p className="anim-fade-up hero-eyebrow">
+              We are {site.shortName}
+            </p>
+
+            <h1 className="anim-fade-up anim-delay-1 hero-title mt-4">
+              A home bakery made to{" "}
+              <span className="hero-accent">sweeten your day</span>
+            </h1>
+
+            <p className="anim-fade-up anim-delay-2 hero-lead mt-5">
+              Small-batch cinnamon rolls, sticky buns, cake pops, and alfajores.
+              Pre-order online and pick up in person. Every bite is baked fresh
+              for you.
+            </p>
+
+            <div className="anim-fade-up anim-delay-3 mt-8 flex flex-wrap gap-2.5">
+              <Link href="/order" className="btn-primary">
+                Order pickup
+              </Link>
+              <a href="#menu" className="btn-secondary">
+                View menu
+              </a>
+            </div>
+
+            <p className="anim-fade-up anim-delay-4 hero-meta mt-6">
+              {site.leadTime} {site.pickupNote}
+            </p>
           </div>
 
-          {/* Copy: solid cream card — never covers the logo */}
-          <div className="hero-copy">
-            <div className="shell w-full max-w-xl lg:pl-4 lg:pr-8">
-              <div className="hero-copy-card">
-                <p className="anim-fade-up hero-eyebrow">
-                  We are {site.shortName}
-                </p>
-
-                <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
-                  A home bakery made to{" "}
-                  <span className="hero-accent">sweeten your day</span>
-                </h1>
-
-                <p className="anim-fade-up anim-delay-2 hero-lead mt-4">
-                  Small-batch cinnamon rolls, sticky buns, cake pops, and
-                  alfajores. Pre-order online and pick up in person. Every bite
-                  is baked fresh for you.
-                </p>
-
-                <div className="anim-fade-up anim-delay-3 mt-7 flex flex-wrap gap-2.5">
-                  <Link href="/order" className="btn-primary">
-                    Order pickup
-                  </Link>
-                  <a href="#menu" className="btn-secondary">
-                    View menu
-                  </a>
-                </div>
-
-                <p className="anim-fade-up anim-delay-4 hero-meta mt-6">
-                  {site.leadTime} {site.pickupNote}
-                </p>
-              </div>
+          {/* Logo cutout: floats gently up and down */}
+          <div className="hero-logo-stage">
+            <div className="hero-logo-glow" aria-hidden />
+            <div className="hero-logo-float">
+              <Image
+                src="/brand/logo-mark.png"
+                alt={`${site.name} logo`}
+                width={811}
+                height={811}
+                priority
+                quality={95}
+                className="hero-logo-img"
+                sizes="(max-width: 899px) min(72vw, 22rem), min(40vw, 26rem)"
+              />
             </div>
           </div>
         </div>

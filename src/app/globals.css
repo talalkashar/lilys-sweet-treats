@@ -168,148 +168,205 @@ body {
   color: var(--cocoa);
 }
 
-/* ---------- Hero: logo panel + text panel (no text over logo) ---------- */
+/* ---------- Hero: Dolce-inspired copy + floating logo cutout ---------- */
 .hero-shell {
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(ellipse 80% 60% at 15% 40%, rgba(245, 198, 214, 0.35), transparent 55%),
-    radial-gradient(ellipse 60% 50% at 70% 80%, rgba(201, 180, 232, 0.22), transparent 50%),
-    var(--cream);
+    radial-gradient(ellipse 70% 55% at 88% 42%, rgba(245, 198, 214, 0.45), transparent 58%),
+    radial-gradient(ellipse 50% 45% at 12% 70%, rgba(201, 180, 232, 0.28), transparent 55%),
+    radial-gradient(ellipse 40% 35% at 40% 10%, rgba(232, 247, 241, 0.5), transparent 50%),
+    linear-gradient(180deg, #fff8f5 0%, var(--cream) 55%, #fff6f9 100%);
+  padding-block: clamp(2.25rem, 5vw, 4rem);
+}
+
+/* Soft decorative shapes (Dolce-like atmosphere, not their art) */
+.hero-deco {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-deco--blob {
+  width: min(42vw, 22rem);
+  height: min(42vw, 22rem);
+  right: -4%;
+  top: 12%;
+  border-radius: 48% 52% 45% 55% / 55% 42% 58% 45%;
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(245, 198, 214, 0.55),
+    rgba(201, 180, 232, 0.22) 55%,
+    transparent 70%
+  );
+  filter: blur(2px);
+  animation: hero-blob 10s ease-in-out infinite;
+}
+
+.hero-deco--dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  left: 8%;
+  bottom: 18%;
+  border-radius: 9999px;
+  background: var(--rose);
+  opacity: 0.35;
+  box-shadow:
+    3.5rem -6rem 0 0.15rem rgba(167, 139, 207, 0.35),
+    6rem 2rem 0 0.05rem rgba(232, 74, 136, 0.25),
+    -1rem -3rem 0 0.1rem rgba(125, 211, 192, 0.35);
 }
 
 .hero-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
-  min-height: min(78vh, 36rem);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  min-height: min(72vh, 34rem);
 }
 
 @media (min-width: 900px) {
   .hero-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(2rem, 5vw, 4rem);
   }
 }
 
-/* Text sits on solid cream — never over the logo */
+/* Text beside logo — clean Dolce-style hierarchy */
 .hero-copy {
-  display: flex;
-  align-items: center;
-  background: transparent;
-  padding-block: var(--section-y);
+  max-width: 34rem;
   order: 2;
 }
 
 @media (min-width: 900px) {
   .hero-copy {
     order: 1;
-    border-right: 1px solid rgba(245, 198, 214, 0.35);
-    background: linear-gradient(
-      105deg,
-      rgba(255, 250, 248, 0.98) 0%,
-      rgba(255, 250, 248, 0.96) 70%,
-      rgba(255, 250, 248, 0.9) 100%
-    );
-  }
-}
-
-/* Soft card so copy reads clearly and feels placed */
-.hero-copy-card {
-  width: 100%;
-  padding: 1.35rem 1.25rem 1.5rem;
-  border-radius: var(--radius-xl);
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(245, 198, 214, 0.55);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 14px 36px rgba(44, 34, 40, 0.07);
-}
-
-@media (min-width: 640px) {
-  .hero-copy-card {
-    padding: 1.75rem 1.75rem 1.85rem;
   }
 }
 
 .hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
+  display: inline-block;
   font-size: var(--text-xs);
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--rose-deep);
   line-height: 1.4;
-  padding: 0.35rem 0.7rem;
-  border-radius: 9999px;
-  background: linear-gradient(
-    90deg,
-    rgba(245, 198, 214, 0.55),
-    rgba(201, 180, 232, 0.4),
-    rgba(232, 247, 241, 0.55)
-  );
-  border: 1px solid rgba(232, 74, 136, 0.18);
-}
-
-/* Logo panel: full height of hero, big, no wash/veil */
-.hero-logo-panel {
-  position: relative;
-  order: 1;
-  min-height: 16rem;
-  background: #f7c2d6; /* matches logo pink */
-}
-
-@media (min-width: 900px) {
-  .hero-logo-panel {
-    order: 2;
-    min-height: 100%;
-  }
-}
-
-@media (max-width: 899px) {
-  .hero-logo-panel {
-    aspect-ratio: 17 / 10;
-    min-height: 14rem;
-    max-height: 22rem;
-  }
 }
 
 .hero-title {
   font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(2.15rem, 4.2vw, 3rem);
-  font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -0.025em;
+  font-size: clamp(2.25rem, 4.6vw, 3.35rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
   color: var(--cocoa);
   text-wrap: balance;
 }
 
 .hero-accent {
   color: var(--rose-deep);
+  font-style: italic;
   background-image: linear-gradient(
     120deg,
-    rgba(232, 74, 136, 0.18),
-    rgba(201, 180, 232, 0.22),
-    rgba(125, 211, 192, 0.16)
+    rgba(232, 74, 136, 0.16),
+    rgba(201, 180, 232, 0.2),
+    rgba(125, 211, 192, 0.14)
   );
-  background-size: 100% 42%;
+  background-size: 100% 38%;
   background-repeat: no-repeat;
-  background-position: 0 90%;
+  background-position: 0 92%;
   padding-inline: 0.04em;
 }
 
 .hero-lead {
   color: var(--cocoa-soft);
-  font-size: var(--text-md);
-  line-height: 1.65;
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  line-height: 1.7;
   max-width: 30rem;
 }
 
 .hero-meta {
   font-size: var(--text-sm);
   font-weight: 500;
-  color: var(--cocoa-soft);
-  padding-top: 0.85rem;
-  border-top: 1px dashed rgba(232, 74, 136, 0.25);
+  color: var(--ink-muted);
+  max-width: 28rem;
+  line-height: 1.55;
+}
+
+/* Logo cutout stage */
+.hero-logo-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  order: 1;
+  min-height: 16rem;
+  padding-block: 0.5rem;
+}
+
+@media (min-width: 900px) {
+  .hero-logo-stage {
+    order: 2;
+    min-height: 22rem;
+  }
+}
+
+.hero-logo-glow {
+  position: absolute;
+  inset: 12% 10%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(245, 198, 214, 0.45) 42%,
+    rgba(201, 180, 232, 0.15) 68%,
+    transparent 75%
+  );
+  filter: blur(4px);
+  z-index: 0;
+}
+
+.hero-logo-float {
+  position: relative;
+  z-index: 1;
+  width: min(72vw, 20rem);
+  animation: logo-float 3.6s ease-in-out infinite;
+  filter: drop-shadow(0 18px 28px rgba(232, 74, 136, 0.18));
+}
+
+@media (min-width: 900px) {
+  .hero-logo-float {
+    width: min(40vw, 24rem);
+  }
+}
+
+.hero-logo-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  pointer-events: none;
+}
+
+@keyframes logo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes hero-blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-2%, 3%) scale(1.04);
+  }
 }
 
 /* Header/footer logo mark */
@@ -643,6 +700,10 @@ body {
   .marquee-rainbow {
     animation: none;
     background-position: 0% 50%;
+  }
+  .hero-logo-float,
+  .hero-deco--blob {
+    animation: none;
   }
 }
 
