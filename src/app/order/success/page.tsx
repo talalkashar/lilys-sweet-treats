@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { mapsUrl, site } from "@/data/site";
+import { notifyOrderPaidOnce } from "@/lib/order-notify";
 import { getStripe } from "@/lib/stripe";
 
 type Props = {
@@ -11,14 +12,22 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
   const paymentIntentId = params.payment_intent?.trim();
 
   let status: "succeeded" | "processing" | "failed" | "unknown" = "unknown";
+  let emailNote: string | null = null;
 
   // Prefer server-side Stripe verification over trusting query params alone
-  if (paymentIntentId && /^pi_[a-zA-Z0-9]+$/.test(paymentIntentId)) {
+  if (paymentIntentId && /^pi_[a-zA-Z0-9_]+$/.test(paymentIntentId)) {
     try {
       const stripe = getStripe();
       const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
-      if (pi.status === "succeeded") status = "succeeded";
-      else if (
+      if (pi.status === "succeeded") {
+        status = "succeeded";
+        // Backup path: send emails even if Stripe webhook never arrives
+        const notify = await notifyOrderPaidOnce(pi);
+        console.log("[success] notify", notify);
+        if (notify.sent) {
+          emailNote = "Confirmation emails were sent.";
+        }
+      } else if (
         pi.status === "processing" ||
         pi.status === "requires_capture"
       ) {
@@ -26,11 +35,11 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
       } else {
         status = "failed";
       }
-    } catch {
+    } catch (err) {
+      console.error("[success] payment verify failed", err);
       status = "unknown";
     }
   } else if (params.redirect_status === "succeeded") {
-    // Fallback only if Stripe redirected without id (should be rare)
     status = "succeeded";
   } else if (params.redirect_status) {
     status = "failed";
@@ -71,6 +80,9 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
           {title}
         </h1>
         <p className="mt-3 text-[var(--cocoa-soft)]">{body}</p>
+        {emailNote ? (
+          <p className="mt-2 text-sm text-[var(--cocoa-soft)]">{emailNote}</p>
+        ) : null}
         {ok ? (
           <p className="mt-4 text-sm leading-relaxed text-[var(--cocoa-soft)]">
             <span className="font-semibold text-[var(--cocoa)]">Pickup at</span>

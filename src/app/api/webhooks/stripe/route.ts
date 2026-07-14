@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
-import { sendOrderEmails } from "@/lib/email";
+import { notifyOrderPaidOnce } from "@/lib/order-notify";
 import { getStripe } from "@/lib/stripe";
-import { site } from "@/data/site";
 
 export const runtime = "nodejs";
 
 /**
- * Stripe webhook: fires when payment succeeds so we can email Lily + the customer.
- * Configure in Stripe Dashboard → Developers → Webhooks:
+ * Stripe webhook backup path for order emails.
+ * Primary path also runs on /order/success after payment.
+ *
+ * Dashboard → Webhooks:
  *   URL: https://www.lilyssweettreatsva.com/api/webhooks/stripe
- *   Events: payment_intent.succeeded
- *   Signing secret → STRIPE_WEBHOOK_SECRET
+ *   Event: payment_intent.succeeded
+ *   Secret → STRIPE_WEBHOOK_SECRET
  */
 export async function POST(req: Request) {
   const stripe = getStripe();
@@ -43,27 +44,16 @@ export async function POST(req: Request) {
   try {
     if (event.type === "payment_intent.succeeded") {
       const pi = event.data.object as Stripe.PaymentIntent;
-      const meta = pi.metadata || {};
-
-      await sendOrderEmails({
-        paymentIntentId: pi.id,
-        amountCents: pi.amount_received || pi.amount,
-        productName: meta.productName || "Order",
-        quantity: meta.quantity || "1",
-        customerName: meta.customerName || "Customer",
-        customerPhone: meta.customerPhone || "",
-        customerEmail: meta.customerEmail || pi.receipt_email || "",
-        pickupWindow: meta.pickupWindow || "TBD",
-        notes: meta.notes || "",
-        pickupAddress: meta.pickupAddress || site.addressLine,
-      });
+      // Re-fetch so we have latest metadata (emailsSent lock)
+      const fresh = await stripe.paymentIntents.retrieve(pi.id);
+      await notifyOrderPaidOnce(fresh);
+    } else {
+      console.log("[stripe webhook] ignored event", event.type);
     }
 
-    // Acknowledge quickly so Stripe doesn't retry forever
     return NextResponse.json({ received: true });
   } catch (err) {
     console.error("[stripe webhook] handler error", err);
-    // Return 500 so Stripe retries
     return NextResponse.json({ error: "Handler failed" }, { status: 500 });
   }
 }
