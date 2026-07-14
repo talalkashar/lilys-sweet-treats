@@ -28,48 +28,50 @@ export default function Home() {
             />
           </div>
 
-          {/* Copy: solid cream — never covers the logo */}
+          {/* Copy: solid cream card — never covers the logo */}
           <div className="hero-copy">
             <div className="shell w-full max-w-xl lg:pl-4 lg:pr-8">
-              <p className="anim-fade-up section-label">
-                We are {site.shortName}
-              </p>
+              <div className="hero-copy-card">
+                <p className="anim-fade-up hero-eyebrow">
+                  We are {site.shortName}
+                </p>
 
-              <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
-                A home bakery made to{" "}
-                <span className="hero-accent">sweeten your day</span>
-              </h1>
+                <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
+                  A home bakery made to{" "}
+                  <span className="hero-accent">sweeten your day</span>
+                </h1>
 
-              <p className="anim-fade-up anim-delay-2 prose-soft mt-4">
-                Small-batch cinnamon rolls, sticky buns, cake pops, and
-                alfajores. Pre-order online and pick up in person. Every bite is
-                baked fresh for you.
-              </p>
+                <p className="anim-fade-up anim-delay-2 hero-lead mt-4">
+                  Small-batch cinnamon rolls, sticky buns, cake pops, and
+                  alfajores. Pre-order online and pick up in person. Every bite
+                  is baked fresh for you.
+                </p>
 
-              <div className="anim-fade-up anim-delay-3 mt-7 flex flex-wrap gap-2.5">
-                <Link href="/order" className="btn-primary">
-                  Order pickup
-                </Link>
-                <a href="#menu" className="btn-secondary">
-                  View menu
-                </a>
+                <div className="anim-fade-up anim-delay-3 mt-7 flex flex-wrap gap-2.5">
+                  <Link href="/order" className="btn-primary">
+                    Order pickup
+                  </Link>
+                  <a href="#menu" className="btn-secondary">
+                    View menu
+                  </a>
+                </div>
+
+                <p className="anim-fade-up anim-delay-4 hero-meta mt-6">
+                  {site.leadTime} {site.pickupNote}
+                </p>
               </div>
-
-              <p className="anim-fade-up anim-delay-4 mt-6 text-sm text-[var(--cocoa-soft)]">
-                {site.leadTime} {site.pickupNote}
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Marquee like Dolce’s “every bite is made fresh” */}
+      {/* Rainbow marquee — colorful porch pickup banner */}
       <div className="marquee-bar" aria-hidden>
         <div className="marquee-track">
           {Array.from({ length: 12 }).map((_, i) => (
-            <span key={i}>
-              {marqueeLine}
-              <span className="mx-3 opacity-40">✦</span>
+            <span key={i} className="marquee-item">
+              <span className="marquee-rainbow">{marqueeLine}</span>
+              <span className="marquee-spark">✦</span>
             </span>
           ))}
         </div>
