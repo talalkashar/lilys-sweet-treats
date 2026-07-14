@@ -12,60 +12,52 @@ export default function Home() {
 
   return (
     <>
-      {/* HERO — full-bleed brand logo as the background */}
+      {/* HERO — big logo panel + text panel (no overlay on logo) */}
       <section className="hero-shell">
-        <div className="hero-logo-bg" aria-hidden>
-          <Image
-            src={site.logoFull}
-            alt=""
-            fill
-            priority
-            quality={95}
-            className="object-cover object-center"
-            sizes="100vw"
-          />
-        </div>
-        <div className="hero-logo-veil" aria-hidden />
+        <div className="hero-grid">
+          {/* Logo: full panel, no text on top */}
+          <div className="hero-logo-panel">
+            <Image
+              src={site.logoFull}
+              alt={`${site.name} logo`}
+              fill
+              priority
+              quality={95}
+              className="object-cover object-center"
+              sizes="(max-width: 899px) 100vw, 55vw"
+            />
+          </div>
 
-        <div className="hero-content shell section-pad flex min-h-[inherit] items-center">
-          <div className="max-w-xl py-6 sm:py-10 lg:py-14">
-            <p className="anim-fade-up section-label">We are {site.shortName}</p>
+          {/* Copy: solid cream — never covers the logo */}
+          <div className="hero-copy">
+            <div className="shell w-full max-w-xl lg:pl-4 lg:pr-8">
+              <p className="anim-fade-up section-label">
+                We are {site.shortName}
+              </p>
 
-            <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
-              A home bakery made to{" "}
-              <span className="hero-accent">sweeten your day</span>
-            </h1>
+              <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
+                A home bakery made to{" "}
+                <span className="hero-accent">sweeten your day</span>
+              </h1>
 
-            <p className="anim-fade-up anim-delay-2 prose-soft mt-4">
-              Small-batch cinnamon rolls, sticky buns, cake pops, and
-              alfajores. Pre-order online and pick up in person. Every bite is
-              baked fresh for you.
-            </p>
+              <p className="anim-fade-up anim-delay-2 prose-soft mt-4">
+                Small-batch cinnamon rolls, sticky buns, cake pops, and
+                alfajores. Pre-order online and pick up in person. Every bite is
+                baked fresh for you.
+              </p>
 
-            <div className="anim-fade-up anim-delay-3 mt-7 flex flex-wrap gap-2.5">
-              <Link href="/order" className="btn-primary">
-                Order pickup
-              </Link>
-              <a href="#menu" className="btn-secondary">
-                View menu
-              </a>
-            </div>
+              <div className="anim-fade-up anim-delay-3 mt-7 flex flex-wrap gap-2.5">
+                <Link href="/order" className="btn-primary">
+                  Order pickup
+                </Link>
+                <a href="#menu" className="btn-secondary">
+                  View menu
+                </a>
+              </div>
 
-            <p className="anim-fade-up anim-delay-4 mt-6 text-sm text-[var(--cocoa-soft)]">
-              {site.leadTime} {site.pickupNote}
-            </p>
-
-            {/* Mobile: extra clear logo card so brand still reads sharp up close */}
-            <div className="hero-logo-chip anim-fade-up anim-delay-2">
-              <Image
-                src={site.logoFull}
-                alt={`${site.name} logo`}
-                fill
-                priority
-                quality={95}
-                className="object-cover object-center"
-                sizes="(max-width: 767px) 18rem, 1px"
-              />
+              <p className="anim-fade-up anim-delay-4 mt-6 text-sm text-[var(--cocoa-soft)]">
+                {site.leadTime} {site.pickupNote}
+              </p>
             </div>
           </div>
         </div>

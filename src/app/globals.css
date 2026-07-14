@@ -168,75 +168,61 @@ body {
   color: var(--cocoa);
 }
 
-/* ---------- Hero: logo as the background ---------- */
+/* ---------- Hero: logo panel + text panel (no text over logo) ---------- */
 .hero-shell {
   position: relative;
   overflow: hidden;
-  isolation: isolate;
-  min-height: min(88vh, 42rem);
-  background: #f7c2d6; /* matches logo pink so edges never look empty */
+  background: var(--cream);
 }
 
-/* Full-bleed logo board */
-.hero-logo-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+.hero-grid {
+  display: grid;
+  min-height: min(78vh, 36rem);
 }
 
-.hero-logo-bg img {
-  object-fit: cover;
-  object-position: center center;
-}
-
-/* Soft wash so copy stays readable without hiding the logo */
-.hero-logo-veil {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      105deg,
-      rgba(255, 250, 248, 0.94) 0%,
-      rgba(255, 250, 248, 0.78) 34%,
-      rgba(255, 250, 248, 0.28) 62%,
-      rgba(255, 250, 248, 0.12) 100%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(255, 250, 248, 0.2) 0%,
-      transparent 30%,
-      transparent 70%,
-      rgba(255, 250, 248, 0.35) 100%
-    );
-}
-
-@media (max-width: 767px) {
-  .hero-shell {
-    min-height: auto;
-  }
-
-  .hero-logo-bg {
-    /* On mobile, show more of the logo as a banner under the text block feel */
-    position: absolute;
-    inset: 0;
-  }
-
-  .hero-logo-veil {
-    background: linear-gradient(
-      180deg,
-      rgba(255, 250, 248, 0.92) 0%,
-      rgba(255, 250, 248, 0.82) 42%,
-      rgba(255, 250, 248, 0.45) 70%,
-      rgba(255, 250, 248, 0.25) 100%
-    );
+@media (min-width: 900px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
   }
 }
 
-.hero-content {
+/* Text sits on solid cream — never over the logo */
+.hero-copy {
+  display: flex;
+  align-items: center;
+  background: var(--cream);
+  padding-block: var(--section-y);
+  order: 2;
+}
+
+@media (min-width: 900px) {
+  .hero-copy {
+    order: 1;
+    border-right: 1px solid rgba(245, 198, 214, 0.35);
+  }
+}
+
+/* Logo panel: full height of hero, big, no wash/veil */
+.hero-logo-panel {
   position: relative;
-  z-index: 2;
+  order: 1;
+  min-height: 16rem;
+  background: #f7c2d6; /* matches logo pink */
+}
+
+@media (min-width: 900px) {
+  .hero-logo-panel {
+    order: 2;
+    min-height: 100%;
+  }
+}
+
+@media (max-width: 899px) {
+  .hero-logo-panel {
+    aspect-ratio: 17 / 10;
+    min-height: 14rem;
+    max-height: 22rem;
+  }
 }
 
 .hero-title {
@@ -259,26 +245,6 @@ body {
   background-repeat: no-repeat;
   background-position: 0 92%;
   padding-inline: 0.02em;
-}
-
-/* Optional floating logo chip on mobile for brand clarity */
-.hero-logo-chip {
-  position: relative;
-  width: min(100%, 18rem);
-  aspect-ratio: 17 / 10;
-  margin-inline: auto;
-  margin-top: var(--space-8);
-  overflow: hidden;
-  border-radius: var(--radius-xl);
-  border: 2px solid rgba(255, 255, 255, 0.95);
-  box-shadow: var(--shadow-lift);
-  background: #f7c2d6;
-}
-
-@media (min-width: 768px) {
-  .hero-logo-chip {
-    display: none; /* desktop: logo already fills the hero background */
-  }
 }
 
 /* Header/footer logo mark */
