@@ -7,29 +7,28 @@ import { site } from "@/data/site";
 export default function Home() {
   return (
     <>
-      {/* HERO */}
       <section className="hero-shell">
         <div className="hero-pattern" aria-hidden />
         <div className="hero-pattern-veil" aria-hidden />
 
         <div className="hero-content shell section-pad">
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
+          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
+            <div className="max-w-xl">
               <p className="anim-fade-up section-label">
-                Home bakery · Porch pickup
+                Home bakery, porch pickup
               </p>
 
-              <h1 className="anim-fade-up anim-delay-1 mt-4 font-display text-[clamp(2.6rem,5.5vw,3.75rem)] leading-[1.05] tracking-tight text-[var(--cocoa)]">
+              <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
                 Handmade treats,{" "}
                 <span className="hero-accent">ready for pickup</span>
               </h1>
 
-              <p className="anim-fade-up anim-delay-2 prose-soft mt-5">
+              <p className="anim-fade-up anim-delay-2 prose-soft mt-4">
                 Pre-order cinnamon rolls, sticky buns, and specialty sweets.
                 Pay online, pick up in person. No delivery.
               </p>
 
-              <div className="anim-fade-up anim-delay-3 mt-8 flex flex-wrap gap-3">
+              <div className="anim-fade-up anim-delay-3 mt-7 flex flex-wrap gap-2.5">
                 <Link href="/order" className="btn-primary">
                   Order and pay
                 </Link>
@@ -38,13 +37,13 @@ export default function Home() {
                 </a>
               </div>
 
-              <p className="anim-fade-up anim-delay-4 mt-8 text-sm text-[var(--cocoa-soft)]">
+              <p className="anim-fade-up anim-delay-4 mt-6 text-sm leading-relaxed text-[var(--cocoa-soft)]">
                 {site.leadTime}
               </p>
             </div>
 
-            <div className="anim-fade-up anim-delay-2">
-              <div className="logo-frame relative mx-auto aspect-[17/10] w-full max-w-lg lg:max-w-none">
+            <div className="anim-fade-up anim-delay-2 w-full">
+              <div className="logo-frame">
                 <Image
                   src={site.logoFull}
                   alt={`${site.name} logo`}
@@ -52,7 +51,7 @@ export default function Home() {
                   priority
                   quality={95}
                   className="object-cover object-center"
-                  sizes="(max-width: 1024px) 90vw, 520px"
+                  sizes="(max-width: 1024px) min(90vw, 22rem), 22rem"
                 />
               </div>
             </div>
@@ -62,15 +61,14 @@ export default function Home() {
 
       <div className="brand-divider" aria-hidden />
 
-      {/* MENU */}
       <section id="menu" className="section-menu section-pad">
         <div className="shell">
           <Reveal>
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-              <div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+              <div className="max-w-lg">
                 <p className="section-label">Menu</p>
                 <h2 className="section-title mt-2">What we bake</h2>
-                <p className="prose-soft mt-3">
+                <p className="prose-soft mt-2.5">
                   Open any treat for details. When you are ready, head to
                   checkout.
                 </p>
@@ -85,20 +83,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
       <section id="how-it-works" className="section-steps section-pad">
         <div className="shell">
           <Reveal>
-            <div className="mx-auto max-w-xl text-center">
+            <div className="mx-auto max-w-md text-center">
               <p className="section-label">How it works</p>
               <h2 className="section-title mt-2">Order in three steps</h2>
-              <p className="prose-soft mx-auto mt-3 text-center">
-                Simple porch pickup. No delivery, no hassle.
+              <p className="prose-soft mx-auto mt-2.5 text-center">
+                Simple porch pickup. No delivery.
               </p>
             </div>
           </Reveal>
 
-          <ol className="mt-12 grid gap-5 md:grid-cols-3">
+          <ol className="mt-10 grid gap-4 md:grid-cols-3 md:gap-5">
             {[
               {
                 n: "1",
@@ -116,15 +113,15 @@ export default function Home() {
                 d: "We bake for your window. You pick up.",
               },
             ].map((step, i) => (
-              <Reveal key={step.n} delayMs={i * 80}>
-                <li className="step-card h-full p-6 sm:p-7">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--rose)] text-sm font-bold text-white">
+              <Reveal key={step.n} delayMs={i * 70}>
+                <li className="step-card h-full">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--rose)] text-xs font-bold text-white">
                     {step.n}
                   </span>
-                  <h3 className="mt-4 font-display text-xl text-[var(--cocoa)] sm:text-2xl">
+                  <h3 className="mt-3 font-display text-lg text-[var(--cocoa)]">
                     {step.t}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+                  <p className="mt-1.5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
                     {step.d}
                   </p>
                 </li>
@@ -133,7 +130,7 @@ export default function Home() {
           </ol>
 
           <Reveal>
-            <div className="mt-11 text-center">
+            <div className="mt-10 text-center">
               <Link href="/order" className="btn-primary">
                 Start your order
               </Link>
@@ -142,20 +139,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CONTACT */}
       <section id="contact" className="section-contact section-pad">
-        <div className="shell flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="shell flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
           <Reveal>
-            <div>
+            <div className="max-w-md">
               <p className="section-label">Contact</p>
               <h2 className="section-title mt-2">Questions?</h2>
-              <p className="prose-soft mt-3">
+              <p className="prose-soft mt-2.5">
                 Custom orders or pickup details? Reach out anytime.
               </p>
             </div>
           </Reveal>
-          <Reveal delayMs={60}>
-            <div className="flex flex-col gap-3 sm:items-end">
+          <Reveal delayMs={50}>
+            <div className="flex flex-col gap-2.5 sm:items-end">
               <a
                 href={`tel:${site.phone.replace(/\D/g, "")}`}
                 className="btn-primary"

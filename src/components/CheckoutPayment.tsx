@@ -60,7 +60,7 @@ export function CheckoutPayment({ totalLabel, onBack }: Props) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--cocoa-soft)]">
           Total{" "}
-          <span className="ml-1 font-display text-2xl font-medium text-[var(--cocoa)]">
+          <span className="ml-1 font-display text-xl font-medium tabular-nums text-[var(--cocoa)]">
             {totalLabel}
           </span>
         </p>

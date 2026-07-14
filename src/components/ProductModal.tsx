@@ -39,54 +39,53 @@ export function ProductModal({ product, onClose }: Props) {
         onClick={onClose}
       />
 
-      <div className="modal-panel relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border-2 border-white bg-white shadow-2xl sm:max-h-[90vh] sm:rounded-3xl">
-        {/* Fixed height frame: image fits fully (contain) so nothing looks stretched */}
-        <div className="relative h-[min(48vh,360px)] shrink-0 bg-[var(--cream-deep)] sm:h-[380px]">
+      <div className="modal-panel relative z-10 flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-t-2xl border border-white bg-white shadow-[var(--shadow-lift)] sm:max-h-[85vh] sm:rounded-2xl">
+        <div className="relative h-52 shrink-0 bg-[var(--cream-deep)] sm:h-56">
           {product.image ? (
             <Image
               src={product.image}
               alt={product.name}
               fill
-              quality={92}
-              className="object-contain object-center p-2 sm:p-3"
-              sizes="(max-width: 640px) 100vw, 512px"
+              quality={90}
+              className="object-contain object-center p-3"
+              sizes="(max-width: 640px) 100vw, 28rem"
               priority
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-6xl">
+            <div className="flex h-full items-center justify-center text-5xl">
               {product.emoji}
             </div>
           )}
           <button
             type="button"
             onClick={onClose}
-            className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-xl text-[var(--cocoa)] shadow-md backdrop-blur transition hover:bg-white"
+            className="absolute right-2.5 top-2.5 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-lg text-[var(--cocoa)] shadow-sm"
             aria-label="Close"
           >
             ×
           </button>
         </div>
 
-        <div className="overflow-y-auto p-6 sm:p-8">
+        <div className="overflow-y-auto p-5 sm:p-6">
           <div className="flex items-start justify-between gap-3">
             <h2
               id="product-modal-title"
-              className="font-display text-3xl leading-tight text-[var(--cocoa)]"
+              className="font-display text-xl leading-snug text-[var(--cocoa)] sm:text-2xl"
             >
               {product.name}
             </h2>
-            <p className="shrink-0 rounded-full bg-[var(--lavender-soft)] px-3 py-1 text-base font-semibold text-[var(--cocoa)]">
+            <p className="shrink-0 text-sm font-semibold tabular-nums text-[var(--rose)]">
               ${product.price.toFixed(0)}
             </p>
           </div>
-          <p className="mt-4 text-[1.05rem] leading-relaxed text-[var(--cocoa-soft)]">
+          <p className="mt-3 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:text-base">
             {product.description}
           </p>
-          <p className="mt-4 text-sm text-[var(--ink-muted)]">
+          <p className="mt-3 text-xs text-[var(--ink-muted)]">
             Porch pickup only. Pre-order required.
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
             <a
               href={`/order?product=${product.id}`}
               onClick={onClose}

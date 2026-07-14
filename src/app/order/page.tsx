@@ -11,7 +11,7 @@ export const metadata = {
 export default function OrderPage() {
   return (
     <div className="min-h-[70vh] bg-[var(--cream)]">
-      <div className="shell py-10 sm:py-14">
+      <div className="shell py-8 sm:py-12">
         <Link
           href="/#menu"
           className="text-sm font-medium text-[var(--cocoa-soft)] transition hover:text-[var(--rose)]"
@@ -19,26 +19,26 @@ export default function OrderPage() {
           ← Back to menu
         </Link>
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-14">
-          <aside className="lg:sticky lg:top-28">
+        <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,17.5rem)_minmax(0,1fr)] lg:items-start lg:gap-10">
+          <aside className="lg:sticky lg:top-20">
             <p className="section-label">Checkout</p>
             <h1 className="section-title mt-2">Order for pickup</h1>
-            <p className="prose-soft mt-4">
+            <p className="prose-soft mt-3">
               Choose your treats, pick a window, and pay here. We bake for your
               slot. No delivery.
             </p>
 
-            <ol className="mt-8 space-y-3 text-sm text-[var(--cocoa-soft)]">
+            <ol className="mt-6 space-y-2 text-sm text-[var(--cocoa-soft)]">
               {[
-                "Enter your details and choose a treat",
+                "Enter details and choose a treat",
                 "Pay securely on this page",
                 "Pick up at the porch when ready",
               ].map((line, i) => (
                 <li
                   key={line}
-                  className="flex gap-3 rounded-xl border border-[var(--blush)]/40 bg-white px-4 py-3"
+                  className="flex gap-2.5 rounded-lg border border-[var(--blush)]/40 bg-white px-3 py-2.5"
                 >
-                  <span className="font-semibold text-[var(--rose)]">
+                  <span className="font-semibold tabular-nums text-[var(--rose)]">
                     {i + 1}
                   </span>
                   <span>{line}</span>
@@ -46,17 +46,17 @@ export default function OrderPage() {
               ))}
             </ol>
 
-            <p className="mt-8 text-sm text-[var(--ink-muted)]">
+            <p className="mt-6 text-sm leading-relaxed text-[var(--ink-muted)]">
               {site.leadTime}
               <br />
               {site.pickupNote}
             </p>
           </aside>
 
-          <div className="min-w-0">
+          <div className="min-w-0 max-w-xl lg:max-w-none">
             <Suspense
               fallback={
-                <div className="form-shell p-10 text-center text-[var(--cocoa-soft)]">
+                <div className="form-shell p-8 text-center text-sm text-[var(--cocoa-soft)]">
                   Loading checkout…
                 </div>
               }

@@ -116,13 +116,13 @@ export function OrderForm() {
 
   if (step === "pay" && clientSecret) {
     return (
-      <div className="form-shell p-6 sm:p-8">
-        <div className="mb-6">
+      <div className="form-shell p-5 sm:p-6">
+        <div className="mb-5">
           <p className="section-label">Step 2 of 2</p>
-          <h3 className="mt-1 font-display text-2xl text-[var(--cocoa)]">
+          <h3 className="mt-1 font-display text-xl text-[var(--cocoa)]">
             Payment
           </h3>
-          <p className="mt-2 text-sm text-[var(--cocoa-soft)]">
+          <p className="mt-1.5 text-sm text-[var(--cocoa-soft)]">
             {selected?.name} × {form.quantity}, {form.pickupWindow}
           </p>
         </div>
@@ -149,14 +149,14 @@ export function OrderForm() {
   return (
     <form
       onSubmit={onContinueToPayment}
-      className="form-shell p-6 sm:p-8"
+      className="form-shell p-5 sm:p-6"
     >
-      <div className="mb-6">
+      <div className="mb-5">
         <p className="section-label">Step 1 of 2</p>
-        <h3 className="mt-1 font-display text-2xl text-[var(--cocoa)]">
+        <h3 className="mt-1 font-display text-xl text-[var(--cocoa)]">
           Your order
         </h3>
-        <p className="mt-2 text-sm text-[var(--cocoa-soft)]">
+        <p className="mt-1.5 text-sm text-[var(--cocoa-soft)]">
           Porch pickup only. Pay on the next step.
         </p>
       </div>
@@ -281,10 +281,10 @@ export function OrderForm() {
         </p>
       ) : null}
 
-      <div className="mt-8 flex flex-col gap-4 border-t border-[var(--blush)]/70 pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-6 flex flex-col gap-3 border-t border-[var(--blush)]/60 pt-5 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--cocoa-soft)]">
           Estimated total
-          <span className="ml-2 font-display text-3xl font-medium text-[var(--cocoa)]">
+          <span className="ml-2 font-display text-2xl font-medium tabular-nums text-[var(--cocoa)]">
             ${total.toFixed(2)}
           </span>
         </p>
