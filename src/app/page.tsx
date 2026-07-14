@@ -3,9 +3,14 @@ import Link from "next/link";
 import { MenuGrid } from "@/components/MenuGrid";
 import { Reveal } from "@/components/Reveal";
 import { products } from "@/data/products";
+import { reviews } from "@/data/reviews";
 import { site } from "@/data/site";
 
-const marqueeLine = "Made fresh for porch pickup";
+const marqueeLines = [
+  "Made fresh for porch pickup",
+  "New flavors every week",
+  "Menu rotates with the season",
+];
 
 export default function Home() {
   const gallery = products.filter((p) => p.image).slice(0, 3);
@@ -95,8 +100,8 @@ export default function Home() {
 
             <p className="anim-fade-up anim-delay-2 hero-lead mt-5">
               Small-batch cinnamon rolls, sticky buns, cake pops, and alfajores.
-              Pre-order online and pick up in person. Every bite is baked fresh
-              for you.
+              Pre-order online and pick up in person. We bake something new
+              almost every week, so the menu stays fresh.
             </p>
 
             <div className="anim-fade-up anim-delay-3 mt-8 flex flex-wrap gap-2.5">
@@ -118,10 +123,10 @@ export default function Home() {
             <div className="hero-logo-glow" aria-hidden />
             <div className="hero-logo-float">
               <Image
-                src="/brand/logo-mark.png"
+                src="/brand/logo-mark-hero.png"
                 alt={`${site.name} logo`}
-                width={811}
-                height={811}
+                width={1254}
+                height={1254}
                 priority
                 quality={95}
                 className="hero-logo-img"
@@ -137,7 +142,9 @@ export default function Home() {
         <div className="marquee-track">
           {Array.from({ length: 12 }).map((_, i) => (
             <span key={i} className="marquee-item">
-              <span className="marquee-rainbow">{marqueeLine}</span>
+              <span className="marquee-rainbow">
+                {marqueeLines[i % marqueeLines.length]}
+              </span>
               <span className="marquee-spark">✦</span>
             </span>
           ))}
@@ -195,10 +202,10 @@ export default function Home() {
                 Every treat is made fresh, right here
               </h2>
               <p className="prose-soft mt-4">
-                From apple caramel and peach cobbler cinnamon rolls to sticky
-                buns, cake pop bouquets, and classic alfajores, everything is
-                prepared to order for porch pickup. No storefront rush. Just
-                careful baking for your day.
+                From cinnamon rolls and sticky buns to cake pop bouquets and
+                alfajores, everything is prepared to order for porch pickup. We
+                rotate flavors week to week, so there is always something new
+                to try. No storefront rush. Just careful baking for your day.
               </p>
               <Link href="#menu" className="btn-secondary mt-7">
                 Explore the menu
@@ -214,20 +221,16 @@ export default function Home() {
       <section id="menu" className="section-menu section-pad">
         <div className="shell">
           <Reveal>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
-              <div className="max-w-lg">
-                <p className="section-label">Menu</p>
-                <h2 className="section-title mt-2">
-                  From scratch treats for pickup
-                </h2>
-                <p className="prose-soft mt-2.5">
-                  Browse by category. Tap a treat for details, then order when
-                  you are ready.
-                </p>
-              </div>
-              <Link href="/order" className="btn-primary shrink-0 self-start">
-                Order pickup
-              </Link>
+            <div className="max-w-xl">
+              <p className="section-label">Menu</p>
+              <h2 className="section-title mt-2">
+                From scratch treats for pickup
+              </h2>
+              <p className="prose-soft mt-2.5">
+                Browse what we are baking this week. Tap a treat for details,
+                then order when you are ready.
+              </p>
+              <p className="menu-flex-note mt-3">{site.menuNote}</p>
             </div>
           </Reveal>
 
@@ -253,7 +256,7 @@ export default function Home() {
               {
                 n: "1",
                 t: "Choose treats",
-                d: "Browse the menu and pick what you want.",
+                d: "Browse this week's menu and pick what you want.",
               },
               {
                 n: "2",
@@ -263,7 +266,7 @@ export default function Home() {
               {
                 n: "3",
                 t: "Porch pickup",
-                d: "We bake for your window. You collect.",
+                d: `We bake for your window. Pickup at ${site.address.line1}, ${site.address.city}.`,
               },
             ].map((step, i) => (
               <Reveal key={step.n} delayMs={i * 70}>
@@ -281,6 +284,87 @@ export default function Home() {
               </Reveal>
             ))}
           </ol>
+        </div>
+      </section>
+
+      {/* Guest reviews */}
+      <section id="reviews" className="section-reviews section-pad">
+        <div className="section-reviews-glow" aria-hidden />
+        <div className="shell relative">
+          <Reveal>
+            <div className="reviews-header">
+              <p className="section-label">From our guests</p>
+              <h2 className="section-title mt-2">
+                Sweet words from people nearby
+              </h2>
+              <p className="prose-soft mx-auto mt-2.5 text-center">
+                A few notes from folks who have ordered for porch pickup.
+              </p>
+              <div className="reviews-rating-pill" aria-hidden>
+                <span className="reviews-rating-stars">★★★★★</span>
+                <span className="reviews-rating-text">Loved by local guests</span>
+              </div>
+            </div>
+          </Reveal>
+
+          <div className="reviews-grid mt-10">
+            {reviews.map((review, i) => {
+              const initials = review.name
+                .split(" ")
+                .map((part) => part[0])
+                .join("")
+                .slice(0, 2);
+
+              return (
+                <Reveal key={review.id} delayMs={i * 45}>
+                  <figure
+                    className={`review-card${i === 0 ? " review-card--featured" : ""}`}
+                  >
+                    <span className="review-mark" aria-hidden>
+                      “
+                    </span>
+
+                    <div
+                      className="review-stars"
+                      aria-label={`${review.stars} out of 5 stars`}
+                    >
+                      {Array.from({ length: 5 }).map((_, s) => (
+                        <span
+                          key={s}
+                          className={
+                            s < review.stars
+                              ? "review-star review-star--on"
+                              : "review-star"
+                          }
+                          aria-hidden
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+
+                    <blockquote className="review-quote">
+                      {review.quote}
+                    </blockquote>
+
+                    <figcaption className="review-author">
+                      <span className="review-avatar" aria-hidden>
+                        {initials}
+                      </span>
+                      <span className="review-meta">
+                        <span className="review-name">{review.name}</span>
+                        {review.place ? (
+                          <span className="review-place">{review.place}</span>
+                        ) : (
+                          <span className="review-place">Local guest</span>
+                        )}
+                      </span>
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              );
+            })}
+          </div>
         </div>
       </section>
 

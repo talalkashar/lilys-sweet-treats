@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { site } from "@/data/site";
+import { mapsUrl, site } from "@/data/site";
 
 type Props = {
   searchParams: Promise<{ payment_intent?: string; redirect_status?: string }>;
@@ -20,9 +20,23 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
         </h1>
         <p className="mt-3 text-[var(--cocoa-soft)]">
           {ok
-            ? "Thanks for your order. We will confirm pickup details by phone or email soon. Porch pickup only."
+            ? "Thanks for your order. We will confirm your pickup window by phone or email soon. Porch pickup only."
             : "If you were charged, we will still receive your order. Contact us if you need help."}
         </p>
+        {ok ? (
+          <p className="mt-4 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+            <span className="font-semibold text-[var(--cocoa)]">Pickup at</span>
+            <br />
+            <a
+              href={mapsUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-[var(--rose)] hover:underline"
+            >
+              {site.addressLine}
+            </a>
+          </p>
+        ) : null}
         <p className="mt-6 text-sm text-[var(--cocoa-soft)]">
           Questions?{" "}
           <a

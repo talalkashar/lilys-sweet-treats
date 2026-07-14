@@ -81,6 +81,21 @@ export function ProductModal({ product, onClose }: Props) {
           <p className="mt-3 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:text-base">
             {product.description}
           </p>
+
+          {product.ingredients.length > 0 ? (
+            <div className="product-ingredients mt-4">
+              <p className="product-ingredients-label">Ingredients</p>
+              <ul className="product-ingredients-list">
+                {product.ingredients.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs text-[var(--ink-muted)]">
+                Major ingredients listed. Weekly specials may vary slightly.
+              </p>
+            </div>
+          ) : null}
+
           <p className="mt-3 text-xs text-[var(--ink-muted)]">
             Porch pickup only. Pre-order required.
           </p>

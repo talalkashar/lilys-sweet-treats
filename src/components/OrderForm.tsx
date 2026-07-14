@@ -158,7 +158,8 @@ export function OrderForm() {
           Your order
         </h3>
         <p className="mt-1.5 text-sm text-[var(--cocoa-soft)]">
-          Porch pickup only. Pay on the next step.
+          Porch pickup at {site.address.line1}, {site.address.city}. Pay on the
+          next step.
         </p>
       </div>
 

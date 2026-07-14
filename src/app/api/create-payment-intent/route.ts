@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { products } from "@/data/products";
+import { site } from "@/data/site";
 import { getStripe } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -60,6 +61,7 @@ export async function POST(req: Request) {
         pickupWindow,
         notes: notes.slice(0, 450),
         fulfillment: "porch_pickup",
+        pickupAddress: site.addressLine,
       },
     });
 
