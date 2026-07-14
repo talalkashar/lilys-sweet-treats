@@ -84,8 +84,10 @@ export function CheckoutPayment({ totalLabel, onBack }: Props) {
       </div>
 
       <p className="text-center text-xs text-[var(--ink-muted)]">
-        Secure card payment. You stay on this site. Test mode accepts card
-        4242 4242 4242 4242.
+        Secure card payment powered by Stripe. You stay on this site.
+        {process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.startsWith("pk_test")
+          ? " Test mode: use card 4242 4242 4242 4242."
+          : ""}
       </p>
     </form>
   );

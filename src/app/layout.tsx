@@ -19,8 +19,21 @@ const body = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.lilyssweettreatsva.com"),
   title: `${site.name} | Pre-order & Porch Pickup`,
   description: site.description,
+  openGraph: {
+    title: `${site.name} | Pre-order & Porch Pickup`,
+    description: site.description,
+    url: "https://www.lilyssweettreatsva.com",
+    siteName: site.name,
+    locale: "en_US",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

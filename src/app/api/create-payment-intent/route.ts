@@ -1,52 +1,64 @@
 import { NextResponse } from "next/server";
-import { products } from "@/data/products";
+import { validateOrderInput } from "@/lib/order-validation";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { site } from "@/data/site";
 import { getStripe } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 
-type Body = {
-  productId?: string;
-  quantity?: number;
-  name?: string;
-  phone?: string;
-  email?: string;
-  pickupWindow?: string;
-  notes?: string;
-};
-
 export async function POST(req: Request) {
   try {
-    const body = (await req.json()) as Body;
-    const product = products.find((p) => p.id === body.productId);
-    const quantity = Math.max(1, Math.min(20, Number(body.quantity) || 1));
-
-    if (!product) {
-      return NextResponse.json({ error: "Invalid product" }, { status: 400 });
-    }
-
-    const name = (body.name || "").trim();
-    const phone = (body.phone || "").trim();
-    const email = (body.email || "").trim();
-    const pickupWindow = (body.pickupWindow || "").trim();
-    const notes = (body.notes || "").trim();
-
-    if (!name || !phone || !email || !pickupWindow) {
+    const ip = clientIp(req);
+    const limited = rateLimit(`pi:${ip}`, 12, 60_000);
+    if (!limited.allowed) {
       return NextResponse.json(
-        { error: "Missing order details" },
-        { status: 400 },
+        { error: "Too many requests. Try again shortly." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(limited.retryAfterSec) },
+        },
       );
     }
 
-    // Always compute amount on the server (never trust the client total)
-    const amount = Math.round(product.price * quantity * 100);
-    if (amount < 50) {
-      return NextResponse.json({ error: "Amount too small" }, { status: 400 });
+    const contentType = req.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      return NextResponse.json(
+        { error: "Expected JSON body" },
+        { status: 415 },
+      );
     }
+
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    }
+
+    const parsed = validateOrderInput(
+      (body && typeof body === "object" ? body : {}) as Record<string, unknown>,
+    );
+    if (!parsed.ok) {
+      return NextResponse.json(
+        { error: parsed.error },
+        { status: parsed.status },
+      );
+    }
+
+    const {
+      product,
+      quantity,
+      name,
+      phone,
+      email,
+      pickupWindow,
+      notes,
+      amountCents,
+    } = parsed.data;
 
     const stripe = getStripe();
     const paymentIntent = await stripe.paymentIntents.create({
-      amount,
+      amount: amountCents,
       currency: "usd",
       automatic_payment_methods: { enabled: true },
       receipt_email: email,
@@ -59,7 +71,7 @@ export async function POST(req: Request) {
         customerPhone: phone,
         customerEmail: email,
         pickupWindow,
-        notes: notes.slice(0, 450),
+        notes,
         fulfillment: "porch_pickup",
         pickupAddress: site.addressLine,
       },
@@ -67,7 +79,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
-      amount,
+      amount: amountCents,
       productName: product.name,
       quantity,
     });
@@ -78,4 +90,8 @@ export async function POST(req: Request) {
       { status: 500 },
     );
   }
+}
+
+export async function GET() {
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
