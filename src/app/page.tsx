@@ -157,10 +157,10 @@ export default function Home() {
               }}
             >
               <Image
-                src="/brand/hero/pink-swiss-roll.png"
+                src="/brand/hero/cute-cinnamon-roll.png"
                 alt=""
-                width={489}
-                height={444}
+                width={518}
+                height={462}
                 className="love-floater-img"
                 sizes="(max-width: 640px) 3.5rem, 5.5rem"
               />
@@ -197,11 +197,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* STORY + food photos (Dolce-style photo storytelling) */}
+      {/* STORY + food photos */}
       <section className="story-band section-pad">
         <div className="shell grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
           <Reveal>
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <div className="story-photo-grid grid grid-cols-2">
               <div className="story-photo story-photo--main relative col-span-1 row-span-2">
                 {gallery[0]?.image ? (
                   <Image
@@ -210,7 +210,7 @@ export default function Home() {
                     fill
                     quality={90}
                     className="object-cover"
-                    sizes="(max-width: 1024px) 50vw, 280px"
+                    sizes="(max-width: 1024px) 55vw, 420px"
                   />
                 ) : null}
               </div>
@@ -222,7 +222,7 @@ export default function Home() {
                     fill
                     quality={90}
                     className="object-cover"
-                    sizes="(max-width: 1024px) 45vw, 240px"
+                    sizes="(max-width: 1024px) 50vw, 360px"
                   />
                 ) : null}
               </div>
@@ -234,7 +234,7 @@ export default function Home() {
                     fill
                     quality={90}
                     className="object-cover"
-                    sizes="(max-width: 1024px) 45vw, 240px"
+                    sizes="(max-width: 1024px) 50vw, 360px"
                   />
                 ) : null}
               </div>
@@ -248,10 +248,23 @@ export default function Home() {
                 Every treat is made fresh, right here
               </h2>
               <p className="prose-soft mt-4">
-                From cinnamon rolls to sticky buns, everything is prepared to
-                order for porch pickup. We rotate flavors week to week, so there
-                is always something new to try. No storefront rush. Just careful
-                baking for your day.
+                From cinnamon rolls to sticky buns, everything is prepared fresh
+                to order for porch pickup.{" "}
+                <span
+                  className="text-highlight-soft"
+                  style={{
+                    backgroundColor: "#ffd6e8",
+                    padding: "0.12em 0.28em",
+                    borderRadius: "0.35em",
+                    fontWeight: 700,
+                    color: "#2c2228",
+                  }}
+                >
+                  Be on the lookout for new flavors and let us know what
+                  you&apos;d like to see on the menu next. Looking for something
+                  specific? Give us a call to discuss custom flavors. We&apos;d
+                  be happy to make something just for you.
+                </span>
               </p>
               <Link href="#menu" className="btn-secondary mt-7">
                 Explore the menu

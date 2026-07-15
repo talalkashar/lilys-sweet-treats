@@ -41,7 +41,7 @@ const initial: FormState = {
 const elementsAppearance: StripeElementsOptions["appearance"] = {
   theme: "stripe",
   variables: {
-    colorPrimary: "#ff4d94",
+    colorPrimary: "#ffb6d4",
     colorBackground: "#ffffff",
     colorText: "#2a1f2d",
     colorDanger: "#df1b41",
