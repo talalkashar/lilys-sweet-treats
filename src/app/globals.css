@@ -278,15 +278,14 @@ textarea.field {
 /* ---------- Hero: large centered logo, copy below ---------- */
 .hero-shell {
   position: relative;
-  overflow: hidden;
-  /*
-    Super light soft pink — even from top to bottom (no darkening falloff).
-  */
+  /* visible so side treats (cookie, cake, etc.) are never clipped */
+  overflow: visible;
   isolation: isolate;
   --hero-pink: #ffbedd; /* soft pink — a little darker */
   background-color: var(--hero-pink);
-  padding-block: clamp(1.75rem, 4vw, 3.25rem) clamp(2.5rem, 5vw, 4rem);
-  padding-inline: clamp(0rem, 2vw, 0.5rem);
+  /* Room for full side treats + float animation */
+  padding-block: clamp(2.25rem, 5vw, 3.75rem) clamp(2.5rem, 5vw, 4rem);
+  padding-inline: clamp(0.75rem, 3vw, 2rem);
 }
 
 /* Even soft pink field + gentle sheen (no darker falloff at bottom) */
@@ -318,13 +317,14 @@ textarea.field {
   background-size: 100% 100%;
 }
 
-/* Soft shiny sweep — stays light, never deepens the pink */
+/* Soft shiny sweep — clipped to hero bounds via mask (shell stays overflow:visible) */
 .hero-shell::after {
   content: "";
   position: absolute;
-  inset: -20% -30%;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
+  border-radius: inherit;
   background: linear-gradient(
     115deg,
     transparent 0%,
@@ -338,6 +338,7 @@ textarea.field {
   mix-blend-mode: soft-light;
   animation: hero-shine 9s ease-in-out infinite;
   will-change: transform;
+  overflow: hidden;
 }
 
 @keyframes hero-shine {
@@ -571,7 +572,7 @@ textarea.field {
   pointer-events: none;
 }
 
-/* Side treats frame the centered logo — larger presence */
+/* Side treats frame the centered logo — fully visible, not edge-clipped */
 .hero-treats {
   position: absolute;
   inset: 0;
@@ -585,59 +586,64 @@ textarea.field {
   filter: drop-shadow(0 10px 20px rgba(44, 34, 40, 0.16));
   animation: treat-float ease-in-out infinite;
   will-change: transform;
+  overflow: visible;
+  /* keep whole treat cutouts, including float, away from the viewport edge */
+  max-width: 24vw;
 }
 
 .hero-treat-img {
   display: block;
   width: 100%;
   height: auto;
+  max-width: none;
+  object-fit: contain;
 }
 
-/* Left cluster — larger so they read as real product moments */
+/* Left cluster — inset enough that full cookie/cake/macaron cutouts show */
 .hero-treat--L1 {
-  left: clamp(0.15rem, 1vw, 0.75rem);
-  top: 4%;
-  width: clamp(5rem, 14vw, 9rem);
+  left: clamp(1.35rem, 4vw, 3.75rem);
+  top: clamp(1.75rem, 4vw, 3.25rem);
+  width: clamp(4.75rem, 11vw, 8rem);
   animation-duration: 3.4s;
   animation-delay: 0s;
 }
 
 .hero-treat--L2 {
-  left: clamp(0.35rem, 1.8vw, 1.35rem);
-  top: 26%;
-  width: clamp(4.5rem, 12.5vw, 8rem);
+  left: clamp(1.75rem, 4.8vw, 4.25rem);
+  top: 30%;
+  width: clamp(4.5rem, 10.5vw, 7.5rem);
   animation-duration: 4s;
   animation-delay: -1.2s;
 }
 
 .hero-treat--L3 {
-  left: clamp(0.2rem, 1.2vw, 0.9rem);
-  top: 50%;
-  width: clamp(4.25rem, 12vw, 7.75rem);
+  left: clamp(1.35rem, 4vw, 3.75rem);
+  top: 54%;
+  width: clamp(4.4rem, 10vw, 7.25rem);
   animation-duration: 3.7s;
   animation-delay: -2.1s;
 }
 
 .hero-treat--R1 {
-  right: clamp(0.15rem, 1vw, 0.75rem);
-  top: 3%;
-  width: clamp(4.5rem, 12.5vw, 8rem);
+  right: clamp(1.35rem, 4vw, 3.75rem);
+  top: clamp(1.75rem, 4vw, 3.25rem);
+  width: clamp(4.75rem, 11vw, 8rem);
   animation-duration: 3.9s;
   animation-delay: -0.5s;
 }
 
 .hero-treat--R2 {
-  right: clamp(0.35rem, 1.6vw, 1.2rem);
-  top: 25%;
-  width: clamp(4.25rem, 12vw, 7.75rem);
+  right: clamp(1.75rem, 4.8vw, 4.25rem);
+  top: 29%;
+  width: clamp(4.5rem, 10.5vw, 7.5rem);
   animation-duration: 4.2s;
   animation-delay: -1.7s;
 }
 
 .hero-treat--R3 {
-  right: clamp(0.2rem, 1.2vw, 0.9rem);
-  top: 48%;
-  width: clamp(5rem, 14vw, 9rem);
+  right: clamp(1.35rem, 4vw, 3.75rem);
+  top: 52%;
+  width: clamp(4.75rem, 11vw, 8rem);
   animation-duration: 3.5s;
   animation-delay: -2.5s;
 }
@@ -646,47 +652,48 @@ textarea.field {
   .hero-treat--L1,
   .hero-treat--L2,
   .hero-treat--L3 {
-    left: 0.05rem;
+    left: clamp(0.85rem, 4vw, 1.5rem);
     opacity: 0.95;
   }
   .hero-treat--R1,
   .hero-treat--R2,
   .hero-treat--R3 {
-    right: 0.05rem;
+    right: clamp(0.85rem, 4vw, 1.5rem);
     opacity: 0.95;
   }
   .hero-treat--L1,
   .hero-treat--R1 {
-    width: 4.25rem;
+    width: 3.65rem;
+    top: 1.75rem;
   }
   .hero-treat--L2,
   .hero-treat--R2 {
-    width: 3.9rem;
+    width: 3.4rem;
   }
   .hero-treat--L3,
   .hero-treat--R3 {
-    width: 4.1rem;
+    width: 3.5rem;
   }
 }
 
 @media (min-width: 1100px) {
   .hero-treat--L1 {
-    width: clamp(7rem, 11vw, 10rem);
+    width: clamp(6.5rem, 10vw, 9.25rem);
   }
   .hero-treat--L2 {
-    width: clamp(6.5rem, 10vw, 9rem);
+    width: clamp(6rem, 9.5vw, 8.5rem);
   }
   .hero-treat--L3 {
-    width: clamp(6.25rem, 9.5vw, 8.5rem);
+    width: clamp(5.75rem, 9vw, 8rem);
   }
   .hero-treat--R1 {
-    width: clamp(6.5rem, 10vw, 9rem);
+    width: clamp(6rem, 9.5vw, 8.5rem);
   }
   .hero-treat--R2 {
-    width: clamp(6.25rem, 9.5vw, 8.5rem);
+    width: clamp(5.75rem, 9vw, 8rem);
   }
   .hero-treat--R3 {
-    width: clamp(7rem, 11vw, 10rem);
+    width: clamp(6.5rem, 10vw, 9.25rem);
   }
 }
 
@@ -706,7 +713,8 @@ textarea.field {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-12px);
+    /* smaller bob so treats stay fully in frame */
+    transform: translateY(-8px);
   }
 }
 

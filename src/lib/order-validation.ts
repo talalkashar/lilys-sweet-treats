@@ -1,4 +1,4 @@
-import { products } from "@/data/products";
+import { availableProducts, getProduct } from "@/data/products";
 import { site } from "@/data/site";
 
 export type OrderInput = {
@@ -12,7 +12,7 @@ export type OrderInput = {
 };
 
 export type ValidOrder = {
-  product: (typeof products)[number];
+  product: (typeof availableProducts)[number];
   quantity: number;
   name: string;
   phone: string;
@@ -30,11 +30,12 @@ function clampText(value: string, max: number) {
 
 /**
  * Server-side order validation. Never trust client prices or free-form enums.
+ * Only currently available products can be ordered.
  */
 export function validateOrderInput(body: OrderInput):
   | { ok: true; data: ValidOrder }
   | { ok: false; error: string; status: number } {
-  const product = products.find((p) => p.id === body.productId);
+  const product = getProduct(body.productId || "");
   if (!product) {
     return { ok: false, error: "Invalid product", status: 400 };
   }

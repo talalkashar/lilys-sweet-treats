@@ -8,6 +8,12 @@ export type Product = {
   /** Path under /public */
   image?: string;
   popular?: boolean;
+  /**
+   * When false, product stays in the catalog data for later but is hidden
+   * from the menu, order form, and checkout validation.
+   * Default: true (available).
+   */
+  available?: boolean;
   /** Main ingredients for customer transparency */
   ingredients: string[];
 };
@@ -129,6 +135,7 @@ export const products: Product[] = [
     ],
   },
   // Cake + frosting ball (no yeast / fruit)
+  // Kept in data for later — not currently selling
   {
     id: "cake-pops",
     name: "Cake Pop Bouquet",
@@ -137,6 +144,7 @@ export const products: Product[] = [
     description: "Pastel cake pops arranged as a gift bouquet.",
     emoji: "🍭",
     image: "/products/cake-pops.png",
+    available: false,
     ingredients: [
       "Flour",
       "Eggs",
@@ -148,6 +156,7 @@ export const products: Product[] = [
     ],
   },
   // Shortbread-style cookie + dulce de leche (cornstarch is classic here)
+  // Kept in data for later — not currently selling
   {
     id: "alfajores",
     name: "Alfajores",
@@ -156,6 +165,7 @@ export const products: Product[] = [
     description: "Buttery cookies filled with dulce de leche.",
     emoji: "🍪",
     image: "/products/alfajores.png",
+    available: false,
     ingredients: [
       "Flour",
       "Cornstarch",
@@ -167,10 +177,22 @@ export const products: Product[] = [
   },
 ];
 
+/** Products customers can see and order right now */
+export function isProductAvailable(product: Product) {
+  return product.available !== false;
+}
+
+export const availableProducts = products.filter(isProductAvailable);
+
 export function productsInCategory(categoryId: Product["category"]) {
-  return products.filter((p) => p.category === categoryId);
+  return availableProducts.filter((p) => p.category === categoryId);
 }
 
 export function getProduct(id: string) {
+  return availableProducts.find((p) => p.id === id);
+}
+
+/** Full catalog including paused items (admin / future use) */
+export function getProductIncludingUnavailable(id: string) {
   return products.find((p) => p.id === id);
 }

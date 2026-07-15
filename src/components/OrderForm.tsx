@@ -5,7 +5,11 @@ import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { CheckoutPayment } from "@/components/CheckoutPayment";
-import { menuCategories, products, productsInCategory } from "@/data/products";
+import {
+  availableProducts,
+  menuCategories,
+  productsInCategory,
+} from "@/data/products";
 import { site } from "@/data/site";
 
 const stripePromise = loadStripe(
@@ -28,7 +32,7 @@ const initial: FormState = {
   name: "",
   phone: "",
   email: "",
-  productId: products[0]?.id ?? "",
+  productId: availableProducts[0]?.id ?? "",
   quantity: "1",
   pickupWindow: site.pickupWindows[0] ?? "",
   notes: "",
@@ -51,7 +55,7 @@ export function OrderForm() {
   const searchParams = useSearchParams();
   const productParam = searchParams.get("product");
   const initialProductId =
-    productParam && products.some((p) => p.id === productParam)
+    productParam && availableProducts.some((p) => p.id === productParam)
       ? productParam
       : initial.productId;
   const [form, setForm] = useState<FormState>(() => ({
@@ -64,7 +68,7 @@ export function OrderForm() {
   const [error, setError] = useState<string | null>(null);
 
   const selected = useMemo(
-    () => products.find((p) => p.id === form.productId),
+    () => availableProducts.find((p) => p.id === form.productId),
     [form.productId],
   );
 

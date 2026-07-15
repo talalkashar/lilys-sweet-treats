@@ -91,67 +91,118 @@ function ownerHtml(order: OrderEmailPayload) {
 }
 
 function customerHtml(order: OrderEmailPayload) {
-  const notes = order.notes
-    ? `<p style="margin:16px 0 0;padding:12px 14px;background:#fffaf8;border-radius:10px;border:1px solid #f5c6d6;"><strong>Your notes:</strong> ${escapeHtml(order.notes)}</p>`
+  const firstName = escapeHtml(
+    order.customerName.split(" ")[0] || order.customerName,
+  );
+  const notesBlock = order.notes
+    ? `<p style="margin:12px 0 0;font-family:system-ui,sans-serif;font-size:13px;line-height:1.45;color:#5c4f56;"><strong style="color:#2c2228;">Your notes:</strong> ${escapeHtml(order.notes)}</p>`
     : "";
-  const preheader = `Order confirmed: ${order.productName} × ${order.quantity}. Pickup ${order.pickupWindow}.`;
+  const preheader = `You're all set! ${order.productName} × ${order.quantity}. Pickup ${order.pickupWindow}.`;
+
+  /*
+    Match the live success page look exactly (sampled from site screenshot):
+    Outer wallpaper: near-white blush #fbf6f8 + FAINT cupcakes (pre-composited tile)
+    Card: mint #ebf7f1, green border #2f9e6b, soft rounded
+    Accents: rose #e84a88, blush border #f5c6d6
+  */
+  const OUTER = "#fbf6f8";
+  const MINT = "#ebf7f1";
+  const MINT_BORDER = "#2f9e6b";
+  const ROSE = "#e84a88";
+  const BLUSH = "#f5c6d6";
+  const COCOA = "#2c2228";
+  const SOFT = "#5c4f56";
+  /* Pre-faded wallpaper — do NOT use full-strength cupcake-pattern-soft.png */
+  const wallpaper =
+    "https://www.lilyssweettreatsva.com/brand/backgrounds/email-wallpaper-tile.png";
+
   return `
-  <div style="margin:0;padding:0;background:#f7ebe6;">
-    <!-- preheader (inbox preview text) -->
+  <div style="margin:0;padding:0;background-color:${OUTER};background-image:url('${wallpaper}');background-repeat:repeat;">
     <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
       ${escapeHtml(preheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
     </div>
-    <div style="padding:28px 16px;font-family:Georgia,'Times New Roman',serif;">
-      <div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:18px;overflow:hidden;border:1px solid #f0d4de;box-shadow:0 8px 28px rgba(44,34,40,0.08);">
-        <div style="background:linear-gradient(135deg,#fff5f8 0%,#f3ecfa 100%);padding:28px 24px 20px;text-align:center;border-bottom:1px solid #f5c6d6;">
-          <p style="margin:0;font-family:system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#c93670;">
-            ${escapeHtml(site.shortName)}
-          </p>
-          <h1 style="margin:12px 0 0;font-size:28px;font-weight:600;color:#2c2228;line-height:1.2;">
-            You&apos;re all set
-          </h1>
-          <p style="margin:10px 0 0;font-family:system-ui,sans-serif;font-size:15px;color:#5c4f56;">
-            Payment received · porch pickup only
-          </p>
-        </div>
+    <!--[if gte mso 9]>
+    <v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t">
+      <v:fill type="tile" src="${wallpaper}" color="${OUTER}"/>
+    </v:background>
+    <![endif]-->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;background-color:${OUTER};background-image:url('${wallpaper}');background-repeat:repeat;">
+      <tr>
+        <td align="center" style="padding:40px 16px;font-family:Georgia,'Times New Roman',serif;background-color:${OUTER};background-image:url('${wallpaper}');background-repeat:repeat;">
 
-        <div style="padding:24px;font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55;color:#2c2228;">
-          <p style="margin:0 0 16px;">Hi ${escapeHtml(order.customerName.split(" ")[0] || order.customerName)},</p>
-          <p style="margin:0 0 18px;">Thanks for ordering from us. Here&apos;s your confirmation so it&apos;s easy to find later.</p>
+          <!-- Mint success card (same proportions as website success page) -->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:440px;border-collapse:separate;border-spacing:0;background-color:${MINT};border:2px solid ${MINT_BORDER};border-radius:28px;overflow:hidden;">
+            <tr>
+              <td align="center" style="padding:36px 26px 32px;background-color:${MINT};">
 
-          <div style="border-radius:14px;background:#fffaf8;border:1px solid #f5c6d6;padding:16px 18px;margin-bottom:18px;">
-            <p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#c93670;">Your order</p>
-            <p style="margin:0;font-size:18px;font-weight:700;">${escapeHtml(order.productName)}</p>
-            <p style="margin:6px 0 0;color:#5c4f56;">Qty ${escapeHtml(order.quantity)} · <strong style="color:#c93670;">${formatMoney(order.amountCents)} paid</strong></p>
-          </div>
+                <p style="margin:0;font-size:34px;line-height:1;color:${COCOA};font-family:Georgia,serif;">✓</p>
 
-          <div style="border-radius:14px;background:#f3ecfa;border:1px solid #e0d4f0;padding:16px 18px;margin-bottom:18px;">
-            <p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#7a5fad;">Pickup</p>
-            <p style="margin:0;font-size:16px;font-weight:700;">${escapeHtml(order.pickupWindow)}</p>
-            <p style="margin:8px 0 0;color:#5c4f56;font-size:14px;">${escapeHtml(order.pickupAddress)}</p>
-            <p style="margin:10px 0 0;font-size:13px;color:#8a7a82;">We&apos;ll text or email if anything changes. Please arrive in your window.</p>
-          </div>
+                <h1 style="margin:14px 0 0;font-size:30px;font-weight:500;color:${COCOA};line-height:1.2;letter-spacing:-0.02em;">
+                  You&apos;re all set
+                </h1>
 
-          ${notes}
+                <p style="margin:12px auto 0;max-width:320px;font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55;color:${SOFT};">
+                  Thanks for your order. Here are your pickup details so you can find them later.
+                </p>
 
-          <p style="margin:20px 0 0;font-size:14px;color:#5c4f56;">
-            Questions? Call or text
-            <a href="tel:${site.phone.replace(/\D/g, "")}" style="color:#c93670;font-weight:600;text-decoration:none;">${escapeHtml(site.phone)}</a>
-            or email
-            <a href="mailto:${escapeHtml(site.email)}" style="color:#c93670;font-weight:600;text-decoration:none;">${escapeHtml(site.email)}</a>.
-          </p>
-          <p style="margin:18px 0 0;font-family:Georgia,serif;font-size:16px;color:#2c2228;">
-            See you soon,<br/>
-            <span style="color:#c93670;">${escapeHtml(site.name)}</span>
-          </p>
-        </div>
+                <!-- White detail card (matches success “confirmation email” chip) -->
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 0;border-collapse:separate;border-spacing:0;background-color:#ffffff;border:1.5px solid ${BLUSH};border-radius:14px;">
+                  <tr>
+                    <td style="padding:16px 16px 14px;text-align:left;background-color:#ffffff;border-radius:14px;">
+                      <p style="margin:0 0 6px;font-family:system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:${ROSE};">
+                        Your order
+                      </p>
+                      <p style="margin:0;font-family:system-ui,sans-serif;font-size:17px;font-weight:700;color:${COCOA};line-height:1.3;">
+                        ${escapeHtml(order.productName)}
+                      </p>
+                      <p style="margin:6px 0 0;font-family:system-ui,sans-serif;font-size:14px;color:${SOFT};">
+                        Qty ${escapeHtml(order.quantity)} · <strong style="color:${ROSE};">${formatMoney(order.amountCents)} paid</strong>
+                      </p>
+                      <p style="margin:14px 0 0;font-family:system-ui,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${SOFT};">
+                        Pickup window
+                      </p>
+                      <p style="margin:4px 0 0;font-family:system-ui,sans-serif;font-size:15px;font-weight:700;color:${COCOA};">
+                        ${escapeHtml(order.pickupWindow)}
+                      </p>
+                      ${notesBlock}
+                    </td>
+                  </tr>
+                </table>
 
-        <div style="padding:14px 20px 18px;text-align:center;background:#faf7f8;border-top:1px solid #f0d4de;font-family:system-ui,sans-serif;font-size:11px;color:#8a7a82;">
-          ${escapeHtml(site.name)} · Porch pickup in Haymarket, VA<br/>
-          <a href="https://www.lilyssweettreatsva.com" style="color:#c93670;text-decoration:none;">www.lilyssweettreatsva.com</a>
-        </div>
-      </div>
-    </div>
+                <p style="margin:22px 0 0;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;color:${COCOA};">
+                  Pickup at
+                </p>
+                <p style="margin:6px 0 0;font-family:system-ui,sans-serif;font-size:14px;line-height:1.45;font-weight:600;color:${ROSE};">
+                  ${escapeHtml(order.pickupAddress)}
+                </p>
+
+                <p style="margin:18px 0 0;font-family:system-ui,sans-serif;font-size:14px;color:${SOFT};">
+                  Questions?
+                  <a href="tel:${site.phone.replace(/\D/g, "")}" style="color:${ROSE};font-weight:600;text-decoration:none;">${escapeHtml(site.phone)}</a>
+                </p>
+
+                <table role="presentation" cellpadding="0" cellspacing="0" style="margin:26px auto 0;border-collapse:collapse;">
+                  <tr>
+                    <td style="padding:0 6px 0 0;">
+                      <a href="https://www.lilyssweettreatsva.com/#menu" style="display:inline-block;padding:12px 20px;border-radius:999px;border:1.5px solid ${BLUSH};background:#ffffff;color:${COCOA};font-family:system-ui,sans-serif;font-size:14px;font-weight:600;text-decoration:none;">
+                        Back to menu
+                      </a>
+                    </td>
+                    <td style="padding:0 0 0 6px;">
+                      <a href="https://www.lilyssweettreatsva.com/order" style="display:inline-block;padding:12px 20px;border-radius:999px;border:1.5px solid ${ROSE};background:${ROSE};color:#ffffff;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;text-decoration:none;">
+                        Order again
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+
+              </td>
+            </tr>
+          </table>
+
+        </td>
+      </tr>
+    </table>
   </div>`;
 }
 
@@ -226,7 +277,7 @@ export async function sendOrderEmails(
         from,
         to: [order.customerEmail],
         replyTo: site.email,
-        subject: `Order confirmed — ${order.productName}`,
+        subject: `You're all set — ${order.productName}`,
         html: customerHtml(order),
         text: customerText(order),
       });

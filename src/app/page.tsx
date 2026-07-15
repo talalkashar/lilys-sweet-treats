@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MenuGrid } from "@/components/MenuGrid";
 import { Reveal } from "@/components/Reveal";
-import { products } from "@/data/products";
+import { availableProducts } from "@/data/products";
 import { reviews } from "@/data/reviews";
 import { site } from "@/data/site";
 
@@ -14,7 +14,7 @@ const marqueeLines = [
 ];
 
 export default function Home() {
-  const gallery = products.filter((p) => p.image).slice(0, 3);
+  const gallery = availableProducts.filter((p) => p.image).slice(0, 3);
 
   return (
     <>
@@ -29,8 +29,8 @@ export default function Home() {
             <Image
               src="/brand/hero/macaron-tower.png"
               alt=""
-              width={225}
-              height={239}
+              width={1254}
+              height={1254}
               className="hero-treat-img"
               sizes="(max-width: 899px) 4.25rem, 10rem"
             />
@@ -39,8 +39,8 @@ export default function Home() {
             <Image
               src="/brand/hero/cinnamon-roll.png"
               alt=""
-              width={208}
-              height={156}
+              width={1254}
+              height={1254}
               className="hero-treat-img"
               sizes="(max-width: 899px) 3.9rem, 9rem"
             />
@@ -49,8 +49,8 @@ export default function Home() {
             <Image
               src="/brand/hero/macaron-bow.png"
               alt=""
-              width={196}
-              height={224}
+              width={1254}
+              height={1254}
               className="hero-treat-img"
               sizes="(max-width: 899px) 4.1rem, 8.5rem"
             />
@@ -59,8 +59,8 @@ export default function Home() {
             <Image
               src="/brand/hero/cookie-bow.png"
               alt=""
-              width={164}
-              height={229}
+              width={1254}
+              height={1254}
               className="hero-treat-img"
               sizes="(max-width: 899px) 3.9rem, 9rem"
             />
@@ -69,8 +69,8 @@ export default function Home() {
             <Image
               src="/brand/hero/floral-cake.png"
               alt=""
-              width={151}
-              height={253}
+              width={1254}
+              height={1254}
               className="hero-treat-img"
               sizes="(max-width: 899px) 4.1rem, 8.5rem"
             />
@@ -79,8 +79,8 @@ export default function Home() {
             <Image
               src="/brand/hero/swiss-rolls.png"
               alt=""
-              width={205}
-              height={146}
+              width={1254}
+              height={1254}
               className="hero-treat-img"
               sizes="(max-width: 899px) 4.25rem, 10rem"
             />
@@ -117,7 +117,7 @@ export default function Home() {
             </h1>
 
             <p className="anim-fade-up anim-delay-2 hero-lead mt-4">
-              Small-batch cinnamon rolls, sticky buns, cake pops, and alfajores.
+              Small-batch cinnamon rolls and sticky buns, made fresh to order.
               Pre-order online and pick up in person. We bake something new
               almost every week, so the menu stays fresh.
             </p>
@@ -223,10 +223,10 @@ export default function Home() {
                 Every treat is made fresh, right here
               </h2>
               <p className="prose-soft mt-4">
-                From cinnamon rolls and sticky buns to cake pop bouquets and
-                alfajores, everything is prepared to order for porch pickup. We
-                rotate flavors week to week, so there is always something new
-                to try. No storefront rush. Just careful baking for your day.
+                From cinnamon rolls to sticky buns, everything is prepared to
+                order for porch pickup. We rotate flavors week to week, so there
+                is always something new to try. No storefront rush. Just careful
+                baking for your day.
               </p>
               <Link href="#menu" className="btn-secondary mt-7">
                 Explore the menu
