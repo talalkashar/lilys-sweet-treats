@@ -52,7 +52,7 @@ export function ProductCard({ product, onOpen }: Props) {
             {product.description}
           </p>
           <span className="mt-auto pt-3 text-sm font-semibold text-[var(--rose)]">
-            View details &amp; ingredients →
+            View details →
           </span>
         </div>
       </button>

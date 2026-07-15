@@ -84,26 +84,19 @@ export function ProductModal({ product, onClose }: Props) {
 
           {product.ingredients.length > 0 ? (
             <div className="product-ingredients mt-4">
-              <p className="product-ingredients-label">Ingredients</p>
+              <p className="product-ingredients-label">Made with</p>
               <ul className="product-ingredients-list">
                 {product.ingredients.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
-              <p className="mt-2 text-xs text-[var(--ink-muted)]">
-                Major ingredients listed. Weekly specials may vary slightly.
-              </p>
-              <p className="product-allergen-note mt-2.5">
-                <strong>Contains / may contain:</strong> wheat (flour), eggs,
-                milk (butter, cream cheese powder), and soy. Sticky buns with
-                nuts contain tree nuts or peanuts. Baked in a home kitchen that
-                handles shared equipment. Ask us if you have a serious allergy.
-              </p>
             </div>
           ) : null}
 
-          <p className="mt-3 text-xs text-[var(--ink-muted)]">
-            Porch pickup only. Pre-order required.
+          <p className="product-allergen-note mt-3">
+            Baked with flour, eggs, butter, and sugar. May contain wheat, eggs,
+            milk, soy, and nuts. Home kitchen with shared equipment — nut
+            cross-contact is possible on every product. Porch pickup only.
           </p>
 
           <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">

@@ -268,7 +268,7 @@ export function OrderForm() {
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
             Notes{" "}
             <span className="font-normal text-[var(--ink-muted)]">
-              (optional: flavors, allergies, message)
+              (optional: flavors, message)
             </span>
           </span>
           <textarea

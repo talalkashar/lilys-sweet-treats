@@ -14,7 +14,10 @@ export type Product = {
    * Default: true (available).
    */
   available?: boolean;
-  /** Main ingredients for customer transparency */
+  /**
+   * Product-specific highlights only (not the shared dough base).
+   * Shown as “Made with” chips so every card doesn’t re-list flour/eggs/butter.
+   */
   ingredients: string[];
 };
 
@@ -44,95 +47,54 @@ export const menuCategories: MenuCategory[] = [
 ];
 
 /**
- * Full menu. Prices are placeholders until confirmed.
- * Ingredients are product-specific (major components only).
- * Weekly specials may vary slightly.
+ * Full menu.
+ * Pricing: no toppings = $8 · with toppings (fruit, nuts, etc.) = $9
+ * `ingredients` = standout flavors only. Shared dough + allergen note lives in the modal.
  */
 export const products: Product[] = [
-  // Yeasted cinnamon dough + fruit filling + frosting
+  // Yeasted cinnamon dough + fruit filling + frosting (with toppings)
   {
     id: "apple-caramel-cinnamon-rolls",
     name: "Apple Caramel Cinnamon Rolls",
-    price: 6,
+    price: 9,
     category: "rolls",
     description: "Warm apple, rich caramel, and soft cinnamon dough.",
     emoji: "🍎",
     image: "/products/apple-caramel-cinnamon-rolls.png",
-    ingredients: [
-      "Flour",
-      "Yeast",
-      "Eggs",
-      "Butter",
-      "White sugar",
-      "Brown sugar",
-      "Cinnamon",
-      "Apples",
-      "Caramel",
-      "Cornstarch",
-      "Cream cheese powder",
-    ],
+    ingredients: ["Apples", "Caramel", "Cinnamon", "Cream cheese frosting"],
   },
-  // Same dough family; peach filling instead of apple/caramel
+  // Same dough family; peach filling instead of apple/caramel (with toppings)
   {
     id: "peach-cobbler-cinnamon-rolls",
     name: "Peach Cobbler Cinnamon Rolls",
-    price: 6,
+    price: 9,
     category: "rolls",
     description: "Peach cobbler flavor in a soft cinnamon roll.",
     emoji: "🍑",
     image: "/products/peach-cobbler-cinnamon-rolls.png",
-    ingredients: [
-      "Flour",
-      "Yeast",
-      "Eggs",
-      "Butter",
-      "White sugar",
-      "Brown sugar",
-      "Cinnamon",
-      "Peaches",
-      "Cornstarch",
-      "Cream cheese powder",
-    ],
+    ingredients: ["Peaches", "Cinnamon", "Cream cheese frosting"],
   },
-  // Sticky bun: caramel glaze + nuts (no cream cheese frosting)
+  // Sticky bun: caramel glaze + nuts (with toppings)
   {
     id: "sticky-buns-with-nuts",
     name: "Sticky Buns with Nuts",
-    price: 6,
+    price: 9,
     category: "sticky",
     description: "Caramel glaze topped with toasted nuts.",
     emoji: "🥜",
     image: "/products/sticky-bun-with-nuts.png",
-    ingredients: [
-      "Flour",
-      "Yeast",
-      "Eggs",
-      "Butter",
-      "White sugar",
-      "Brown sugar",
-      "Cinnamon",
-      "Caramel",
-      "Nuts",
-    ],
+    ingredients: ["Caramel", "Toasted nuts", "Cinnamon"],
   },
+  // Sticky bun plain (no toppings)
   {
     id: "sticky-buns-without-nuts",
     name: "Sticky Buns without Nuts",
-    price: 5,
+    price: 8,
     category: "sticky",
     description: "Classic sticky bun and caramel, no nuts.",
     emoji: "🌀",
     image: "/products/sticky-bun-no-nuts.png",
-    ingredients: [
-      "Flour",
-      "Yeast",
-      "Eggs",
-      "Butter",
-      "White sugar",
-      "Brown sugar",
-      "Cinnamon",
-      "Caramel",
-    ],
+    ingredients: ["Caramel", "Cinnamon"],
   },
   // Cake + frosting ball (no yeast / fruit)
   // Kept in data for later — not currently selling
@@ -145,15 +107,7 @@ export const products: Product[] = [
     emoji: "🍭",
     image: "/products/cake-pops.png",
     available: false,
-    ingredients: [
-      "Flour",
-      "Eggs",
-      "Butter",
-      "White sugar",
-      "Brown sugar",
-      "Cream cheese powder",
-      "Cornstarch",
-    ],
+    ingredients: ["Cake", "Frosting", "Decorations"],
   },
   // Shortbread-style cookie + dulce de leche (cornstarch is classic here)
   // Kept in data for later — not currently selling
@@ -166,14 +120,7 @@ export const products: Product[] = [
     emoji: "🍪",
     image: "/products/alfajores.png",
     available: false,
-    ingredients: [
-      "Flour",
-      "Cornstarch",
-      "Butter",
-      "White sugar",
-      "Eggs",
-      "Caramel",
-    ],
+    ingredients: ["Dulce de leche", "Butter cookie"],
   },
 ];
 

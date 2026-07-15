@@ -201,40 +201,40 @@ export default function Home() {
       <section className="story-band section-pad">
         <div className="shell grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
           <Reveal>
-            <div className="story-photo-grid grid grid-cols-2">
-              <div className="story-photo story-photo--main relative col-span-1 row-span-2">
+            <div className="story-photo-grid">
+              <div className="story-photo story-photo--main">
                 {gallery[0]?.image ? (
                   <Image
                     src={gallery[0].image}
                     alt={gallery[0].name}
                     fill
                     quality={90}
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 55vw, 420px"
+                    className="story-photo-img story-photo-img--main"
+                    sizes="(max-width: 1024px) 50vw, 300px"
                   />
                 ) : null}
               </div>
-              <div className="story-photo story-photo--wide relative">
+              <div className="story-photo story-photo--wide">
                 {gallery[1]?.image ? (
                   <Image
                     src={gallery[1].image}
                     alt={gallery[1].name}
                     fill
                     quality={90}
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 50vw, 360px"
+                    className="story-photo-img"
+                    sizes="(max-width: 1024px) 45vw, 240px"
                   />
                 ) : null}
               </div>
-              <div className="story-photo story-photo--wide relative">
+              <div className="story-photo story-photo--wide">
                 {gallery[2]?.image ? (
                   <Image
                     src={gallery[2].image}
                     alt={gallery[2].name}
                     fill
                     quality={90}
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 50vw, 360px"
+                    className="story-photo-img"
+                    sizes="(max-width: 1024px) 45vw, 240px"
                   />
                 ) : null}
               </div>
@@ -280,19 +280,15 @@ export default function Home() {
       <section id="menu" className="section-menu section-pad">
         <div className="shell">
           <Reveal>
-            <div className="max-w-xl">
+            <div className="menu-intro max-w-2xl">
               <p className="section-label">This week&apos;s menu</p>
               <h2 className="section-title mt-2">
                 Fresh bakes for porch pickup
               </h2>
-              <p className="prose-soft mt-2.5">
+              <p className="prose-soft mt-3">
                 Browse what we are baking right now. Tap a treat for details and
                 ingredients, then pre-order Monday–Wednesday by noon.
               </p>
-              <p className="menu-flex-note mt-3">{site.menuNote}</p>
-              <Link href="/order" className="btn-primary mt-5 inline-flex">
-                Pre-order pickup
-              </Link>
             </div>
           </Reveal>
 
@@ -385,9 +381,16 @@ export default function Home() {
       <section className="cta-band section-pad">
         <div className="shell text-center">
           <Reveal>
-            <p className="section-label">Ready when you are</p>
-            <h2 className="section-title mt-2">Let&apos;s make your day sweeter</h2>
-            <p className="prose-soft mx-auto mt-3 text-center">
+            <p className="section-label" style={{ color: "#6f4fa0" }}>
+              Ready when you are
+            </p>
+            <h2 className="section-title mt-2" style={{ color: "#6f4fa0" }}>
+              Let&apos;s make your day sweeter
+            </h2>
+            <p
+              className="prose-soft mx-auto mt-3 text-center"
+              style={{ color: "#6f4fa0" }}
+            >
               {site.thankYouNote}
             </p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">

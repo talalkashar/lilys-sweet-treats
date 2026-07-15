@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { site } from "@/data/site";
 
 function InstagramIcon({ className }: { className?: string }) {
@@ -22,7 +21,7 @@ function EmailIcon({ className }: { className?: string }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.25"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
@@ -40,7 +39,7 @@ function PhoneIcon({ className }: { className?: string }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="2.25"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
@@ -52,71 +51,81 @@ function PhoneIcon({ className }: { className?: string }) {
 
 export function Footer() {
   return (
-    <footer id="contact" className="relative z-[1] bg-[var(--cocoa)] text-white">
-      <div className="shell flex flex-col gap-8 py-10 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex items-center gap-3">
-          <span className="logo-mark logo-mark--footer">
-            <Image
-              src={site.logo}
-              alt=""
-              fill
-              className="object-cover object-center"
-              sizes="48px"
-            />
-          </span>
-          <div className="min-w-0 leading-tight">
-            <p className="font-display text-lg text-white">{site.name}</p>
-            <p className="mt-0.5 text-sm text-white/55">
-              Porch pickup in Haymarket. No delivery.
-            </p>
-            <div className="mt-2.5 flex items-center gap-1.5">
-              {site.instagram ? (
-                <a
-                  href={site.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer-social"
-                  aria-label="Instagram"
-                >
-                  <InstagramIcon className="footer-social-icon" />
-                </a>
-              ) : null}
-              <a
-                href={`mailto:${site.email}`}
-                className="footer-social"
-                aria-label={`Email ${site.email}`}
-              >
-                <EmailIcon className="footer-social-icon" />
-              </a>
-              <a
-                href={`tel:${site.phone.replace(/\D/g, "")}`}
-                className="footer-social"
-                aria-label={`Call ${site.phone}`}
-              >
-                <PhoneIcon className="footer-social-icon" />
-              </a>
+    <footer id="contact" className="site-footer relative z-[1]">
+      <div className="shell footer-inner">
+        <div className="footer-top">
+          <div className="footer-brand">
+            <span className="logo-mark logo-mark--footer">
+              <Image
+                src={site.logo}
+                alt=""
+                fill
+                className="object-cover object-center"
+                sizes="80px"
+              />
+            </span>
+            <div className="footer-brand-text">
+              <p className="footer-brand-name font-display">{site.name}</p>
+              <p className="footer-brand-blurb">
+                Porch pickup in Haymarket, VA · No delivery
+              </p>
             </div>
+          </div>
+
+          <div className="footer-social-row" aria-label="Social and contact">
+            {site.instagram ? (
+              <a
+                href={site.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="footer-social"
+                aria-label="Instagram"
+              >
+                <InstagramIcon className="footer-social-icon" />
+              </a>
+            ) : null}
+            <a
+              href={`mailto:${site.email}`}
+              className="footer-social"
+              aria-label={`Email ${site.email}`}
+            >
+              <EmailIcon className="footer-social-icon" />
+            </a>
+            <a
+              href={`tel:${site.phone.replace(/\D/g, "")}`}
+              className="footer-social"
+              aria-label={`Call ${site.phone}`}
+            >
+              <PhoneIcon className="footer-social-icon" />
+            </a>
           </div>
         </div>
 
-        <div className="flex flex-col gap-1.5 text-sm text-white/70 sm:items-end sm:text-right">
-          <Link className="hover:text-white" href="/order">
-            Order and pay
-          </Link>
+        <div className="footer-divider" aria-hidden />
+
+        <div className="footer-details">
           <a
-            className="hover:text-white"
+            className="footer-detail"
             href={`tel:${site.phone.replace(/\D/g, "")}`}
           >
             {site.phone}
           </a>
-          <a className="hover:text-white" href={`mailto:${site.email}`}>
+          <span className="footer-detail-sep" aria-hidden>
+            ·
+          </span>
+          <a className="footer-detail" href={`mailto:${site.email}`}>
             {site.email}
           </a>
-          <p className="mt-1 text-white/55">Porch pickup · Haymarket, VA</p>
+          <span className="footer-detail-sep footer-detail-sep--wide" aria-hidden>
+            ·
+          </span>
+          <p className="footer-detail footer-detail--plain">
+            Porch pickup only
+          </p>
         </div>
       </div>
 
-      <div className="border-t border-white/10 py-3 text-center text-xs text-white/40">
+      <div className="footer-copy">
         © {new Date().getFullYear()} {site.name}
       </div>
     </footer>
