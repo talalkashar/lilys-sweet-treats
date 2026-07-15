@@ -45,6 +45,12 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
             "reason" in notify && notify.reason && notify.reason !== "already_sent"
               ? String(notify.reason)
               : "customer_email_not_confirmed";
+          // Surface the most common misconfig clearly in logs
+          if (emailFailReason === "missing_resend_key") {
+            console.error(
+              "[success] RESEND_API_KEY is missing in this environment — emails cannot send. Set it in Vercel Production env and local .env.local for dev.",
+            );
+          }
           console.error(
             "[success] customer email not confirmed",
             paymentIntentId,
@@ -140,12 +146,15 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
           <p className="mt-5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
             <span className="font-semibold text-[var(--cocoa)]">Pickup</span>
             <br />
-            Porch pickup in Haymarket, VA.
+            Porch pickup at
             <br />
-            <span className="text-xs">
+            <span className="mt-1 block font-semibold text-[var(--cocoa)]">
+              {site.addressLine}
+            </span>
+            <span className="mt-1 block text-xs">
               {emailSentToCustomer
-                ? "Full address is in your confirmation email."
-                : "We will share the full porch address by phone or email."}
+                ? "This address is also in your confirmation email."
+                : "We will also share the address by phone or email if needed."}
             </span>
           </p>
         ) : null}

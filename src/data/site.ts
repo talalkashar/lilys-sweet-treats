@@ -17,16 +17,20 @@ export const site = {
   phone: "(571) 788-6168",
   email: "sweettreats0077@gmail.com",
   instagram: "https://www.instagram.com/lilys_sweet_treats_va/",
-  /** Pickup address — kept for order emails / Stripe only (not shown on site) */
+  /**
+   * Porch pickup street address.
+   * Shown on the order confirmation screen + customer/owner emails.
+   * Not listed in the public footer/nav (city-level only there).
+   */
   address: {
-    line1: "14658 Gap Way",
-    line2: "PO Box #237",
+    line1: "2307 Gore Drive",
+    line2: "",
     city: "Haymarket",
     state: "VA",
     zip: "20169",
   },
   /** Single-line for forms / Stripe metadata / confirmation emails */
-  addressLine: "14658 Gap Way, PO Box #237, Haymarket, VA 20169",
+  addressLine: "2307 Gore Drive, Haymarket, VA 20169",
   locationNote: "Porch pickup in Haymarket, VA.",
   pickupNote: "Porch pickup Friday and Saturday. See weekly schedule for times.",
 
@@ -54,6 +58,10 @@ export const site = {
     "Friday 4:00 PM – 6:00 PM",
     "Saturday 9:00 AM – 11:00 AM",
   ],
+
+  /** Minimum treats per order (enforced in form + payment intent) */
+  minOrderQuantity: 4,
+  maxOrderQuantity: 20,
 } as const;
 
 /** Google Maps search URL for the pickup address (private / email use) */

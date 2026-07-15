@@ -110,6 +110,10 @@ function customerHtml(order: OrderEmailPayload) {
   const BLUSH = "#f5c6d6";
   const COCOA = "#2c2228";
   const SOFT = "#5c4f56";
+  /* Soft pastel pink — matches site Order pickup buttons */
+  const PINK_BTN = "#ffc2db";
+  const PINK_BTN_BORDER = "#ffb6d4";
+  const PINK_BTN_TEXT = "#5c2a42";
   /* Pre-faded wallpaper — do NOT use full-strength cupcake-pattern-soft.png */
   const wallpaper =
     "https://www.lilyssweettreatsva.com/brand/backgrounds/email-wallpaper-tile.png";
@@ -182,12 +186,12 @@ function customerHtml(order: OrderEmailPayload) {
                 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:26px auto 0;border-collapse:collapse;">
                   <tr>
                     <td style="padding:0 6px 0 0;">
-                      <a href="https://www.lilyssweettreatsva.com/#menu" style="display:inline-block;padding:12px 20px;border-radius:999px;border:1.5px solid ${BLUSH};background:#ffffff;color:${COCOA};font-family:system-ui,sans-serif;font-size:14px;font-weight:600;text-decoration:none;">
+                      <a href="https://www.lilyssweettreatsva.com/#menu" style="display:inline-block;padding:12px 20px;border-radius:999px;border:1.5px solid ${PINK_BTN_BORDER};background:${PINK_BTN};color:${PINK_BTN_TEXT};font-family:system-ui,sans-serif;font-size:14px;font-weight:600;text-decoration:none;">
                         Back to menu
                       </a>
                     </td>
                     <td style="padding:0 0 0 6px;">
-                      <a href="https://www.lilyssweettreatsva.com/order" style="display:inline-block;padding:12px 20px;border-radius:999px;border:1.5px solid ${ROSE};background:${ROSE};color:#ffffff;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;text-decoration:none;">
+                      <a href="https://www.lilyssweettreatsva.com/order" style="display:inline-block;padding:12px 20px;border-radius:999px;border:1.5px solid ${PINK_BTN_BORDER};background:${PINK_BTN};color:${PINK_BTN_TEXT};font-family:system-ui,sans-serif;font-size:14px;font-weight:600;text-decoration:none;">
                         Order again
                       </a>
                     </td>
