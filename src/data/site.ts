@@ -8,7 +8,12 @@ export const site = {
   logo: "/brand/logo.png",
   /** Full brand board for large display (hero) */
   logoFull: "/brand/logo-full.png",
+  /** Purple cupcake wall — sitewide texture */
   pattern: "/brand/pattern.png",
+  /** Soft line-art cupcakes for lighter section washes */
+  patternSoft: "/brand/backgrounds/cupcake-pattern-soft.png",
+  /** Client banner: “Baked with love just for you!” */
+  loveBanner: "/brand/backgrounds/baked-with-love.png",
   phone: "(571) 788-6168",
   email: "sweettreats0077@gmail.com",
   instagram: "https://www.instagram.com/lilys_sweet_treats_va/",

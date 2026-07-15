@@ -7,6 +7,7 @@ import { reviews } from "@/data/reviews";
 import { site } from "@/data/site";
 
 const marqueeLines = [
+  "Baked with love just for you",
   "Made fresh for porch pickup",
   "New flavors every week",
   "Menu rotates with the season",
@@ -17,12 +18,12 @@ export default function Home() {
 
   return (
     <>
-      {/* HERO — Dolce-inspired: copy + floating logo, treats on the sides */}
+      {/* HERO — big centered logo, copy stacked below */}
       <section className="hero-shell">
         <div className="hero-deco hero-deco--blob" aria-hidden />
         <div className="hero-deco hero-deco--dot" aria-hidden />
 
-        {/* Bakery treats: left of text · right of logo */}
+        {/* Bakery treats frame the logo */}
         <div className="hero-treats" aria-hidden>
           <div className="hero-treat hero-treat--L1">
             <Image
@@ -31,7 +32,7 @@ export default function Home() {
               width={225}
               height={239}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 3.5rem, 5.75rem"
+              sizes="(max-width: 899px) 4.25rem, 10rem"
             />
           </div>
           <div className="hero-treat hero-treat--L2">
@@ -41,7 +42,7 @@ export default function Home() {
               width={208}
               height={156}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 3.25rem, 5.25rem"
+              sizes="(max-width: 899px) 3.9rem, 9rem"
             />
           </div>
           <div className="hero-treat hero-treat--L3">
@@ -51,7 +52,7 @@ export default function Home() {
               width={196}
               height={224}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 3.1rem, 5rem"
+              sizes="(max-width: 899px) 4.1rem, 8.5rem"
             />
           </div>
           <div className="hero-treat hero-treat--R1">
@@ -61,7 +62,7 @@ export default function Home() {
               width={164}
               height={229}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 3.25rem, 5.25rem"
+              sizes="(max-width: 899px) 3.9rem, 9rem"
             />
           </div>
           <div className="hero-treat hero-treat--R2">
@@ -71,7 +72,7 @@ export default function Home() {
               width={151}
               height={253}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 3.1rem, 5rem"
+              sizes="(max-width: 899px) 4.1rem, 8.5rem"
             />
           </div>
           <div className="hero-treat hero-treat--R3">
@@ -81,48 +82,13 @@ export default function Home() {
               width={205}
               height={146}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 3.5rem, 5.5rem"
+              sizes="(max-width: 899px) 4.25rem, 10rem"
             />
           </div>
         </div>
 
-        <div className="shell hero-grid">
-          {/* Copy sits beside the logo, never on top of it */}
-          <div className="hero-copy">
-            <p className="anim-fade-up hero-eyebrow">
-              We are {site.shortName}
-            </p>
-
-            <h1 className="anim-fade-up anim-delay-1 hero-title mt-4">
-              A home bakery made to{" "}
-              <span className="hero-accent">sweeten your day</span>
-            </h1>
-
-            <p className="anim-fade-up anim-delay-2 hero-lead mt-5">
-              Small-batch cinnamon rolls, sticky buns, cake pops, and alfajores.
-              Pre-order online and pick up in person. We bake something new
-              almost every week, so the menu stays fresh.
-            </p>
-
-            <p className="anim-fade-up anim-delay-2 hero-week-pill mt-4">
-              This week&apos;s menu is up · Pre-order for porch pickup
-            </p>
-
-            <div className="anim-fade-up anim-delay-3 mt-7 flex w-full flex-col gap-2.5 sm:w-auto sm:flex-row sm:flex-wrap">
-              <Link href="/order" className="btn-primary w-full sm:w-auto">
-                Order this week&apos;s treats
-              </Link>
-              <a href="#menu" className="btn-secondary w-full sm:w-auto">
-                Browse the menu
-              </a>
-            </div>
-
-            <p className="anim-fade-up anim-delay-4 hero-meta mt-6">
-              {site.leadTime} {site.pickupNote}
-            </p>
-          </div>
-
-          {/* Logo cutout: floats gently up and down */}
+        <div className="shell hero-stack">
+          {/* Large centered logo */}
           <div className="hero-logo-stage">
             <div className="hero-logo-glow" aria-hidden />
             <div className="hero-logo-float">
@@ -134,9 +100,44 @@ export default function Home() {
                 priority
                 quality={95}
                 className="hero-logo-img"
-                sizes="(max-width: 899px) min(72vw, 22rem), min(40vw, 26rem)"
+                sizes="(max-width: 640px) min(88vw, 26rem), min(70vw, 36rem)"
               />
             </div>
+          </div>
+
+          {/* Copy below logo, centered */}
+          <div className="hero-copy">
+            <p className="anim-fade-up hero-eyebrow">
+              We are {site.shortName}
+            </p>
+
+            <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
+              A home bakery made to{" "}
+              <span className="hero-accent">sweeten your day</span>
+            </h1>
+
+            <p className="anim-fade-up anim-delay-2 hero-lead mt-4">
+              Small-batch cinnamon rolls, sticky buns, cake pops, and alfajores.
+              Pre-order online and pick up in person. We bake something new
+              almost every week, so the menu stays fresh.
+            </p>
+
+            <p className="anim-fade-up anim-delay-2 hero-week-pill mt-4">
+              This week&apos;s menu is up · Pre-order for porch pickup
+            </p>
+
+            <div className="anim-fade-up anim-delay-3 hero-actions mt-6">
+              <Link href="/order" className="btn-primary">
+                Order this week&apos;s treats
+              </Link>
+              <a href="#menu" className="btn-secondary">
+                Browse the menu
+              </a>
+            </div>
+
+            <p className="anim-fade-up anim-delay-4 hero-meta mt-5">
+              {site.leadTime} {site.pickupNote}
+            </p>
           </div>
         </div>
       </section>
@@ -154,6 +155,22 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      {/* Client brand banner — “Baked with love just for you!” */}
+      <section className="love-banner" aria-label="Baked with love just for you">
+        <div className="love-banner-frame">
+          <Image
+            src={site.loveBanner}
+            alt="Baked with love just for you! We bake fresh in small batches. Get them before it's gone!"
+            width={1384}
+            height={442}
+            className="love-banner-img"
+            sizes="(max-width: 640px) 100vw, 48rem"
+            quality={92}
+            priority
+          />
+        </div>
+      </section>
 
       {/* STORY + food photos (Dolce-style photo storytelling) */}
       <section className="story-band section-pad">
