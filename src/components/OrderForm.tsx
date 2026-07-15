@@ -162,8 +162,7 @@ export function OrderForm() {
           Your order
         </h3>
         <p className="mt-1.5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
-          Porch pickup at {site.address.line1}, {site.address.city}. Pay
-          securely on the next step.
+          Porch pickup in Haymarket, VA. Pay securely on the next step.
         </p>
       </div>
 

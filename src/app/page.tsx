@@ -8,9 +8,9 @@ import { site } from "@/data/site";
 
 const marqueeLines = [
   "Baked with love just for you",
-  "Made fresh for porch pickup",
-  "New flavors every week",
-  "Menu rotates with the season",
+  "Order Monday through Wednesday by noon",
+  "Pickup Friday 4–6 PM · Saturday 9–11 AM",
+  "Small batches · fresh ingredients",
 ];
 
 export default function Home() {
@@ -116,31 +116,12 @@ export default function Home() {
               <span className="hero-accent">just for you!</span>
             </h1>
 
-            <p className="anim-fade-up anim-delay-1 hero-subline mt-3">
+            <p className="anim-fade-up anim-delay-1 hero-subline">
               We bake fresh in small batches.
             </p>
 
-            <p className="anim-fade-up anim-delay-2 hero-lead mt-4">
-              Small-batch cinnamon rolls and sticky buns, made fresh to order.
-              Pre-order online and pick up in person. We bake something new
-              almost every week, so the menu stays fresh.
-            </p>
-
-            <p className="anim-fade-up anim-delay-2 hero-week-pill mt-4">
-              This week&apos;s menu is up · Pre-order for porch pickup
-            </p>
-
-            <div className="anim-fade-up anim-delay-3 hero-actions mt-6">
-              <Link href="/order" className="btn-primary">
-                Order this week&apos;s treats
-              </Link>
-              <a href="#menu" className="btn-secondary">
-                Browse the menu
-              </a>
-            </div>
-
-            <p className="anim-fade-up anim-delay-4 hero-meta mt-5">
-              {site.leadTime} {site.pickupNote}
+            <p className="anim-fade-up anim-delay-2 hero-lead mt-6 sm:mt-7">
+              {site.qualityNote}
             </p>
           </div>
         </div>
@@ -160,89 +141,31 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Client brand banner — floating treats + love message */}
-      <section className="love-banner" aria-label="Baked with love just for you">
+      {/* Weekly schedule band — floating treats + order/pickup info */}
+      <section
+        className="love-banner"
+        aria-label="Weekly ordering and pickup schedule"
+      >
+        {/* Fewer pink rolls — more motion around the edges */}
         <div className="love-banner-floaters" aria-hidden>
-          <div className="love-floater love-floater--1">
-            <Image
-              src="/brand/hero/pink-swiss-roll.png"
-              alt=""
-              width={489}
-              height={444}
-              className="love-floater-img"
-              sizes="(max-width: 640px) 3.5rem, 5.5rem"
-            />
-          </div>
-          <div className="love-floater love-floater--2">
-            <Image
-              src="/brand/hero/cookie-bow.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="love-floater-img"
-              sizes="(max-width: 640px) 3.4rem, 5.25rem"
-            />
-          </div>
-          <div className="love-floater love-floater--3">
-            <Image
-              src="/brand/hero/macaron-bow.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="love-floater-img"
-              sizes="(max-width: 640px) 3.5rem, 5.5rem"
-            />
-          </div>
-          <div className="love-floater love-floater--4">
-            <Image
-              src="/brand/hero/cinnamon-roll.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="love-floater-img"
-              sizes="(max-width: 640px) 3.6rem, 5.75rem"
-            />
-          </div>
-          <div className="love-floater love-floater--5">
-            <Image
-              src="/brand/hero/swiss-rolls.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="love-floater-img"
-              sizes="(max-width: 640px) 4rem, 6.25rem"
-            />
-          </div>
-          <div className="love-floater love-floater--6">
-            <Image
-              src="/brand/hero/macaron-tower.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="love-floater-img"
-              sizes="(max-width: 640px) 3.4rem, 5.25rem"
-            />
-          </div>
-          <div className="love-floater love-floater--7">
-            <Image
-              src="/brand/hero/floral-cake.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="love-floater-img"
-              sizes="(max-width: 640px) 3.5rem, 5.5rem"
-            />
-          </div>
-          <div className="love-floater love-floater--8">
-            <Image
-              src="/brand/hero/pink-swiss-roll.png"
-              alt=""
-              width={489}
-              height={444}
-              className="love-floater-img"
-              sizes="(max-width: 640px) 3.2rem, 5rem"
-            />
-          </div>
+          {Array.from({ length: 10 }, (_, i) => (
+            <div
+              key={i}
+              className={`love-floater love-floater--drift love-floater--d${i + 1}`}
+              style={{
+                animationDelay: `${-i * 0.55}s`,
+              }}
+            >
+              <Image
+                src="/brand/hero/pink-swiss-roll.png"
+                alt=""
+                width={489}
+                height={444}
+                className="love-floater-img"
+                sizes="(max-width: 640px) 3.5rem, 5.5rem"
+              />
+            </div>
+          ))}
         </div>
 
         <div className="love-banner-copy">
@@ -251,6 +174,26 @@ export default function Home() {
             A home bakery made to
             <span className="love-banner-title-line">sweeten your day</span>
           </h2>
+          <div
+            className="love-schedule"
+            style={{
+              backgroundColor: "#f3faf6",
+              border: "2px solid #5bb88a",
+              boxShadow: "0 12px 32px rgba(47, 158, 107, 0.1)",
+            }}
+          >
+            <p className="love-schedule-line">
+              <strong>Order:</strong> {site.orderingWindow}
+            </p>
+            <p className="love-schedule-line">
+              <strong>Closes:</strong> {site.orderingClosesLabel} — pre-orders
+              close promptly at noon.
+            </p>
+            <p className="love-schedule-line">
+              <strong>Pickup:</strong> {site.pickupWindows.join(" · ")}
+            </p>
+            <p className="love-schedule-note">{site.locationNote}</p>
+          </div>
         </div>
       </section>
 
@@ -331,7 +274,7 @@ export default function Home() {
               </h2>
               <p className="prose-soft mt-2.5">
                 Browse what we are baking right now. Tap a treat for details and
-                ingredients, then pre-order when you are ready.
+                ingredients, then pre-order Monday–Wednesday by noon.
               </p>
               <p className="menu-flex-note mt-3">{site.menuNote}</p>
               <Link href="/order" className="btn-primary mt-5 inline-flex">
@@ -341,55 +284,6 @@ export default function Home() {
           </Reveal>
 
           <MenuGrid />
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section id="how-it-works" className="section-steps section-pad">
-        <div className="shell">
-          <Reveal>
-            <div className="mx-auto max-w-md text-center">
-              <p className="section-label">How pickup works</p>
-              <h2 className="section-title mt-2">Simple as 1, 2, 3</h2>
-              <p className="prose-soft mx-auto mt-2.5 text-center">
-                Order ahead. We bake. You pick up.
-              </p>
-            </div>
-          </Reveal>
-
-          <ol className="mt-10 grid gap-4 md:grid-cols-3 md:gap-5">
-            {[
-              {
-                n: "1",
-                t: "Choose treats",
-                d: "Browse this week's menu and pick what you want.",
-              },
-              {
-                n: "2",
-                t: "Pay online",
-                d: "Secure checkout on our order page.",
-              },
-              {
-                n: "3",
-                t: "Porch pickup",
-                d: `We bake for your window. Pickup at ${site.address.line1}, ${site.address.city}.`,
-              },
-            ].map((step, i) => (
-              <Reveal key={step.n} delayMs={i * 70}>
-                <li className="step-card h-full">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--rose)] text-xs font-bold text-white">
-                    {step.n}
-                  </span>
-                  <h3 className="mt-3 font-display text-lg text-[var(--cocoa)]">
-                    {step.t}
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
-                    {step.d}
-                  </p>
-                </li>
-              </Reveal>
-            ))}
-          </ol>
         </div>
       </section>
 
@@ -481,8 +375,7 @@ export default function Home() {
             <p className="section-label">Ready when you are</p>
             <h2 className="section-title mt-2">Let&apos;s make your day sweeter</h2>
             <p className="prose-soft mx-auto mt-3 text-center">
-              Pre-order online for porch pickup. We will confirm your order and
-              have it ready for you.
+              {site.thankYouNote}
             </p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
               <Link href="/order" className="btn-primary">

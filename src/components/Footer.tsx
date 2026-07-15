@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { mapsUrl, site } from "@/data/site";
+import { site } from "@/data/site";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -112,18 +112,7 @@ export function Footer() {
           <a className="hover:text-white" href={`mailto:${site.email}`}>
             {site.email}
           </a>
-          <a
-            className="mt-1 max-w-xs hover:text-white"
-            href={mapsUrl()}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {site.address.line1}
-            <br />
-            {site.address.line2}
-            <br />
-            {site.address.city}, {site.address.state} {site.address.zip}
-          </a>
+          <p className="mt-1 text-white/55">Porch pickup · Haymarket, VA</p>
         </div>
       </div>
 

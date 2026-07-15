@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { mapsUrl, site } from "@/data/site";
+import { site } from "@/data/site";
 import { notifyOrderPaidOnce } from "@/lib/order-notify";
 import { getStripe } from "@/lib/stripe";
 
@@ -103,16 +103,13 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
 
         {ok ? (
           <p className="mt-5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
-            <span className="font-semibold text-[var(--cocoa)]">Pickup at</span>
+            <span className="font-semibold text-[var(--cocoa)]">Pickup</span>
             <br />
-            <a
-              href={mapsUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-[var(--rose)] hover:underline"
-            >
-              {site.addressLine}
-            </a>
+            Porch pickup in Haymarket, VA.
+            <br />
+            <span className="text-xs">
+              Full address is in your confirmation email.
+            </span>
           </p>
         ) : null}
         <p className="mt-6 text-sm text-[var(--cocoa-soft)]">
