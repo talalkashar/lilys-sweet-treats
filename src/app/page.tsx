@@ -32,7 +32,7 @@ export default function Home() {
               width={1254}
               height={1254}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 4.25rem, 10rem"
+              sizes="(max-width: 899px) 4.75rem, 12rem"
             />
           </div>
           <div className="hero-treat hero-treat--L2">
@@ -42,7 +42,7 @@ export default function Home() {
               width={1254}
               height={1254}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 3.9rem, 9rem"
+              sizes="(max-width: 899px) 4.5rem, 11rem"
             />
           </div>
           <div className="hero-treat hero-treat--L3">
@@ -52,7 +52,7 @@ export default function Home() {
               width={1254}
               height={1254}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 4.1rem, 8.5rem"
+              sizes="(max-width: 899px) 4.6rem, 10.5rem"
             />
           </div>
           <div className="hero-treat hero-treat--R1">
@@ -62,7 +62,7 @@ export default function Home() {
               width={1254}
               height={1254}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 3.9rem, 9rem"
+              sizes="(max-width: 899px) 4.5rem, 11rem"
             />
           </div>
           <div className="hero-treat hero-treat--R2">
@@ -72,7 +72,7 @@ export default function Home() {
               width={1254}
               height={1254}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 4.1rem, 8.5rem"
+              sizes="(max-width: 899px) 4.6rem, 10.5rem"
             />
           </div>
           <div className="hero-treat hero-treat--R3">
@@ -82,7 +82,7 @@ export default function Home() {
               width={1254}
               height={1254}
               className="hero-treat-img"
-              sizes="(max-width: 899px) 4.25rem, 10rem"
+              sizes="(max-width: 899px) 4.75rem, 12rem"
             />
           </div>
         </div>
@@ -112,9 +112,13 @@ export default function Home() {
             </p>
 
             <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
-              A home bakery made to{" "}
-              <span className="hero-accent">sweeten your day</span>
+              Baked with love{" "}
+              <span className="hero-accent">just for you!</span>
             </h1>
+
+            <p className="anim-fade-up anim-delay-1 hero-subline mt-3">
+              We bake fresh in small batches.
+            </p>
 
             <p className="anim-fade-up anim-delay-2 hero-lead mt-4">
               Small-batch cinnamon rolls and sticky buns, made fresh to order.
@@ -156,19 +160,97 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Client brand banner — “Baked with love just for you!” */}
+      {/* Client brand banner — floating treats + love message */}
       <section className="love-banner" aria-label="Baked with love just for you">
-        <div className="love-banner-frame">
-          <Image
-            src={site.loveBanner}
-            alt="Baked with love just for you! We bake fresh in small batches. Get them before it's gone!"
-            width={1384}
-            height={442}
-            className="love-banner-img"
-            sizes="(max-width: 640px) 100vw, 48rem"
-            quality={92}
-            priority
-          />
+        <div className="love-banner-floaters" aria-hidden>
+          <div className="love-floater love-floater--1">
+            <Image
+              src="/brand/hero/pink-swiss-roll.png"
+              alt=""
+              width={489}
+              height={444}
+              className="love-floater-img"
+              sizes="(max-width: 640px) 3.5rem, 5.5rem"
+            />
+          </div>
+          <div className="love-floater love-floater--2">
+            <Image
+              src="/brand/hero/cookie-bow.png"
+              alt=""
+              width={1254}
+              height={1254}
+              className="love-floater-img"
+              sizes="(max-width: 640px) 3.4rem, 5.25rem"
+            />
+          </div>
+          <div className="love-floater love-floater--3">
+            <Image
+              src="/brand/hero/macaron-bow.png"
+              alt=""
+              width={1254}
+              height={1254}
+              className="love-floater-img"
+              sizes="(max-width: 640px) 3.5rem, 5.5rem"
+            />
+          </div>
+          <div className="love-floater love-floater--4">
+            <Image
+              src="/brand/hero/cinnamon-roll.png"
+              alt=""
+              width={1254}
+              height={1254}
+              className="love-floater-img"
+              sizes="(max-width: 640px) 3.6rem, 5.75rem"
+            />
+          </div>
+          <div className="love-floater love-floater--5">
+            <Image
+              src="/brand/hero/swiss-rolls.png"
+              alt=""
+              width={1254}
+              height={1254}
+              className="love-floater-img"
+              sizes="(max-width: 640px) 4rem, 6.25rem"
+            />
+          </div>
+          <div className="love-floater love-floater--6">
+            <Image
+              src="/brand/hero/macaron-tower.png"
+              alt=""
+              width={1254}
+              height={1254}
+              className="love-floater-img"
+              sizes="(max-width: 640px) 3.4rem, 5.25rem"
+            />
+          </div>
+          <div className="love-floater love-floater--7">
+            <Image
+              src="/brand/hero/floral-cake.png"
+              alt=""
+              width={1254}
+              height={1254}
+              className="love-floater-img"
+              sizes="(max-width: 640px) 3.5rem, 5.5rem"
+            />
+          </div>
+          <div className="love-floater love-floater--8">
+            <Image
+              src="/brand/hero/pink-swiss-roll.png"
+              alt=""
+              width={489}
+              height={444}
+              className="love-floater-img"
+              sizes="(max-width: 640px) 3.2rem, 5rem"
+            />
+          </div>
+        </div>
+
+        <div className="love-banner-copy">
+          <p className="love-banner-kicker">From our kitchen</p>
+          <h2 className="love-banner-title">
+            A home bakery made to
+            <span className="love-banner-title-line">sweeten your day</span>
+          </h2>
         </div>
       </section>
 
