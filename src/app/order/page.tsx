@@ -20,7 +20,7 @@ export default function OrderPage() {
         </Link>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,17.5rem)_minmax(0,1fr)] lg:items-start lg:gap-10">
-          <aside className="lg:sticky lg:top-20">
+          <aside className="lg:sticky lg:top-32">
             <p className="section-label">Checkout</p>
             <h1 className="section-title mt-2">Order for pickup</h1>
             <p className="prose-soft mt-3">

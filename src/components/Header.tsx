@@ -25,16 +25,14 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-[background,box-shadow,border-color] duration-200 ${
-        scrolled
-          ? "border-[var(--blush)]/45 bg-white/92 shadow-[var(--shadow-soft)] backdrop-blur-md"
-          : "border-transparent bg-white/80 backdrop-blur-md"
+      className={`site-header sticky top-0 z-50 transition-[box-shadow] duration-200 ${
+        scrolled ? "site-header--scrolled shadow-[var(--shadow-soft)]" : ""
       }`}
     >
-      <div className="shell flex h-14 items-center justify-between gap-3 sm:h-[3.75rem]">
+      <div className="site-header-inner shell flex h-[5.5rem] items-center justify-between gap-3 sm:h-[6.5rem] lg:h-[7rem]">
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-2.5"
+          className="flex min-w-0 items-center gap-3"
           onClick={() => setOpen(false)}
         >
           <span className="logo-mark">
@@ -43,21 +41,21 @@ export function Header() {
               alt={`${site.name} logo`}
               fill
               className="object-cover object-center"
-              sizes="44px"
+              sizes="80px"
               priority
             />
           </span>
           <div className="min-w-0 leading-tight">
-            <p className="truncate font-display text-base text-[var(--cocoa)] sm:text-lg">
+            <p className="truncate font-display text-lg text-[var(--cocoa)] sm:text-xl">
               {site.shortName}
             </p>
-            <p className="hidden text-[0.65rem] font-medium uppercase tracking-[0.1em] text-[var(--ink-muted)] sm:block">
+            <p className="hidden text-xs font-medium uppercase tracking-[0.1em] text-[var(--ink-muted)] sm:block">
               Porch pickup only
             </p>
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm font-medium text-[var(--cocoa-soft)] lg:flex">
+        <nav className="hidden items-center gap-7 text-base font-medium text-[var(--cocoa-soft)] lg:flex">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -69,13 +67,13 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <Link href="/order" className="btn-primary hidden sm:inline-flex">
             Order pickup
           </Link>
           <button
             type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--blush)] bg-white lg:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--blush)] bg-white lg:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
@@ -97,7 +95,7 @@ export function Header() {
       </div>
 
       {open ? (
-        <div className="border-t border-[var(--blush)]/40 bg-white px-5 py-3 lg:hidden">
+        <div className="site-header-menu border-t border-[var(--blush)]/40 px-5 py-3 lg:hidden">
           <nav className="flex flex-col">
             {links.map((l) => (
               <Link
