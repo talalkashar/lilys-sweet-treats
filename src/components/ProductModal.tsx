@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect } from "react";
 import type { Product } from "@/data/products";
+import { packDeals, packPriceDollars } from "@/data/packs";
 
 type Props = {
   product: Product | null;
@@ -76,11 +77,39 @@ export function ProductModal({ product, onClose }: Props) {
             </h2>
             <p className="shrink-0 text-sm font-semibold tabular-nums text-[var(--rose)]">
               ${product.price.toFixed(0)}
+              <span className="block text-[0.65rem] font-medium text-[var(--ink-muted)]">
+                each
+              </span>
             </p>
           </div>
           <p className="mt-3 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:text-base">
             {product.description}
           </p>
+
+          <div className="mt-4 rounded-xl border border-[var(--blush)]/60 bg-[var(--cream)]/80 px-3.5 py-3">
+            <p className="text-xs font-bold uppercase tracking-wider text-[var(--rose)]">
+              Pack deals
+            </p>
+            <ul className="mt-2 space-y-1.5 text-sm text-[var(--cocoa)]">
+              {packDeals.map((pack) => (
+                <li
+                  key={pack.id}
+                  className="flex items-baseline justify-between gap-2"
+                >
+                  <span>
+                    <span className="font-semibold">{pack.displayName}</span>
+                    <span className="text-[var(--ink-muted)]">
+                      {" "}
+                      · {pack.quantity} treats
+                    </span>
+                  </span>
+                  <span className="shrink-0 font-semibold tabular-nums text-[var(--rose)]">
+                    ${packPriceDollars(product.price, pack).toFixed(2)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {product.ingredients.length > 0 ? (
             <div className="product-ingredients mt-4">
@@ -105,7 +134,7 @@ export function ProductModal({ product, onClose }: Props) {
               onClick={onClose}
               className="btn-primary min-h-11 flex-1 text-center"
             >
-              Order and pay
+              Order a pack
             </a>
             <button
               type="button"

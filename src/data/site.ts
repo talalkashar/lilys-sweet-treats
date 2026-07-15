@@ -59,9 +59,12 @@ export const site = {
     "Saturday 9:00 AM – 11:00 AM",
   ],
 
-  /** Minimum treats per order (enforced in form + payment intent) */
+  /**
+   * Pack checkout only (4 / 8 / 12). Kept for copy fallbacks.
+   * Real pack definitions live in `src/data/packs.ts`.
+   */
   minOrderQuantity: 4,
-  maxOrderQuantity: 20,
+  maxOrderQuantity: 12,
 } as const;
 
 /** Google Maps search URL for the pickup address (private / email use) */

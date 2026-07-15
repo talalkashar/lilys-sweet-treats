@@ -48,11 +48,11 @@ export const menuCategories: MenuCategory[] = [
 
 /**
  * Full menu.
- * Pricing: no toppings = $8 · with toppings (fruit, nuts, etc.) = $9
+ * Unit pricing: $9 each. Sold in packs only (4 / 8 / party tray 12) — see `src/data/packs.ts`.
  * `ingredients` = standout flavors only. Shared dough + allergen note lives in the modal.
  */
 export const products: Product[] = [
-  // Yeasted cinnamon dough + fruit filling + frosting (with toppings)
+  // Yeasted cinnamon dough + fruit filling + frosting
   {
     id: "apple-caramel-cinnamon-rolls",
     name: "Apple Caramel Cinnamon Rolls",
@@ -63,7 +63,7 @@ export const products: Product[] = [
     image: "/products/apple-caramel-cinnamon-rolls.png",
     ingredients: ["Apples", "Caramel", "Cinnamon", "Cream cheese frosting"],
   },
-  // Same dough family; peach filling instead of apple/caramel (with toppings)
+  // Same dough family; peach filling instead of apple/caramel
   {
     id: "peach-cobbler-cinnamon-rolls",
     name: "Peach Cobbler Cinnamon Rolls",
@@ -74,7 +74,7 @@ export const products: Product[] = [
     image: "/products/peach-cobbler-cinnamon-rolls.png",
     ingredients: ["Peaches", "Cinnamon", "Cream cheese frosting"],
   },
-  // Sticky bun: caramel glaze + nuts (with toppings)
+  // Sticky bun: caramel glaze + nuts
   {
     id: "sticky-buns-with-nuts",
     name: "Sticky Buns with Nuts",
@@ -85,11 +85,11 @@ export const products: Product[] = [
     image: "/products/sticky-bun-with-nuts.png",
     ingredients: ["Caramel", "Toasted nuts", "Cinnamon"],
   },
-  // Sticky bun plain (no toppings)
+  // Sticky bun plain
   {
     id: "sticky-buns-without-nuts",
     name: "Sticky Buns without Nuts",
-    price: 8,
+    price: 9,
     category: "sticky",
     description: "Classic sticky bun and caramel, no nuts.",
     emoji: "🌀",

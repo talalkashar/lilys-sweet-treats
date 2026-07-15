@@ -30,7 +30,7 @@ export default function OrderPage() {
 
             <ol className="mt-6 space-y-2 text-sm text-[var(--cocoa-soft)]">
               {[
-                "Enter details and choose a treat",
+                "Pick a flavor + pack (4, 8, or party tray of 12)",
                 "Pay securely on this page",
                 "Pick up Friday 4–6 PM or Saturday 9–11 AM",
               ].map((line, i) => (
@@ -55,6 +55,19 @@ export default function OrderPage() {
               </p>
               <p className="mt-1 text-xs text-[var(--ink-muted)]">
                 {site.orderingClosesNote}
+              </p>
+            </div>
+
+            <div className="mt-3 rounded-lg border border-[var(--blush)]/40 bg-white px-3 py-3 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
+                Pack deals
+              </p>
+              <p className="mt-1.5 font-medium text-[var(--cocoa)]">
+                4-pack · 8-pack · Party tray (12)
+              </p>
+              <p className="mt-1 text-xs text-[var(--ink-muted)]">
+                One flavor per checkout. Bigger packs unlock a little savings —
+                party trays are perfect for birthdays and get-togethers.
               </p>
             </div>
 

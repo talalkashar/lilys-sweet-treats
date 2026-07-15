@@ -399,7 +399,7 @@ export default function Home() {
               </Link>
               <a
                 href={`tel:${site.phone.replace(/\D/g, "")}`}
-                className="btn-secondary"
+                className="btn-primary"
               >
                 Call {site.phone}
               </a>

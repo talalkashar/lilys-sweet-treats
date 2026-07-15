@@ -46,10 +46,16 @@ export function ProductCard({ product, onOpen }: Props) {
             </h3>
             <p className="shrink-0 pt-0.5 text-sm font-semibold tabular-nums text-[var(--rose)]">
               ${product.price.toFixed(0)}
+              <span className="block text-[0.65rem] font-medium normal-case tracking-normal text-[var(--ink-muted)]">
+                each
+              </span>
             </p>
           </div>
           <p className="line-clamp-2 text-sm leading-relaxed text-[var(--cocoa-soft)]">
             {product.description}
+          </p>
+          <p className="text-xs font-medium text-[var(--cocoa-soft)]">
+            4-pack · 8-pack · party tray (12)
           </p>
           <span className="mt-auto pt-3 text-sm font-semibold text-[var(--rose)]">
             View details →

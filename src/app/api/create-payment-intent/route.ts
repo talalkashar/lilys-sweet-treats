@@ -47,7 +47,9 @@ export async function POST(req: Request) {
 
     const {
       product,
+      pack,
       quantity,
+      packLabel,
       name,
       phone,
       email,
@@ -62,10 +64,12 @@ export async function POST(req: Request) {
       currency: "usd",
       automatic_payment_methods: { enabled: true },
       receipt_email: email,
-      description: `${product.name} × ${quantity} (porch pickup)`,
+      description: `${product.name} — ${packLabel} (porch pickup)`,
       metadata: {
         productId: product.id,
         productName: product.name,
+        packId: pack.id,
+        packLabel,
         quantity: String(quantity),
         customerName: name,
         customerPhone: phone,
@@ -82,6 +86,7 @@ export async function POST(req: Request) {
       amount: amountCents,
       productName: product.name,
       quantity,
+      packLabel,
     });
   } catch (err) {
     console.error("create-payment-intent", err);

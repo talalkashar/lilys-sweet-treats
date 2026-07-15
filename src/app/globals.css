@@ -985,8 +985,12 @@ textarea.field {
   color: var(--cocoa);
 }
 
-.footer-detail {
+/* Phone, email, porch line — same color + boldness */
+.footer-detail,
+.footer-detail--plain {
   margin: 0;
+  font-size: inherit;
+  font-weight: 700;
   color: var(--cocoa);
   text-decoration: none;
   word-break: break-word;
@@ -999,15 +1003,11 @@ a.footer-detail:hover {
   text-underline-offset: 0.18em;
 }
 
-.footer-detail--plain {
-  font-weight: 600;
-  color: var(--cocoa-soft);
-}
-
 .footer-detail-sep {
-  color: var(--ink-muted);
-  font-weight: 500;
+  color: var(--cocoa);
+  font-weight: 700;
   user-select: none;
+  opacity: 0.55;
 }
 
 .footer-copy {
@@ -1388,16 +1388,35 @@ a.footer-detail:hover {
 }
 
 .love-schedule {
+  position: relative;
   margin: 0 auto;
   max-width: 44rem;
   padding: 1.5rem 1.65rem 1.55rem;
   border-radius: var(--radius-xl);
-  /* Soft light mint */
+  /* Soft mint + green edge (client green-swatch) with faint cupcake sketch */
   border: 2px solid #5bb88a !important;
-  background-color: #f3faf6 !important;
-  background-image: none !important;
-  box-shadow: 0 12px 32px rgba(47, 158, 107, 0.1) !important;
+  background-color: #edf7f2 !important;
+  /* Mint wash over soft cupcake line-art so pattern reads gently */
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(237, 247, 242, 0.88) 0%,
+      rgba(237, 247, 242, 0.82) 100%
+    ),
+    url("/brand/backgrounds/cupcake-pattern-soft.png") !important;
+  background-repeat: no-repeat, repeat !important;
+  background-position: center, center !important;
+  background-size: auto, min(11rem, 38vw) auto !important;
+  box-shadow: 0 12px 32px rgba(47, 158, 107, 0.12) !important;
   text-align: left;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Keep schedule text above any decorative layers */
+.love-schedule > * {
+  position: relative;
+  z-index: 1;
 }
 
 .love-schedule-line {
