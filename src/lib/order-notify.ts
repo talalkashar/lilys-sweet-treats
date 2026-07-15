@@ -23,12 +23,24 @@ export function orderPayloadFromIntent(pi: Stripe.PaymentIntent) {
 }
 
 export type NotifyResult =
-  | SendOrderEmailResult
-  | { sent: false; reason: "not_paid" | "already_sent" };
+  | (SendOrderEmailResult & { reason?: string })
+  | { sent: false; reason: "not_paid"; customerSent?: false; ownerSent?: false }
+  | {
+      sent: boolean;
+      reason: "already_sent";
+      ownerSent: boolean;
+      customerSent: boolean;
+      customerTo?: string;
+    };
+
+function metaFlagTrue(value: string | undefined) {
+  return value === "true" || value === "1" || value === "yes";
+}
 
 /**
  * Send owner + customer emails once per successful payment.
- * Uses Stripe metadata as a lock so webhook + success page don't double-send.
+ * Tracks owner/customer delivery separately so a bakery alert success never
+ * prevents retrying a failed customer confirmation.
  */
 export async function notifyOrderPaidOnce(
   pi: Stripe.PaymentIntent,
@@ -37,17 +49,39 @@ export async function notifyOrderPaidOnce(
     return { sent: false, reason: "not_paid" };
   }
 
-  if (pi.metadata?.emailsSent === "true") {
-    return { sent: false, reason: "already_sent" };
+  const meta = pi.metadata || {};
+  const ownerAlready = metaFlagTrue(meta.ownerEmailSent);
+  const customerAlready = metaFlagTrue(meta.customerEmailSent);
+  // Backward compatible with older lock that only set emailsSent
+  const legacyDone = meta.emailsSent === "true";
+
+  if (legacyDone || (ownerAlready && customerAlready)) {
+    return {
+      sent: true,
+      reason: "already_sent",
+      ownerSent: true,
+      customerSent: true,
+      customerTo: meta.customerEmail || pi.receipt_email || undefined,
+    };
+  }
+
+  // If only one side landed before, retry the missing side only
+  if (ownerAlready && !customerAlready && !meta.customerEmail && !pi.receipt_email) {
+    return {
+      sent: true,
+      reason: "already_sent",
+      ownerSent: true,
+      customerSent: true,
+    };
   }
 
   const stripe = getStripe();
 
-  // Claim the send (best-effort lock) BEFORE sending so parallel paths don't double
+  // Soft lock so webhook + success page don't double-send the same side
   try {
     await stripe.paymentIntents.update(pi.id, {
       metadata: {
-        ...pi.metadata,
+        ...meta,
         emailsSent: "pending",
       },
     });
@@ -55,23 +89,44 @@ export async function notifyOrderPaidOnce(
     console.error("[order-notify] could not set emailsSent pending", err);
   }
 
-  const result = await sendOrderEmails(orderPayloadFromIntent(pi));
+  const result = await sendOrderEmails(orderPayloadFromIntent(pi), {
+    skipOwner: ownerAlready || legacyDone,
+    skipCustomer: customerAlready,
+  });
+
   console.log("[order-notify] result", pi.id, JSON.stringify(result));
+
+  const ownerSent = ownerAlready || legacyDone || result.ownerSent;
+  const customerSent = customerAlready || result.customerSent;
+  const fullySent = ownerSent && customerSent;
+
+  const errorBits = [
+    result.ownerError ? `owner:${result.ownerError}` : "",
+    result.customerError ? `customer:${result.customerError}` : "",
+  ]
+    .filter(Boolean)
+    .join(" | ")
+    .slice(0, 450);
 
   try {
     await stripe.paymentIntents.update(pi.id, {
       metadata: {
-        ...pi.metadata,
-        emailsSent: result.sent ? "true" : "failed",
+        ...meta,
+        ownerEmailSent: ownerSent ? "true" : "false",
+        customerEmailSent: customerSent ? "true" : "false",
+        emailsSent: fullySent ? "true" : "failed",
         emailsSentAt: new Date().toISOString(),
-        emailError: result.sent
-          ? ""
-          : ("reason" in result ? result.reason : "unknown").slice(0, 450),
+        emailError: fullySent ? "" : errorBits || result.reason || "unknown",
       },
     });
   } catch (err) {
     console.error("[order-notify] could not finalize emailsSent metadata", err);
   }
 
-  return result;
+  return {
+    ...result,
+    sent: fullySent,
+    ownerSent,
+    customerSent,
+  };
 }

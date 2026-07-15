@@ -14,21 +14,19 @@ export type OrderEmailPayload = {
   pickupAddress: string;
 };
 
-export type SendOrderEmailResult =
-  | {
-      sent: true;
-      ownerTo: string;
-      customerTo?: string;
-      ownerId?: string;
-      customerId?: string;
-    }
-  | {
-      sent: false;
-      reason: string;
-      ownerTo?: string;
-      ownerError?: string;
-      customerError?: string;
-    };
+export type SendOrderEmailResult = {
+  /** True only when every required recipient succeeded */
+  sent: boolean;
+  ownerTo: string;
+  ownerSent: boolean;
+  ownerId?: string;
+  ownerError?: string;
+  customerTo?: string;
+  customerSent: boolean;
+  customerId?: string;
+  customerError?: string;
+  reason?: string;
+};
 
 function formatMoney(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -229,53 +227,86 @@ function customerText(order: OrderEmailPayload) {
 
 /**
  * Notify bakery owner + customer after a successful Stripe payment.
+ * Tracks each recipient separately so a bakery alert success never hides a
+ * failed customer confirmation (and we can retry the missing one).
  */
 export async function sendOrderEmails(
   order: OrderEmailPayload,
+  options?: {
+    /** Skip bakery owner alert (already delivered for this payment) */
+    skipOwner?: boolean;
+    /** Skip customer confirmation (already delivered for this payment) */
+    skipCustomer?: boolean;
+  },
 ): Promise<SendOrderEmailResult> {
   const resend = getResend();
+  const ownerTo = ownerInbox();
+  const customerTo = (order.customerEmail || "").trim() || undefined;
+
   if (!resend) {
     console.warn(
       "[email] RESEND_API_KEY missing — skipped order emails for",
       order.paymentIntentId,
     );
-    return { sent: false, reason: "missing_resend_key" };
+    return {
+      sent: false,
+      reason: "missing_resend_key",
+      ownerTo,
+      ownerSent: false,
+      customerTo,
+      customerSent: false,
+    };
+  }
+
+  if (!fromAddress()) {
+    return {
+      sent: false,
+      reason: "missing_from_address",
+      ownerTo,
+      ownerSent: false,
+      customerTo,
+      customerSent: false,
+    };
   }
 
   const from = fromAddress();
-  const ownerTo = ownerInbox();
   let ownerError: string | undefined;
   let customerError: string | undefined;
   let ownerId: string | undefined;
   let customerId: string | undefined;
+  let ownerSent = Boolean(options?.skipOwner);
+  let customerSent = Boolean(options?.skipCustomer) || !customerTo;
 
-  try {
-    const ownerResult = await resend.emails.send({
-      from,
-      to: [ownerTo],
-      replyTo: order.customerEmail || undefined,
-      subject: `New order: ${order.productName} × ${order.quantity} — ${formatMoney(order.amountCents)}`,
-      html: ownerHtml(order),
-    });
-    if (ownerResult.error) {
-      ownerError =
-        ownerResult.error.message || JSON.stringify(ownerResult.error);
-      console.error("[email] owner notify failed", ownerTo, ownerResult.error);
-    } else {
-      ownerId = ownerResult.data?.id;
-      console.log("[email] owner notify ok", ownerId, "→", ownerTo);
+  if (!options?.skipOwner) {
+    try {
+      const ownerResult = await resend.emails.send({
+        from,
+        to: [ownerTo],
+        replyTo: customerTo,
+        subject: `New order: ${order.productName} × ${order.quantity} — ${formatMoney(order.amountCents)}`,
+        html: ownerHtml(order),
+      });
+      if (ownerResult.error) {
+        ownerError =
+          ownerResult.error.message || JSON.stringify(ownerResult.error);
+        console.error("[email] owner notify failed", ownerTo, ownerResult.error);
+      } else {
+        ownerId = ownerResult.data?.id;
+        ownerSent = true;
+        console.log("[email] owner notify ok", ownerId, "→", ownerTo);
+      }
+    } catch (err) {
+      ownerError = err instanceof Error ? err.message : "owner send threw";
+      console.error("[email] owner notify exception", err);
     }
-  } catch (err) {
-    ownerError = err instanceof Error ? err.message : "owner send threw";
-    console.error("[email] owner notify exception", err);
   }
 
-  if (order.customerEmail) {
+  if (customerTo && !options?.skipCustomer) {
     try {
       const first = order.customerName.split(" ")[0] || "there";
       const customerResult = await resend.emails.send({
         from,
-        to: [order.customerEmail],
+        to: [customerTo],
         replyTo: site.email,
         subject: `You're all set — ${order.productName}`,
         html: customerHtml(order),
@@ -286,16 +317,17 @@ export async function sendOrderEmails(
           customerResult.error.message || JSON.stringify(customerResult.error);
         console.error(
           "[email] customer confirm failed",
-          order.customerEmail,
+          customerTo,
           customerResult.error,
         );
       } else {
         customerId = customerResult.data?.id;
+        customerSent = true;
         console.log(
           "[email] customer confirm ok",
           customerId,
           "→",
-          order.customerEmail,
+          customerTo,
           `(hi ${first})`,
         );
       }
@@ -306,22 +338,21 @@ export async function sendOrderEmails(
     }
   }
 
-  const anyOk = Boolean(ownerId || customerId);
-  if (!anyOk) {
-    return {
-      sent: false,
-      reason: "resend_rejected",
-      ownerTo,
-      ownerError,
-      customerError,
-    };
-  }
-
+  const allRequiredOk = ownerSent && customerSent;
   return {
-    sent: true,
+    sent: allRequiredOk,
+    reason: allRequiredOk
+      ? undefined
+      : !ownerSent && !customerSent
+        ? "resend_rejected"
+        : "partial_failure",
     ownerTo,
-    customerTo: order.customerEmail || undefined,
+    ownerSent,
     ownerId,
+    ownerError,
+    customerTo,
+    customerSent,
     customerId,
+    customerError,
   };
 }

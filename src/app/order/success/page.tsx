@@ -3,6 +3,9 @@ import { site } from "@/data/site";
 import { notifyOrderPaidOnce } from "@/lib/order-notify";
 import { getStripe } from "@/lib/stripe";
 
+/** Always run on the server with the payment_intent query — never cache this page. */
+export const dynamic = "force-dynamic";
+
 type Props = {
   searchParams: Promise<{ payment_intent?: string; redirect_status?: string }>;
 };
@@ -14,6 +17,8 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
   let status: "succeeded" | "processing" | "failed" | "unknown" = "unknown";
   let customerEmail: string | null = null;
   let emailSentToCustomer = false;
+  let emailFailed = false;
+  let emailFailReason: string | null = null;
 
   if (paymentIntentId && /^pi_[a-zA-Z0-9_]+$/.test(paymentIntentId)) {
     try {
@@ -24,10 +29,28 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
       if (pi.status === "succeeded") {
         status = "succeeded";
         const notify = await notifyOrderPaidOnce(pi);
-        if (notify.sent) {
-          emailSentToCustomer = Boolean(notify.customerId || notify.customerTo);
+
+        if ("customerSent" in notify && notify.customerSent) {
+          emailSentToCustomer = true;
         } else if (notify.reason === "already_sent") {
-          emailSentToCustomer = Boolean(customerEmail);
+          // Only trust explicit customer delivery flags from this path
+          emailSentToCustomer = Boolean(
+            "customerSent" in notify ? notify.customerSent : false,
+          );
+        }
+
+        if (!emailSentToCustomer && customerEmail) {
+          emailFailed = true;
+          emailFailReason =
+            "reason" in notify && notify.reason && notify.reason !== "already_sent"
+              ? String(notify.reason)
+              : "customer_email_not_confirmed";
+          console.error(
+            "[success] customer email not confirmed",
+            paymentIntentId,
+            emailFailReason,
+            notify,
+          );
         }
       } else if (
         pi.status === "processing" ||
@@ -42,6 +65,8 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
       status = "unknown";
     }
   } else if (params.redirect_status === "succeeded") {
+    // Payment may have succeeded, but without payment_intent we cannot send mail here.
+    // Stripe webhook is the backup path.
     status = "succeeded";
   } else if (params.redirect_status) {
     status = "failed";
@@ -59,7 +84,9 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
 
   const body =
     status === "succeeded"
-      ? "Thanks for your order. A confirmation email is on the way with your pickup details."
+      ? emailFailed
+        ? "Thanks for your order — payment went through. We had trouble sending the confirmation email; please check spam or contact us and we will resend your pickup details."
+        : "Thanks for your order. A confirmation email is on the way with your pickup details."
       : status === "processing"
         ? "Your payment is still processing. We will confirm by phone or email when it clears."
         : status === "failed"
@@ -89,14 +116,22 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
               Confirmation email
             </p>
             <p className="mt-1.5 text-sm leading-relaxed text-[var(--cocoa)]">
-              {emailSentToCustomer ? "We sent a confirmation to" : "We will email"}{" "}
-              <strong className="break-all">{customerEmail}</strong>
-              {emailSentToCustomer
-                ? " with your order and pickup details."
-                : " with your order and pickup details shortly."}
+              {emailSentToCustomer ? (
+                <>
+                  We sent a confirmation to{" "}
+                  <strong className="break-all">{customerEmail}</strong> with
+                  your order and pickup details.
+                </>
+              ) : (
+                <>
+                  We could not confirm delivery to{" "}
+                  <strong className="break-all">{customerEmail}</strong>. Check
+                  spam/junk, or call us and we will resend.
+                </>
+              )}
             </p>
             <p className="mt-2 text-xs text-[var(--cocoa-soft)]">
-              From: Lily&apos;s Sweet Treats · Subject: Order confirmed
+              From: Lily&apos;s Sweet Treats · Subject: You&apos;re all set
             </p>
           </div>
         ) : null}
@@ -108,7 +143,9 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
             Porch pickup in Haymarket, VA.
             <br />
             <span className="text-xs">
-              Full address is in your confirmation email.
+              {emailSentToCustomer
+                ? "Full address is in your confirmation email."
+                : "We will share the full porch address by phone or email."}
             </span>
           </p>
         ) : null}
