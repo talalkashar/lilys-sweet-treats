@@ -73,7 +73,7 @@ function ownerHtml(order: OrderEmailPayload) {
       <div style="padding:24px;color:#2c2228;font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55;">
         <p style="margin:0 0 16px;">Someone just paid online for porch pickup.</p>
         <table style="width:100%;border-collapse:collapse;">
-          <tr><td style="padding:8px 0;color:#8a7a82;width:38%;">Order</td><td style="padding:8px 0;font-weight:600;">${escapeHtml(order.productName)} × ${escapeHtml(order.quantity)}</td></tr>
+          <tr><td style="padding:8px 0;color:#8a7a82;width:38%;vertical-align:top;">Order</td><td style="padding:8px 0;font-weight:600;">${escapeHtml(order.productName)}<br/><span style="font-weight:500;color:#8a7a82;">${escapeHtml(order.quantity)}</span></td></tr>
           <tr><td style="padding:8px 0;color:#8a7a82;">Paid</td><td style="padding:8px 0;font-weight:600;color:#c93670;">${formatMoney(order.amountCents)}</td></tr>
           <tr><td style="padding:8px 0;color:#8a7a82;">Pickup window</td><td style="padding:8px 0;font-weight:600;">${escapeHtml(order.pickupWindow)}</td></tr>
           <tr><td style="padding:8px 0;color:#8a7a82;">Customer</td><td style="padding:8px 0;">${escapeHtml(order.customerName)}</td></tr>
@@ -154,11 +154,11 @@ function customerHtml(order: OrderEmailPayload) {
                       <p style="margin:0 0 6px;font-family:system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:${ROSE};">
                         Your order
                       </p>
-                      <p style="margin:0;font-family:system-ui,sans-serif;font-size:17px;font-weight:700;color:${COCOA};line-height:1.3;">
+                      <p style="margin:0;font-family:system-ui,sans-serif;font-size:16px;font-weight:700;color:${COCOA};line-height:1.4;">
                         ${escapeHtml(order.productName)}
                       </p>
                       <p style="margin:6px 0 0;font-family:system-ui,sans-serif;font-size:14px;color:${SOFT};">
-                        Qty ${escapeHtml(order.quantity)} · <strong style="color:${ROSE};">${formatMoney(order.amountCents)} paid</strong>
+                        ${escapeHtml(order.quantity)} · <strong style="color:${ROSE};">${formatMoney(order.amountCents)} paid</strong>
                       </p>
                       <p style="margin:14px 0 0;font-family:system-ui,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${SOFT};">
                         Pickup window

@@ -189,9 +189,6 @@ export default function Home() {
               <strong>Closes:</strong> {site.orderingClosesLabel} — pre-orders
               close promptly at noon.
             </p>
-            <p className="love-schedule-line">
-              <strong>Pickup:</strong> {site.pickupWindows.join(" · ")}
-            </p>
             <p className="love-schedule-note">{site.locationNote}</p>
           </div>
         </div>

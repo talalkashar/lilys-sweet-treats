@@ -11,12 +11,14 @@ import {
   productsInCategory,
 } from "@/data/products";
 import {
-  defaultPackId,
+  formatPackLabel,
   getPackDeal,
+  maxPacksPerOrder,
   packDeals,
   packFullPrice,
   packPriceDollars,
   packSavings,
+  type PackDeal,
 } from "@/data/packs";
 import { site } from "@/data/site";
 
@@ -24,27 +26,25 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "",
 );
 
-type FormState = {
+type CartLine = {
+  id: string;
+  productId: string;
+  packId: string;
+};
+
+type ContactState = {
   name: string;
   phone: string;
   email: string;
-  productId: string;
-  packId: string;
   pickupWindow: string;
   notes: string;
 };
 
 type Step = "details" | "pay";
 
-const initial: FormState = {
-  name: "",
-  phone: "",
-  email: "",
-  productId: availableProducts[0]?.id ?? "",
-  packId: defaultPackId,
-  pickupWindow: site.pickupWindows[0] ?? "",
-  notes: "",
-};
+function newLineId() {
+  return `line-${Math.random().toString(36).slice(2, 10)}`;
+}
 
 const elementsAppearance: StripeElementsOptions["appearance"] = {
   theme: "stripe",
@@ -62,41 +62,113 @@ const elementsAppearance: StripeElementsOptions["appearance"] = {
 export function OrderForm() {
   const searchParams = useSearchParams();
   const productParam = searchParams.get("product");
-  const packParam = searchParams.get("pack");
 
-  const initialProductId =
+  const starterProductId =
     productParam && availableProducts.some((p) => p.id === productParam)
       ? productParam
-      : initial.productId;
-  const initialPackId =
-    packParam && getPackDeal(packParam) ? packParam : initial.packId;
+      : (availableProducts[0]?.id ?? "");
 
-  const [form, setForm] = useState<FormState>(() => ({
-    ...initial,
-    productId: initialProductId,
-    packId: initialPackId,
-  }));
+  const [contact, setContact] = useState<ContactState>({
+    name: "",
+    phone: "",
+    email: "",
+    pickupWindow: site.pickupWindows[0] ?? "",
+    notes: "",
+  });
+  /** Flavor currently selected for the next pack click */
+  const [activeProductId, setActiveProductId] = useState(starterProductId);
+  /** Cart starts empty — packs only appear when customer clicks a pack option */
+  const [cart, setCart] = useState<CartLine[]>([]);
+
   const [step, setStep] = useState<Step>("details");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [justAdded, setJustAdded] = useState<string | null>(null);
 
-  const selected = useMemo(
-    () => availableProducts.find((p) => p.id === form.productId),
-    [form.productId],
+  const activeProduct = useMemo(
+    () => availableProducts.find((p) => p.id === activeProductId),
+    [activeProductId],
   );
 
-  const pack = useMemo(() => getPackDeal(form.packId), [form.packId]);
+  const resolvedCart = useMemo(() => {
+    return cart
+      .map((line) => {
+        const product = availableProducts.find((p) => p.id === line.productId);
+        const pack = getPackDeal(line.packId);
+        if (!product || !pack) return null;
+        const price = packPriceDollars(product.price, pack);
+        const save = packSavings(product.price, pack);
+        const full = packFullPrice(product.price, pack);
+        return {
+          ...line,
+          product,
+          pack,
+          price,
+          save,
+          full,
+          label: `${product.name} — ${formatPackLabel(pack)}`,
+        };
+      })
+      .filter(Boolean) as Array<{
+      id: string;
+      productId: string;
+      packId: string;
+      product: (typeof availableProducts)[number];
+      pack: PackDeal;
+      price: number;
+      save: number;
+      full: number;
+      label: string;
+    }>;
+  }, [cart]);
 
-  const total =
-    selected && pack ? packPriceDollars(selected.price, pack) : 0;
-  const savings =
-    selected && pack ? packSavings(selected.price, pack) : 0;
-  const full =
-    selected && pack ? packFullPrice(selected.price, pack) : 0;
+  const total = resolvedCart.reduce((sum, line) => sum + line.price, 0);
+  const totalSavings = resolvedCart.reduce((sum, line) => sum + line.save, 0);
+  const totalTreats = resolvedCart.reduce(
+    (sum, line) => sum + line.pack.quantity,
+    0,
+  );
 
-  function update<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((f) => ({ ...f, [key]: value }));
+  /** How many of each pack size are already in cart for the active flavor */
+  const countInCartForActive = (packId: string) =>
+    cart.filter(
+      (l) => l.productId === activeProductId && l.packId === packId,
+    ).length;
+
+  function updateContact<K extends keyof ContactState>(
+    key: K,
+    value: ContactState[K],
+  ) {
+    setContact((c) => ({ ...c, [key]: value }));
+  }
+
+  function removeLine(id: string) {
+    setCart((prev) => prev.filter((l) => l.id !== id));
+    setJustAdded(null);
+  }
+
+  /** Clicking a pack option always ADDS that pack for the selected flavor */
+  function addPack(pack: PackDeal) {
+    if (!activeProductId) {
+      setError("Choose a treat flavor first.");
+      return;
+    }
+    if (cart.length >= maxPacksPerOrder) {
+      setError(`You can add up to ${maxPacksPerOrder} packs per order.`);
+      return;
+    }
+    setError(null);
+    const id = newLineId();
+    setCart((prev) => [
+      ...prev,
+      { id, productId: activeProductId, packId: pack.id },
+    ]);
+    setJustAdded(`${activeProductId}:${pack.id}:${id}`);
+    // Brief highlight feedback
+    window.setTimeout(() => {
+      setJustAdded((cur) => (cur?.endsWith(id) ? null : cur));
+    }, 1200);
   }
 
   async function onContinueToPayment(e: React.FormEvent) {
@@ -104,8 +176,8 @@ export function OrderForm() {
     setBusy(true);
     setError(null);
 
-    if (!pack) {
-      setError("Choose a pack size: 4-pack, 8-pack, or party tray (12).");
+    if (resolvedCart.length === 0) {
+      setError("Tap a pack size (4, 8, or party tray) to add it to your order.");
       setBusy(false);
       return;
     }
@@ -115,14 +187,16 @@ export function OrderForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          productId: form.productId,
-          packId: form.packId,
-          quantity: pack.quantity,
-          name: form.name,
-          phone: form.phone,
-          email: form.email,
-          pickupWindow: form.pickupWindow,
-          notes: form.notes,
+          items: resolvedCart.map((line) => ({
+            productId: line.productId,
+            packId: line.packId,
+            quantity: line.pack.quantity,
+          })),
+          name: contact.name,
+          phone: contact.phone,
+          email: contact.email,
+          pickupWindow: contact.pickupWindow,
+          notes: contact.notes,
         }),
       });
 
@@ -144,12 +218,6 @@ export function OrderForm() {
     }
   }
 
-  const packSummary = pack
-    ? pack.displayName === pack.label
-      ? `${pack.label} (${pack.quantity})`
-      : `${pack.displayName} (${pack.quantity})`
-    : "";
-
   if (step === "pay" && clientSecret) {
     return (
       <div className="form-shell p-5 sm:p-6">
@@ -158,8 +226,18 @@ export function OrderForm() {
           <h3 className="mt-1 font-display text-xl text-[var(--cocoa)]">
             Payment
           </h3>
+          <ul className="mt-2 space-y-1 text-sm text-[var(--cocoa-soft)]">
+            {resolvedCart.map((line) => (
+              <li key={line.id}>
+                {line.label}{" "}
+                <span className="tabular-nums text-[var(--rose)]">
+                  ${line.price.toFixed(2)}
+                </span>
+              </li>
+            ))}
+          </ul>
           <p className="mt-1.5 text-sm text-[var(--cocoa-soft)]">
-            {selected?.name} — {packSummary}, {form.pickupWindow}
+            {contact.pickupWindow}
           </p>
         </div>
 
@@ -190,8 +268,9 @@ export function OrderForm() {
           Your order
         </h3>
         <p className="mt-1.5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
-          Porch pickup in Haymarket, VA. Choose a flavor and a pack — 4, 8, or
-          a party tray of 12. Pay securely on the next step.
+          Pick a flavor, then tap each pack you want — 4-pack, 8-pack, or party
+          tray. Every tap adds to your cart. Switch flavors anytime and keep
+          adding.
         </p>
       </div>
 
@@ -202,8 +281,8 @@ export function OrderForm() {
           </span>
           <input
             required
-            value={form.name}
-            onChange={(e) => update("name", e.target.value)}
+            value={contact.name}
+            onChange={(e) => updateContact("name", e.target.value)}
             className="field"
             placeholder="Full name"
             autoComplete="name"
@@ -216,8 +295,8 @@ export function OrderForm() {
           <input
             required
             type="tel"
-            value={form.phone}
-            onChange={(e) => update("phone", e.target.value)}
+            value={contact.phone}
+            onChange={(e) => updateContact("phone", e.target.value)}
             className="field"
             placeholder="Best number for pickup day"
             autoComplete="tel"
@@ -230,23 +309,24 @@ export function OrderForm() {
           <input
             required
             type="email"
-            value={form.email}
-            onChange={(e) => update("email", e.target.value)}
+            value={contact.email}
+            onChange={(e) => updateContact("email", e.target.value)}
             className="field"
             placeholder="you@email.com"
             autoComplete="email"
           />
         </label>
 
+        {/* Flavor picker */}
         <label className="block sm:col-span-2">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
-            Treat
+            1. Choose a flavor
           </span>
           <select
-            required
-            value={form.productId}
-            onChange={(e) => update("productId", e.target.value)}
+            value={activeProductId}
+            onChange={(e) => setActiveProductId(e.target.value)}
             className="field"
+            required
           >
             {menuCategories.map((cat) => {
               const items = productsInCategory(cat.id);
@@ -264,51 +344,62 @@ export function OrderForm() {
           </select>
         </label>
 
-        <fieldset className="block sm:col-span-2">
-          <legend className="mb-2 block text-sm font-medium text-[var(--cocoa)]">
-            Pack size
-          </legend>
+        {/* Pack options — each click ADDS to cart */}
+        <div className="sm:col-span-2">
+          <p className="mb-2 text-sm font-medium text-[var(--cocoa)]">
+            2. Tap packs to add them
+            {activeProduct ? (
+              <span className="font-normal text-[var(--ink-muted)]">
+                {" "}
+                · for {activeProduct.name}
+              </span>
+            ) : null}
+          </p>
           <div className="grid gap-2.5 sm:grid-cols-3">
-            {packDeals.map((p) => {
-              const price = selected
-                ? packPriceDollars(selected.price, p)
+            {packDeals.map((pack) => {
+              const price = activeProduct
+                ? packPriceDollars(activeProduct.price, pack)
                 : null;
-              const save = selected ? packSavings(selected.price, p) : 0;
-              const active = form.packId === p.id;
+              const save = activeProduct
+                ? packSavings(activeProduct.price, pack)
+                : 0;
+              const inCart = countInCartForActive(pack.id);
+              const disabled = cart.length >= maxPacksPerOrder;
+
               return (
-                <label
-                  key={p.id}
-                  className={`relative flex cursor-pointer flex-col rounded-2xl border-2 px-3.5 py-3 transition ${
-                    active
+                <button
+                  key={pack.id}
+                  type="button"
+                  disabled={disabled || !activeProduct}
+                  onClick={() => addPack(pack)}
+                  className={`relative flex flex-col rounded-2xl border-2 px-3.5 py-3.5 text-left transition ${
+                    inCart > 0
                       ? "border-[var(--rose)] bg-[var(--lavender-soft)] shadow-[var(--shadow-soft)]"
-                      : "border-[var(--blush)]/70 bg-white hover:border-[var(--blush-deep)]"
-                  }`}
+                      : "border-[var(--blush)]/70 bg-white hover:border-[var(--rose)] hover:bg-[var(--lavender-soft)]/50"
+                  } disabled:cursor-not-allowed disabled:opacity-50`}
                 >
-                  <input
-                    type="radio"
-                    name="packId"
-                    value={p.id}
-                    checked={active}
-                    onChange={() => update("packId", p.id)}
-                    className="sr-only"
-                  />
-                  {p.featured ? (
+                  {pack.featured ? (
                     <span className="absolute -top-2 right-3 rounded-full bg-[var(--rose)] px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-white">
                       Party
                     </span>
                   ) : null}
+                  {inCart > 0 ? (
+                    <span className="absolute -top-2 left-3 rounded-full bg-[var(--cocoa)] px-2 py-0.5 text-[0.65rem] font-bold tabular-nums text-white">
+                      ×{inCart} in cart
+                    </span>
+                  ) : null}
                   <span className="font-display text-lg text-[var(--cocoa)]">
-                    {p.displayName}
+                    {pack.displayName}
                   </span>
                   <span className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-                    {p.quantity} treats
+                    {pack.quantity} treats
                   </span>
                   <span className="mt-1 text-xs leading-snug text-[var(--cocoa-soft)]">
-                    {p.blurb}
+                    {pack.blurb}
                   </span>
                   {price != null ? (
                     <span className="mt-2 text-sm font-semibold tabular-nums text-[var(--rose)]">
-                      ${price.toFixed(2)}
+                      + ${price.toFixed(2)}
                       {save > 0 ? (
                         <span className="ml-1.5 text-xs font-medium text-[var(--mint)]">
                           save ${save.toFixed(2)}
@@ -316,15 +407,80 @@ export function OrderForm() {
                       ) : null}
                     </span>
                   ) : null}
-                </label>
+                  <span className="mt-2 text-xs font-bold uppercase tracking-wide text-[var(--rose)]">
+                    Tap to add
+                  </span>
+                </button>
               );
             })}
           </div>
           <p className="mt-2 text-xs leading-relaxed text-[var(--ink-muted)]">
-            Bigger packs unlock a little savings. One flavor per checkout —
-            party trays are great for birthdays and get-togethers.
+            Want a 4-pack <em>and</em> an 8-pack? Tap both — each adds to your
+            total. Change the flavor above, then tap more packs to mix.
           </p>
-        </fieldset>
+        </div>
+
+        {/* Live cart */}
+        <div className="sm:col-span-2">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <p className="text-sm font-medium text-[var(--cocoa)]">Your cart</p>
+            <p className="text-xs text-[var(--ink-muted)]">
+              {resolvedCart.length === 0
+                ? "Empty — tap a pack above"
+                : `${resolvedCart.length} pack${resolvedCart.length === 1 ? "" : "s"} · ${totalTreats} treats`}
+            </p>
+          </div>
+
+          {resolvedCart.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-[var(--blush)] bg-[var(--cream)]/60 px-4 py-6 text-center text-sm text-[var(--ink-muted)]">
+              No packs yet. Choose a flavor, then tap{" "}
+              <strong className="text-[var(--cocoa)]">4-pack</strong>,{" "}
+              <strong className="text-[var(--cocoa)]">8-pack</strong>, or{" "}
+              <strong className="text-[var(--cocoa)]">Party tray</strong>.
+            </div>
+          ) : (
+            <ul className="space-y-2">
+              {resolvedCart.map((line) => {
+                const highlight = justAdded?.endsWith(line.id);
+                return (
+                  <li
+                    key={line.id}
+                    className={`flex items-center justify-between gap-3 rounded-xl border px-3.5 py-3 transition ${
+                      highlight
+                        ? "border-[var(--rose)] bg-[var(--lavender-soft)]"
+                        : "border-[var(--blush)]/70 bg-white"
+                    }`}
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-[var(--cocoa)]">
+                        {line.product.name}
+                      </p>
+                      <p className="text-xs text-[var(--ink-muted)]">
+                        {formatPackLabel(line.pack)}
+                        {line.save > 0
+                          ? ` · save $${line.save.toFixed(2)}`
+                          : ""}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-3">
+                      <span className="text-sm font-semibold tabular-nums text-[var(--rose)]">
+                        ${line.price.toFixed(2)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => removeLine(line.id)}
+                        className="rounded-full border border-[var(--blush)] px-2.5 py-1 text-xs font-semibold text-[var(--cocoa-soft)] hover:border-[var(--rose)] hover:text-[var(--rose)]"
+                        aria-label={`Remove ${line.label}`}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
 
         <label className="block sm:col-span-2">
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
@@ -332,8 +488,8 @@ export function OrderForm() {
           </span>
           <select
             required
-            value={form.pickupWindow}
-            onChange={(e) => update("pickupWindow", e.target.value)}
+            value={contact.pickupWindow}
+            onChange={(e) => updateContact("pickupWindow", e.target.value)}
             className="field"
           >
             {site.pickupWindows.map((w) => (
@@ -347,12 +503,12 @@ export function OrderForm() {
           <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
             Notes{" "}
             <span className="font-normal text-[var(--ink-muted)]">
-              (optional: message on box, allergies note for your group)
+              (optional)
             </span>
           </span>
           <textarea
-            value={form.notes}
-            onChange={(e) => update("notes", e.target.value)}
+            value={contact.notes}
+            onChange={(e) => updateContact("notes", e.target.value)}
             className="field min-h-[100px] resize-y"
             placeholder="Anything we should know?"
           />
@@ -368,27 +524,25 @@ export function OrderForm() {
       <div className="mt-6 flex flex-col gap-3 border-t border-[var(--blush)]/60 pt-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-sm text-[var(--cocoa-soft)]">
           <p>
-            Estimated total
+            Cart total
             <span className="ml-2 font-display text-2xl font-medium tabular-nums text-[var(--cocoa)]">
               ${total.toFixed(2)}
             </span>
           </p>
-          {savings > 0 ? (
-            <p className="mt-0.5 text-xs text-[var(--mint)]">
-              Pack deal — you save ${savings.toFixed(2)} vs ${full.toFixed(2)}{" "}
-              single price
-            </p>
-          ) : (
-            <p className="mt-0.5 text-xs text-[var(--ink-muted)]">
-              {packSummary}
-              {selected ? ` · $${selected.price} each` : ""}
-            </p>
-          )}
+          <p className="mt-0.5 text-xs text-[var(--ink-muted)]">
+            {resolvedCart.length === 0
+              ? "Add at least one pack to continue"
+              : `${resolvedCart.length} pack${resolvedCart.length === 1 ? "" : "s"} · ${totalTreats} treats${
+                  totalSavings > 0
+                    ? ` · save $${totalSavings.toFixed(2)}`
+                    : ""
+                }`}
+          </p>
         </div>
         <button
           type="submit"
           className="btn-primary w-full sm:w-auto"
-          disabled={busy}
+          disabled={busy || resolvedCart.length === 0}
         >
           {busy ? "Preparing…" : "Continue to payment"}
         </button>

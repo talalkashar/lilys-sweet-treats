@@ -46,10 +46,9 @@ export async function POST(req: Request) {
     }
 
     const {
-      product,
-      pack,
-      quantity,
-      packLabel,
+      lines,
+      orderSummary,
+      totalTreats,
       name,
       phone,
       email,
@@ -58,19 +57,34 @@ export async function POST(req: Request) {
       amountCents,
     } = parsed.data;
 
+    // Compact cart for Stripe metadata (500 char value limit)
+    const orderLinesCompact = JSON.stringify(
+      lines.map((l) => ({
+        p: l.product.id,
+        k: l.pack.id,
+        q: l.quantity,
+        c: l.amountCents,
+      })),
+    ).slice(0, 490);
+
     const stripe = getStripe();
+    const packCount = lines.length;
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountCents,
       currency: "usd",
       automatic_payment_methods: { enabled: true },
       receipt_email: email,
-      description: `${product.name} — ${packLabel} (porch pickup)`,
+      description: `${orderSummary} (porch pickup)`.slice(0, 900),
       metadata: {
-        productId: product.id,
-        productName: product.name,
-        packId: pack.id,
-        packLabel,
-        quantity: String(quantity),
+        // Summary fields used by emails
+        productName: orderSummary.slice(0, 490),
+        packLabel: `${packCount} pack${packCount === 1 ? "" : "s"}`,
+        quantity: String(totalTreats),
+        orderLines: orderLinesCompact,
+        lineCount: String(packCount),
+        // First line (legacy readers)
+        productId: lines[0]!.product.id,
+        packId: lines[0]!.pack.id,
         customerName: name,
         customerPhone: phone,
         customerEmail: email,
@@ -84,9 +98,10 @@ export async function POST(req: Request) {
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       amount: amountCents,
-      productName: product.name,
-      quantity,
-      packLabel,
+      productName: orderSummary,
+      quantity: totalTreats,
+      packLabel: `${packCount} pack${packCount === 1 ? "" : "s"}`,
+      lineCount: packCount,
     });
   } catch (err) {
     console.error("create-payment-intent", err);

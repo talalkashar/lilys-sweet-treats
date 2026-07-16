@@ -12,8 +12,11 @@ export function orderPayloadFromIntent(pi: Stripe.PaymentIntent) {
     paymentIntentId: pi.id,
     amountCents: pi.amount_received || pi.amount,
     productName: meta.productName || "Order",
-    // Prefer pack label in emails when present ("Party tray (12)")
-    quantity: meta.packLabel || meta.quantity || "1",
+    // Multi-pack: productName is full summary; quantity is total treats
+    quantity:
+      meta.lineCount && Number(meta.lineCount) > 1
+        ? `${meta.quantity || "?"} treats · ${meta.lineCount} packs`
+        : meta.packLabel || meta.quantity || "1",
     customerName: meta.customerName || "Customer",
     customerPhone: meta.customerPhone || "",
     customerEmail: meta.customerEmail || pi.receipt_email || "",

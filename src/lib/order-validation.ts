@@ -1,17 +1,26 @@
 import { availableProducts, getProduct } from "@/data/products";
 import {
+  formatPackLabel,
   getPackDeal,
+  maxPacksPerOrder,
   packDeals,
   packPriceCents,
   type PackDeal,
 } from "@/data/packs";
 import { site } from "@/data/site";
 
-export type OrderInput = {
+export type OrderLineInput = {
   productId?: string;
-  /** Preferred: pack-4 | pack-8 | pack-12 */
   packId?: string;
-  /** Legacy fallback: raw quantity if packId omitted */
+  quantity?: number;
+};
+
+export type OrderInput = {
+  /** Multi-pack cart (preferred) */
+  items?: OrderLineInput[];
+  /** Legacy single-line fields still accepted */
+  productId?: string;
+  packId?: string;
   quantity?: number;
   name?: string;
   phone?: string;
@@ -20,17 +29,33 @@ export type OrderInput = {
   notes?: string;
 };
 
-export type ValidOrder = {
+export type ValidOrderLine = {
   product: (typeof availableProducts)[number];
   pack: PackDeal;
   quantity: number;
+  packLabel: string;
+  lineLabel: string;
+  amountCents: number;
+};
+
+export type ValidOrder = {
+  lines: ValidOrderLine[];
+  /** Joined summary for Stripe / emails */
+  orderSummary: string;
+  totalTreats: number;
   name: string;
   phone: string;
   email: string;
   pickupWindow: string;
   notes: string;
   amountCents: number;
-  /** Human label for emails / Stripe e.g. "Party tray (12)" */
+  /**
+   * First line kept for any older readers of product/pack fields.
+   * Prefer `lines` + `orderSummary`.
+   */
+  product: (typeof availableProducts)[number];
+  pack: PackDeal;
+  quantity: number;
   packLabel: string;
 };
 
@@ -40,35 +65,91 @@ function clampText(value: string, max: number) {
   return value.trim().slice(0, max);
 }
 
-function resolvePack(body: OrderInput): PackDeal | null {
-  if (body.packId) {
-    return getPackDeal(String(body.packId)) ?? null;
+function resolvePack(line: OrderLineInput): PackDeal | null {
+  if (line.packId) {
+    return getPackDeal(String(line.packId)) ?? null;
   }
-  // Fallback: match quantity to a known pack size
-  const qty = Math.floor(Number(body.quantity));
+  const qty = Math.floor(Number(line.quantity));
   if (!Number.isFinite(qty)) return null;
   return packDeals.find((p) => p.quantity === qty) ?? null;
 }
 
+function normalizeLineInputs(body: OrderInput): OrderLineInput[] {
+  if (Array.isArray(body.items) && body.items.length > 0) {
+    return body.items;
+  }
+  // Legacy single-line order
+  if (body.productId) {
+    return [
+      {
+        productId: body.productId,
+        packId: body.packId,
+        quantity: body.quantity,
+      },
+    ];
+  }
+  return [];
+}
+
+function parseLine(
+  raw: OrderLineInput,
+): { ok: true; line: ValidOrderLine } | { ok: false; error: string } {
+  const product = getProduct(raw.productId || "");
+  if (!product) {
+    return { ok: false, error: "Invalid product in cart" };
+  }
+  const pack = resolvePack(raw);
+  if (!pack) {
+    return {
+      ok: false,
+      error: "Each cart item needs a pack size: 4-pack, 8-pack, or party tray (12).",
+    };
+  }
+  const amountCents = packPriceCents(product.price, pack);
+  const packLabel = formatPackLabel(pack);
+  return {
+    ok: true,
+    line: {
+      product,
+      pack,
+      quantity: pack.quantity,
+      packLabel,
+      lineLabel: `${product.name} — ${packLabel}`,
+      amountCents,
+    },
+  };
+}
+
 /**
  * Server-side order validation. Never trust client prices.
- * Only pack sizes (4 / 8 / 12) of available products can be ordered.
+ * Supports multiple packs per checkout (mixed flavors / sizes).
  */
 export function validateOrderInput(body: OrderInput):
   | { ok: true; data: ValidOrder }
   | { ok: false; error: string; status: number } {
-  const product = getProduct(body.productId || "");
-  if (!product) {
-    return { ok: false, error: "Invalid product", status: 400 };
-  }
-
-  const pack = resolvePack(body);
-  if (!pack) {
+  const rawLines = normalizeLineInputs(body);
+  if (rawLines.length === 0) {
     return {
       ok: false,
-      error: "Choose a pack size: 4-pack, 8-pack, or party tray (12).",
+      error: "Add at least one pack to your order.",
       status: 400,
     };
+  }
+  if (rawLines.length > maxPacksPerOrder) {
+    return {
+      ok: false,
+      error: `You can add up to ${maxPacksPerOrder} packs per order.`,
+      status: 400,
+    };
+  }
+
+  const lines: ValidOrderLine[] = [];
+  for (const raw of rawLines) {
+    const parsed = parseLine(raw);
+    if (!parsed.ok) {
+      return { ok: false, error: parsed.error, status: 400 };
+    }
+    lines.push(parsed.line);
   }
 
   const name = clampText(body.name || "", 80);
@@ -93,29 +174,31 @@ export function validateOrderInput(body: OrderInput):
     return { ok: false, error: "Invalid pickup window", status: 400 };
   }
 
-  const amountCents = packPriceCents(product.price, pack);
+  const amountCents = lines.reduce((sum, line) => sum + line.amountCents, 0);
   if (amountCents < 50) {
     return { ok: false, error: "Amount too small", status: 400 };
   }
 
-  const packLabel =
-    pack.displayName === pack.label
-      ? `${pack.label} (${pack.quantity})`
-      : `${pack.displayName} (${pack.quantity})`;
+  const totalTreats = lines.reduce((sum, line) => sum + line.quantity, 0);
+  const orderSummary = lines.map((l) => l.lineLabel).join(" + ");
+  const first = lines[0]!;
 
   return {
     ok: true,
     data: {
-      product,
-      pack,
-      quantity: pack.quantity,
+      lines,
+      orderSummary,
+      totalTreats,
       name,
       phone,
       email,
       pickupWindow,
       notes,
       amountCents,
-      packLabel,
+      product: first.product,
+      pack: first.pack,
+      quantity: totalTreats,
+      packLabel: first.packLabel,
     },
   };
 }

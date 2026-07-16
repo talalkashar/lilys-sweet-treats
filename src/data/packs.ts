@@ -89,3 +89,13 @@ export function packPriceCents(unitPrice: number, pack: PackDeal) {
 export function startingPackPrice(unitPrice: number) {
   return Math.min(...packDeals.map((p) => packPriceDollars(unitPrice, p)));
 }
+
+/** Human pack label e.g. "Party tray (12)" */
+export function formatPackLabel(pack: PackDeal) {
+  return pack.displayName === pack.label
+    ? `${pack.label} (${pack.quantity})`
+    : `${pack.displayName} (${pack.quantity})`;
+}
+
+/** Max separate packs in one checkout */
+export const maxPacksPerOrder = 8;
