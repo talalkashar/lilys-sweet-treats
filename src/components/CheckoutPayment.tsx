@@ -8,11 +8,20 @@ import {
 import { useState } from "react";
 
 type Props = {
+  subtotalLabel: string;
+  taxLabel: string;
   totalLabel: string;
+  taxRateLabel?: string;
   onBack: () => void;
 };
 
-export function CheckoutPayment({ totalLabel, onBack }: Props) {
+export function CheckoutPayment({
+  subtotalLabel,
+  taxLabel,
+  totalLabel,
+  taxRateLabel = "Sales tax",
+  onBack,
+}: Props) {
   const stripe = useStripe();
   const elements = useElements();
   const [busy, setBusy] = useState(false);
@@ -51,6 +60,32 @@ export function CheckoutPayment({ totalLabel, onBack }: Props) {
         />
       </div>
 
+      {/* Transparent tax breakdown */}
+      <div className="rounded-2xl border border-[var(--blush)]/60 bg-white px-4 py-3.5 text-sm">
+        <div className="flex items-center justify-between gap-3 text-[var(--cocoa-soft)]">
+          <span>Subtotal</span>
+          <span className="tabular-nums font-medium text-[var(--cocoa)]">
+            {subtotalLabel}
+          </span>
+        </div>
+        <div className="mt-2 flex items-center justify-between gap-3 text-[var(--cocoa-soft)]">
+          <span>{taxRateLabel}</span>
+          <span className="tabular-nums font-medium text-[var(--cocoa)]">
+            {taxLabel}
+          </span>
+        </div>
+        <div className="mt-3 flex items-center justify-between gap-3 border-t border-[var(--blush)]/50 pt-3">
+          <span className="font-semibold text-[var(--cocoa)]">Total due</span>
+          <span className="font-display text-xl font-medium tabular-nums text-[var(--cocoa)]">
+            {totalLabel}
+          </span>
+        </div>
+        <p className="mt-2 text-xs leading-relaxed text-[var(--ink-muted)]">
+          Sales tax is calculated by Stripe Tax for porch pickup in Haymarket,
+          VA.
+        </p>
+      </div>
+
       {error ? (
         <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
@@ -59,7 +94,7 @@ export function CheckoutPayment({ totalLabel, onBack }: Props) {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--cocoa-soft)]">
-          Total{" "}
+          You pay{" "}
           <span className="ml-1 font-display text-xl font-medium tabular-nums text-[var(--cocoa)]">
             {totalLabel}
           </span>
@@ -78,7 +113,7 @@ export function CheckoutPayment({ totalLabel, onBack }: Props) {
             disabled={!stripe || busy}
             className="btn-primary disabled:opacity-60"
           >
-            {busy ? "Processing…" : "Pay now"}
+            {busy ? "Processing…" : `Pay ${totalLabel}`}
           </button>
         </div>
       </div>

@@ -10,6 +10,7 @@ export function orderPayloadFromIntent(pi: Stripe.PaymentIntent) {
   const meta = pi.metadata || {};
   return {
     paymentIntentId: pi.id,
+    // Charged total (includes tax)
     amountCents: pi.amount_received || pi.amount,
     productName: meta.productName || "Order",
     // Multi-pack: productName is full summary; quantity is total treats
@@ -23,6 +24,11 @@ export function orderPayloadFromIntent(pi: Stripe.PaymentIntent) {
     pickupWindow: meta.pickupWindow || "TBD",
     notes: meta.notes || "",
     pickupAddress: meta.pickupAddress || site.addressLine,
+    subtotalCents: meta.subtotalCents
+      ? Number(meta.subtotalCents)
+      : undefined,
+    taxCents: meta.taxCents ? Number(meta.taxCents) : undefined,
+    taxRateLabel: meta.taxRateLabel || undefined,
   };
 }
 

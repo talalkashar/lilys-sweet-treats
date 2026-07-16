@@ -85,6 +85,13 @@ export function OrderForm() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [justAdded, setJustAdded] = useState<string | null>(null);
+  /** Tax breakdown from Stripe Tax (set when starting payment) */
+  const [taxQuote, setTaxQuote] = useState<{
+    subtotalLabel: string;
+    taxLabel: string;
+    totalLabel: string;
+    taxRateLabel: string;
+  } | null>(null);
   const highlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -210,12 +217,22 @@ export function OrderForm() {
       const data = (await res.json()) as {
         clientSecret?: string;
         error?: string;
+        subtotalLabel?: string;
+        taxLabel?: string;
+        totalLabel?: string;
+        taxRateLabel?: string;
       };
 
       if (!res.ok || !data.clientSecret) {
         throw new Error(data.error || "Could not start payment");
       }
 
+      setTaxQuote({
+        subtotalLabel: data.subtotalLabel || `$${total.toFixed(2)}`,
+        taxLabel: data.taxLabel || "$0.00",
+        totalLabel: data.totalLabel || `$${total.toFixed(2)}`,
+        taxRateLabel: data.taxRateLabel || "Sales tax",
+      });
       setClientSecret(data.clientSecret);
       setStep("pay");
     } catch (err) {
@@ -225,7 +242,7 @@ export function OrderForm() {
     }
   }
 
-  if (step === "pay" && clientSecret) {
+  if (step === "pay" && clientSecret && taxQuote) {
     return (
       <div className="form-shell p-5 sm:p-6">
         <div className="mb-5">
@@ -243,7 +260,25 @@ export function OrderForm() {
               </li>
             ))}
           </ul>
-          <p className="mt-1.5 text-sm text-[var(--cocoa-soft)]">
+          <div className="mt-3 space-y-1 border-t border-[var(--blush)]/50 pt-3 text-sm">
+            <div className="flex justify-between gap-3 text-[var(--cocoa-soft)]">
+              <span>Subtotal</span>
+              <span className="tabular-nums text-[var(--cocoa)]">
+                {taxQuote.subtotalLabel}
+              </span>
+            </div>
+            <div className="flex justify-between gap-3 text-[var(--cocoa-soft)]">
+              <span>{taxQuote.taxRateLabel}</span>
+              <span className="tabular-nums text-[var(--cocoa)]">
+                {taxQuote.taxLabel}
+              </span>
+            </div>
+            <div className="flex justify-between gap-3 font-semibold text-[var(--cocoa)]">
+              <span>Total</span>
+              <span className="tabular-nums">{taxQuote.totalLabel}</span>
+            </div>
+          </div>
+          <p className="mt-2 text-sm text-[var(--cocoa-soft)]">
             {contact.pickupWindow}
           </p>
         </div>
@@ -256,10 +291,14 @@ export function OrderForm() {
           }}
         >
           <CheckoutPayment
-            totalLabel={`$${total.toFixed(2)}`}
+            subtotalLabel={taxQuote.subtotalLabel}
+            taxLabel={taxQuote.taxLabel}
+            totalLabel={taxQuote.totalLabel}
+            taxRateLabel={taxQuote.taxRateLabel}
             onBack={() => {
               setStep("details");
               setClientSecret(null);
+              setTaxQuote(null);
             }}
           />
         </Elements>

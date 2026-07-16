@@ -3,6 +3,7 @@ import { validateOrderInput } from "@/lib/order-validation";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { site } from "@/data/site";
 import { getStripe } from "@/lib/stripe";
+import { calculatePickupTax, formatCents } from "@/lib/tax";
 
 export const runtime = "nodejs";
 
@@ -54,8 +55,36 @@ export async function POST(req: Request) {
       email,
       pickupWindow,
       notes,
-      amountCents,
+      amountCents: subtotalCents,
     } = parsed.data;
+
+    // Stripe Tax (porch pickup → tax at bakery address)
+    let tax;
+    try {
+      tax = await calculatePickupTax(lines);
+    } catch (taxErr) {
+      console.error("stripe tax calculation failed", taxErr);
+      const msg =
+        taxErr &&
+        typeof taxErr === "object" &&
+        "message" in taxErr &&
+        typeof (taxErr as { message: unknown }).message === "string"
+          ? (taxErr as { message: string }).message
+          : "";
+      if (msg.includes("not been activated") || msg.includes("stripe_tax")) {
+        return NextResponse.json(
+          {
+            error:
+              "Sales tax is not set up in Stripe yet. Enable Stripe Tax in the Dashboard (Tax → Get started), register Virginia, then try again.",
+          },
+          { status: 503 },
+        );
+      }
+      return NextResponse.json(
+        { error: "Could not calculate sales tax. Please try again." },
+        { status: 502 },
+      );
+    }
 
     // Compact cart for Stripe metadata (500 char value limit)
     const orderLinesCompact = JSON.stringify(
@@ -70,19 +99,25 @@ export async function POST(req: Request) {
     const stripe = getStripe();
     const packCount = lines.length;
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amountCents,
+      amount: tax.totalCents,
       currency: "usd",
       automatic_payment_methods: { enabled: true },
       receipt_email: email,
       description: `${orderSummary} (porch pickup)`.slice(0, 900),
+      // Link Stripe Tax calculation to this payment for reporting
+      hooks: {
+        inputs: {
+          tax: {
+            calculation: tax.calculationId,
+          },
+        },
+      },
       metadata: {
-        // Summary fields used by emails
         productName: orderSummary.slice(0, 490),
         packLabel: `${packCount} pack${packCount === 1 ? "" : "s"}`,
         quantity: String(totalTreats),
         orderLines: orderLinesCompact,
         lineCount: String(packCount),
-        // First line (legacy readers)
         productId: lines[0]!.product.id,
         packId: lines[0]!.pack.id,
         customerName: name,
@@ -92,16 +127,29 @@ export async function POST(req: Request) {
         notes,
         fulfillment: "porch_pickup",
         pickupAddress: site.addressLine,
+        subtotalCents: String(tax.subtotalCents),
+        taxCents: String(tax.taxCents),
+        totalCents: String(tax.totalCents),
+        taxCalculationId: tax.calculationId,
+        taxRateLabel: tax.rateLabel.slice(0, 100),
       },
     });
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
-      amount: amountCents,
       productName: orderSummary,
       quantity: totalTreats,
       packLabel: `${packCount} pack${packCount === 1 ? "" : "s"}`,
       lineCount: packCount,
+      // Money breakdown for checkout UI
+      subtotalCents: tax.subtotalCents,
+      taxCents: tax.taxCents,
+      totalCents: tax.totalCents,
+      amount: tax.totalCents,
+      taxRateLabel: tax.rateLabel,
+      subtotalLabel: formatCents(tax.subtotalCents),
+      taxLabel: formatCents(tax.taxCents),
+      totalLabel: formatCents(tax.totalCents),
     });
   } catch (err) {
     console.error("create-payment-intent", err);
