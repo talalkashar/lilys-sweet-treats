@@ -81,7 +81,8 @@ export default function OrderPage() {
                 ))}
               </ul>
               <p className="mt-2 text-xs text-[var(--ink-muted)]">
-                {site.locationNote} Exact details are shared after you order.
+                {site.locationNote} Full porch address is on the confirmation
+                page and email after payment.
               </p>
             </div>
 

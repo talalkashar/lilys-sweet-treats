@@ -3,7 +3,7 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CheckoutPayment } from "@/components/CheckoutPayment";
 import {
   availableProducts,
@@ -85,6 +85,13 @@ export function OrderForm() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [justAdded, setJustAdded] = useState<string | null>(null);
+  const highlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (highlightTimer.current) clearTimeout(highlightTimer.current);
+    };
+  }, []);
 
   const activeProduct = useMemo(
     () => availableProducts.find((p) => p.id === activeProductId),
@@ -165,8 +172,8 @@ export function OrderForm() {
       { id, productId: activeProductId, packId: pack.id },
     ]);
     setJustAdded(`${activeProductId}:${pack.id}:${id}`);
-    // Brief highlight feedback
-    window.setTimeout(() => {
+    if (highlightTimer.current) clearTimeout(highlightTimer.current);
+    highlightTimer.current = setTimeout(() => {
       setJustAdded((cur) => (cur?.endsWith(id) ? null : cur));
     }, 1200);
   }
