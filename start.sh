@@ -8,10 +8,15 @@ if [[ ! -f .env.local ]]; then
   exit 1
 fi
 
-# Warn if order emails will silently skip
-if ! grep -qE '^RESEND_API_KEY=re_' .env.local 2>/dev/null; then
-  echo "Note: RESEND_API_KEY is empty — checkout works, confirmation emails will not send locally."
-  echo "      Set it from Resend (or Vercel Production env) in .env.local to test emails."
+# Warn if order emails will silently skip (empty or placeholder key)
+if ! grep -qE '^RESEND_API_KEY=re_[A-Za-z0-9_]+' .env.local 2>/dev/null; then
+  echo ""
+  echo "⚠️  RESEND_API_KEY is missing or empty in .env.local"
+  echo "   Checkout + Stripe still work, but confirmation emails will NOT send."
+  echo "   Fix: https://resend.com/api-keys → copy key → paste as:"
+  echo "   RESEND_API_KEY=re_xxxxxxxx"
+  echo "   Then restart this script. Reload /order/success?payment_intent=… to retry emails."
+  echo ""
 fi
 
 if [[ ! -d node_modules ]]; then

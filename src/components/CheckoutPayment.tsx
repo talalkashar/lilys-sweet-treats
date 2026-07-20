@@ -81,8 +81,8 @@ export function CheckoutPayment({
           </span>
         </div>
         <p className="mt-2 text-xs leading-relaxed text-[var(--ink-muted)]">
-          Sales tax is calculated by Stripe Tax for porch pickup in Haymarket,
-          VA.
+          Sales tax calculated by Stripe Tax for porch pickup in Haymarket, VA.
+          Your card is charged this total (subtotal + tax).
         </p>
       </div>
 
@@ -120,9 +120,10 @@ export function CheckoutPayment({
 
       <p className="text-center text-xs text-[var(--ink-muted)]">
         Secure card payment powered by Stripe. You stay on this site.
-        {process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.startsWith("pk_test")
-          ? " Test mode: use card 4242 4242 4242 4242."
-          : ""}
+        {process.env.NEXT_PUBLIC_STRIPE_LIVE_MODE === "true" ||
+        process.env.NEXT_PUBLIC_STRIPE_LIVE_MODE === "1"
+          ? " Live mode: real card charges."
+          : " Test mode: use card 4242 4242 4242 4242."}
       </p>
     </form>
   );

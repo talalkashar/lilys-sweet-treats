@@ -8,7 +8,10 @@ type Props = {
   delayMs?: number;
 };
 
-/** Soft fade-up when the block scrolls into view */
+/**
+ * Soft fade-up when the block scrolls into view.
+ * Always falls back to visible so content never stays stuck at opacity: 0.
+ */
 export function Reveal({ children, className = "", delayMs = 0 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -17,19 +20,40 @@ export function Reveal({ children, className = "", delayMs = 0 }: Props) {
     const el = ref.current;
     if (!el) return;
 
+    const fallback = window.setTimeout(() => setVisible(true), 600);
+
+    const show = () => {
+      setVisible(true);
+      window.clearTimeout(fallback);
+    };
+
+    const rect = el.getBoundingClientRect();
+    const vh = window.innerHeight || 800;
+    if (rect.top < vh && rect.bottom > 0) {
+      show();
+      return () => window.clearTimeout(fallback);
+    }
+
+    if (typeof IntersectionObserver === "undefined") {
+      show();
+      return () => window.clearTimeout(fallback);
+    }
+
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
-          setVisible(true);
+          show();
           obs.disconnect();
         }
       },
-      /* Start earlier so motion feels continuous while scrolling */
-      { threshold: 0.08, rootMargin: "0px 0px -8% 0px" },
+      { threshold: 0.01, rootMargin: "80px 0px 80px 0px" },
     );
 
     obs.observe(el);
-    return () => obs.disconnect();
+    return () => {
+      obs.disconnect();
+      window.clearTimeout(fallback);
+    };
   }, []);
 
   return (

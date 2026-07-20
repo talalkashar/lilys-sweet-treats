@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { site } from "@/data/site";
+import { isResendConfigured } from "@/lib/email";
 import { notifyOrderPaidOnce } from "@/lib/order-notify";
 import { getStripe } from "@/lib/stripe";
 
@@ -13,6 +14,8 @@ type Props = {
 export default async function OrderSuccessPage({ searchParams }: Props) {
   const params = await searchParams;
   const paymentIntentId = params.payment_intent?.trim();
+  const resendConfigured = isResendConfigured();
+  const isDev = process.env.NODE_ENV !== "production";
 
   let status: "succeeded" | "processing" | "failed" | "unknown" = "unknown";
   let customerEmail: string | null = null;
@@ -33,7 +36,6 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
         if ("customerSent" in notify && notify.customerSent) {
           emailSentToCustomer = true;
         } else if (notify.reason === "already_sent") {
-          // Only trust explicit customer delivery flags from this path
           emailSentToCustomer = Boolean(
             "customerSent" in notify ? notify.customerSent : false,
           );
@@ -42,20 +44,31 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
         if (!emailSentToCustomer && customerEmail) {
           emailFailed = true;
           emailFailReason =
-            "reason" in notify && notify.reason && notify.reason !== "already_sent"
+            "reason" in notify &&
+            notify.reason &&
+            notify.reason !== "already_sent"
               ? String(notify.reason)
               : "customer_email_not_confirmed";
-          // Surface the most common misconfig clearly in logs
           if (emailFailReason === "missing_resend_key") {
             console.error(
-              "[success] RESEND_API_KEY is missing in this environment — emails cannot send. Set it in Vercel Production env and local .env.local for dev.",
+              "[success] RESEND_API_KEY is missing/empty — payment OK, emails skipped.",
+              "Fix: add RESEND_API_KEY=re_… to .env.local, restart ./start.sh, then reload this success URL to retry.",
             );
           }
           console.error(
             "[success] customer email not confirmed",
             paymentIntentId,
             emailFailReason,
-            notify,
+            {
+              reason: "reason" in notify ? notify.reason : undefined,
+              ownerSent: "ownerSent" in notify ? notify.ownerSent : undefined,
+              customerSent:
+                "customerSent" in notify ? notify.customerSent : undefined,
+              ownerError:
+                "ownerError" in notify ? notify.ownerError : undefined,
+              customerError:
+                "customerError" in notify ? notify.customerError : undefined,
+            },
           );
         }
       } else if (
@@ -71,14 +84,16 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
       status = "unknown";
     }
   } else if (params.redirect_status === "succeeded") {
-    // Payment may have succeeded, but without payment_intent we cannot send mail here.
-    // Stripe webhook is the backup path.
     status = "succeeded";
   } else if (params.redirect_status) {
     status = "failed";
   }
 
   const ok = status === "succeeded" || status === "processing";
+  const missingResend =
+    emailFailReason === "missing_resend_key" ||
+    (!resendConfigured && emailFailed);
+
   const title =
     status === "succeeded"
       ? "You're all set"
@@ -91,7 +106,9 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
   const body =
     status === "succeeded"
       ? emailFailed
-        ? "Thanks for your order — payment went through. We had trouble sending the confirmation email; please check spam or contact us and we will resend your pickup details."
+        ? missingResend
+          ? "Payment went through. Confirmation email could not send because RESEND_API_KEY is not set on this server."
+          : "Thanks for your order — payment went through. We had trouble sending the confirmation email; please check spam or contact us and we will resend your pickup details."
         : "Thanks for your order. A confirmation email is on the way with your pickup details."
       : status === "processing"
         ? "Your payment is still processing. We will confirm by phone or email when it clears."
@@ -116,6 +133,38 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
         </h1>
         <p className="mt-3 text-[var(--cocoa-soft)]">{body}</p>
 
+        {isDev && missingResend ? (
+          <div className="mt-5 rounded-xl border-2 border-amber-400 bg-amber-50 px-4 py-4 text-left text-sm text-amber-950">
+            <p className="font-bold">Local setup required (not a Stripe / Next.js bug)</p>
+            <ol className="mt-2 list-decimal space-y-1.5 pl-5 leading-relaxed">
+              <li>
+                Open{" "}
+                <a
+                  className="font-semibold underline"
+                  href="https://resend.com/api-keys"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  resend.com/api-keys
+                </a>{" "}
+                → create or copy a key starting with{" "}
+                <code className="font-mono">re_</code>
+              </li>
+              <li>
+                In this project file{" "}
+                <code className="font-mono">.env.local</code> set:
+                <code className="mt-1 block rounded bg-white px-2 py-1 font-mono text-xs">
+                  RESEND_API_KEY=re_your_key_here
+                </code>
+              </li>
+              <li>
+                Restart the server, then <strong>reload this page</strong> to
+                resend the confirmation for this payment.
+              </li>
+            </ol>
+          </div>
+        ) : null}
+
         {ok && customerEmail ? (
           <div className="mt-5 rounded-xl border border-[var(--blush)]/60 bg-white px-4 py-4 text-left shadow-[var(--shadow-soft)]">
             <p className="text-xs font-bold uppercase tracking-wider text-[var(--rose)]">
@@ -127,6 +176,12 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
                   We sent a confirmation to{" "}
                   <strong className="break-all">{customerEmail}</strong> with
                   your order and pickup details.
+                </>
+              ) : missingResend ? (
+                <>
+                  Not sent — email API key missing on this environment. Payment
+                  is still complete for{" "}
+                  <strong className="break-all">{customerEmail}</strong>.
                 </>
               ) : (
                 <>

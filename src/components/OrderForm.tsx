@@ -21,10 +21,14 @@ import {
   type PackDeal,
 } from "@/data/packs";
 import { site } from "@/data/site";
+import {
+  estimatePickupTax,
+  formatCents,
+  VA_PICKUP_TAX_LABEL,
+} from "@/lib/tax-rate";
+import { getStripePublishableKey } from "@/lib/stripe-mode";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "",
-);
+const stripePromise = loadStripe(getStripePublishableKey());
 
 type CartLine = {
   id: string;
@@ -144,6 +148,12 @@ export function OrderForm() {
     0,
   );
 
+  /** Live cart tax estimate (Haymarket VA porch pickup). Final amount confirmed at payment. */
+  const cartTax = useMemo(() => {
+    const subtotalCents = Math.round(total * 100);
+    return estimatePickupTax(subtotalCents);
+  }, [total]);
+
   /** How many of each pack size are already in cart for the active flavor */
   const countInCartForActive = (packId: string) =>
     cart.filter(
@@ -228,10 +238,11 @@ export function OrderForm() {
       }
 
       setTaxQuote({
-        subtotalLabel: data.subtotalLabel || `$${total.toFixed(2)}`,
-        taxLabel: data.taxLabel || "$0.00",
-        totalLabel: data.totalLabel || `$${total.toFixed(2)}`,
-        taxRateLabel: data.taxRateLabel || "Sales tax",
+        subtotalLabel:
+          data.subtotalLabel || formatCents(cartTax.subtotalCents),
+        taxLabel: data.taxLabel || formatCents(cartTax.taxCents),
+        totalLabel: data.totalLabel || formatCents(cartTax.totalCents),
+        taxRateLabel: data.taxRateLabel || VA_PICKUP_TAX_LABEL,
       });
       setClientSecret(data.clientSecret);
       setStep("pay");
@@ -274,9 +285,12 @@ export function OrderForm() {
               </span>
             </div>
             <div className="flex justify-between gap-3 font-semibold text-[var(--cocoa)]">
-              <span>Total</span>
+              <span>Total due</span>
               <span className="tabular-nums">{taxQuote.totalLabel}</span>
             </div>
+            <p className="pt-1 text-xs text-[var(--ink-muted)]">
+              Tax from Stripe Tax · charged with your payment
+            </p>
           </div>
           <p className="mt-2 text-sm text-[var(--cocoa-soft)]">
             {contact.pickupWindow}
@@ -381,7 +395,11 @@ export function OrderForm() {
                 <optgroup key={cat.id} label={cat.title}>
                   {items.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.name} (${p.price} each)
+                      {p.name} ($
+                      {Number.isInteger(p.price)
+                        ? p.price.toFixed(0)
+                        : p.price.toFixed(2)}{" "}
+                      each)
                     </option>
                   ))}
                 </optgroup>
@@ -567,30 +585,68 @@ export function OrderForm() {
         </p>
       ) : null}
 
-      <div className="mt-6 flex flex-col gap-3 border-t border-[var(--blush)]/60 pt-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-sm text-[var(--cocoa-soft)]">
-          <p>
-            Cart total
-            <span className="ml-2 font-display text-2xl font-medium tabular-nums text-[var(--cocoa)]">
-              ${total.toFixed(2)}
-            </span>
-          </p>
-          <p className="mt-0.5 text-xs text-[var(--ink-muted)]">
-            {resolvedCart.length === 0
-              ? "Add at least one pack to continue"
-              : `${resolvedCart.length} pack${resolvedCart.length === 1 ? "" : "s"} · ${totalTreats} treats${
-                  totalSavings > 0
-                    ? ` · save $${totalSavings.toFixed(2)}`
-                    : ""
-                }`}
-          </p>
+      <div className="mt-6 flex flex-col gap-4 border-t border-[var(--blush)]/60 pt-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0 flex-1 text-sm">
+          {resolvedCart.length === 0 ? (
+            <p className="text-[var(--ink-muted)]">
+              Add at least one pack to continue
+            </p>
+          ) : (
+            <div className="rounded-2xl border border-[var(--blush)]/60 bg-[var(--cream)]/70 px-4 py-3.5">
+              <p className="text-xs font-bold uppercase tracking-wider text-[var(--rose)]">
+                Estimated total with tax
+              </p>
+              <div className="mt-2 space-y-1.5">
+                <div className="flex items-center justify-between gap-3 text-[var(--cocoa-soft)]">
+                  <span>Subtotal</span>
+                  <span className="tabular-nums font-medium text-[var(--cocoa)]">
+                    {formatCents(cartTax.subtotalCents)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-3 text-[var(--cocoa-soft)]">
+                  <span>Est. {cartTax.rateLabel}</span>
+                  <span className="tabular-nums font-medium text-[var(--cocoa)]">
+                    {formatCents(cartTax.taxCents)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-3 border-t border-[var(--blush)]/50 pt-2 font-semibold text-[var(--cocoa)]">
+                  <span>Est. total</span>
+                  <span className="font-display text-2xl font-medium tabular-nums">
+                    {formatCents(cartTax.totalCents)}
+                  </span>
+                </div>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-[var(--ink-muted)]">
+                {resolvedCart.length} pack
+                {resolvedCart.length === 1 ? "" : "s"} · {totalTreats} treats
+                {totalSavings > 0
+                  ? ` · save $${totalSavings.toFixed(2)}`
+                  : ""}
+                . Exact sales tax is calculated by Stripe Tax when you continue
+                to payment (Haymarket, VA porch pickup). By continuing you agree
+                to our{" "}
+                <a href="/policies" className="font-semibold text-[var(--rose)] underline-offset-2 hover:underline">
+                  order policies
+                </a>{" "}
+                and{" "}
+                <a href="/privacy" className="font-semibold text-[var(--rose)] underline-offset-2 hover:underline">
+                  privacy policy
+                </a>
+                .
+              </p>
+            </div>
+          )}
         </div>
         <button
           type="submit"
-          className="btn-primary w-full sm:w-auto"
+          className="btn-primary w-full sm:w-auto sm:shrink-0"
           disabled={busy || resolvedCart.length === 0}
         >
-          {busy ? "Preparing…" : "Continue to payment"}
+          {busy
+            ? "Preparing…"
+            : resolvedCart.length === 0
+              ? "Continue to payment"
+              : `Continue · ${formatCents(cartTax.totalCents)}`}
         </button>
       </div>
     </form>

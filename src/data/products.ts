@@ -1,22 +1,55 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * MENU / PRODUCT CATALOG — edit this file to add, hide, or change products.
+ * Full how-to for humans + AI agents: PRODUCT-MENU.md (repo root)
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Pricing (unit, each treat):
+ *   - No toppings → $8
+ *   - With toppings → $8.75
+ * Sold in packs only (4 / 8 / party tray 12) — see src/data/packs.ts
+ *
+ * Quick actions:
+ *   - HIDE a product: set available: false  (keeps data for later)
+ *   - SHOW a product: set available: true or delete the available field
+ *   - ADD a product: copy a block below, change id/name/price/images
+ *   - Images live in public/products/  (path starts with /products/...)
+ */
+
 export type Product = {
+  /**
+   * Stable URL-safe id. Used in /order?product=… and checkout.
+   * Example: "strawberry-cinnamon-rolls"
+   * Do not change after customers may have bookmarked it.
+   */
   id: string;
+  /** Display name on menu + order form */
   name: string;
+  /** Unit price in dollars (e.g. 8 or 8.75) */
   price: number;
   description: string;
   emoji: string;
+  /** Which menu section: rolls | sticky | specialty */
   category: "rolls" | "sticky" | "specialty";
-  /** Path under /public */
+  /**
+   * Main card/list image — path under /public
+   * Example: "/products/strawberry-cinnamon-rolls.jpg"
+   */
   image?: string;
+  /**
+   * Extra photos for the product modal gallery (optional).
+   * Main `image` is always shown first; do not duplicate it here.
+   */
+  images?: string[];
   popular?: boolean;
   /**
-   * When false, product stays in the catalog data for later but is hidden
-   * from the menu, order form, and checkout validation.
-   * Default: true (available).
+   * false = hidden from menu, order form, and checkout (soft delete).
+   * true or omitted = for sale.
    */
   available?: boolean;
   /**
-   * Product-specific highlights only (not the shared dough base).
-   * Shown as “Made with” chips so every card doesn’t re-list flour/eggs/butter.
+   * Standout flavors only (not flour/eggs/butter).
+   * Shown as “Made with” chips in the modal.
    */
   ingredients: string[];
 };
@@ -47,57 +80,94 @@ export const menuCategories: MenuCategory[] = [
 ];
 
 /**
- * Full menu.
- * Unit pricing: $9 each. Sold in packs only (4 / 8 / party tray 12) — see `src/data/packs.ts`.
- * `ingredients` = standout flavors only. Shared dough + allergen note lives in the modal.
+ * Full menu catalog.
+ * Order here = order on the menu (within each category section).
  */
 export const products: Product[] = [
-  // Yeasted cinnamon dough + fruit filling + frosting
+  // ── Cinnamon rolls (topped $8.75) ────────────────────────────────────────
+  {
+    id: "strawberry-cinnamon-rolls",
+    name: "Strawberry Cinnamon Rolls",
+    price: 8.75,
+    category: "rolls",
+    description:
+      "Soft cinnamon roll with cream cheese frosting and sweet strawberry jam.",
+    emoji: "🍓",
+    // Card = best side hero. Gallery = top-down → high → mid → side (no dups).
+    // v3 = pure iCloud shoot → Photoshop MCP (auto levels/contrast/bright + warm_film + web export)
+    image: "/products/strawberry-main-v3.jpg",
+    images: [
+      "/products/strawberry-g2-v3.jpg",
+      "/products/strawberry-g3-v3.jpg",
+      "/products/strawberry-g4-v3.jpg",
+      "/products/strawberry-g5-v3.jpg",
+    ],
+    popular: true,
+    ingredients: [
+      "Strawberry jam",
+      "Cream cheese frosting",
+      "Cinnamon",
+    ],
+  },
+  {
+    id: "peach-cobbler-cinnamon-rolls",
+    name: "Peach Cobbler Cinnamon Rolls",
+    price: 8.75,
+    category: "rolls",
+    description:
+      "Peach cobbler flavor with cream cheese frosting, peach topping, and caramel drizzle.",
+    emoji: "🍑",
+    // Card = best side hero. Gallery = top-down → mid → 3/4 → side (no dups).
+    image: "/products/peach-main-v3.jpg",
+    images: [
+      "/products/peach-g2-v3.jpg",
+      "/products/peach-g3-v3.jpg",
+      "/products/peach-g4-v3.jpg",
+      "/products/peach-g5-v3.jpg",
+    ],
+    ingredients: [
+      "Peaches",
+      "Caramel",
+      "Cream cheese frosting",
+      "Cinnamon",
+    ],
+  },
   {
     id: "apple-caramel-cinnamon-rolls",
     name: "Apple Caramel Cinnamon Rolls",
-    price: 9,
+    price: 8.75,
     category: "rolls",
     description: "Warm apple, rich caramel, and soft cinnamon dough.",
     emoji: "🍎",
     image: "/products/apple-caramel-cinnamon-rolls.png",
+    // Soft-hidden: not featured this week — set available: true to put back on menu
+    available: false,
     ingredients: ["Apples", "Caramel", "Cinnamon", "Cream cheese frosting"],
   },
-  // Same dough family; peach filling instead of apple/caramel
-  {
-    id: "peach-cobbler-cinnamon-rolls",
-    name: "Peach Cobbler Cinnamon Rolls",
-    price: 9,
-    category: "rolls",
-    description: "Peach cobbler flavor in a soft cinnamon roll.",
-    emoji: "🍑",
-    image: "/products/peach-cobbler-cinnamon-rolls.png",
-    ingredients: ["Peaches", "Cinnamon", "Cream cheese frosting"],
-  },
-  // Sticky bun: caramel glaze + nuts
+
+  // ── Sticky buns ──────────────────────────────────────────────────────────
   {
     id: "sticky-buns-with-nuts",
     name: "Sticky Buns with Nuts",
-    price: 9,
+    price: 8.75,
     category: "sticky",
     description: "Caramel glaze topped with toasted nuts.",
     emoji: "🥜",
     image: "/products/sticky-bun-with-nuts.png",
     ingredients: ["Caramel", "Toasted nuts", "Cinnamon"],
   },
-  // Sticky bun plain
   {
     id: "sticky-buns-without-nuts",
     name: "Sticky Buns without Nuts",
-    price: 9,
+    price: 8,
     category: "sticky",
     description: "Classic sticky bun and caramel, no nuts.",
     emoji: "🌀",
     image: "/products/sticky-bun-no-nuts.png",
     ingredients: ["Caramel", "Cinnamon"],
   },
-  // Cake + frosting ball (no yeast / fruit)
-  // Kept in data for later — not currently selling
+
+  // ── Specialty (paused) ───────────────────────────────────────────────────
   {
     id: "cake-pops",
     name: "Cake Pop Bouquet",
@@ -109,8 +179,6 @@ export const products: Product[] = [
     available: false,
     ingredients: ["Cake", "Frosting", "Decorations"],
   },
-  // Shortbread-style cookie + dulce de leche (cornstarch is classic here)
-  // Kept in data for later — not currently selling
   {
     id: "alfajores",
     name: "Alfajores",
@@ -123,6 +191,16 @@ export const products: Product[] = [
     ingredients: ["Dulce de leche", "Butter cookie"],
   },
 ];
+
+/** Main image + gallery images (deduped), for product modal */
+export function getProductGallery(product: Product): string[] {
+  const list: string[] = [];
+  if (product.image) list.push(product.image);
+  for (const src of product.images ?? []) {
+    if (src && !list.includes(src)) list.push(src);
+  }
+  return list;
+}
 
 /** Products customers can see and order right now */
 export function isProductAvailable(product: Product) {

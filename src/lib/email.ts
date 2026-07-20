@@ -35,23 +35,56 @@ function formatMoney(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
+/**
+ * Read + validate RESEND_API_KEY.
+ * Empty / placeholder values (common after env pull templates) are treated as missing.
+ */
+function getResendApiKey(): string | null {
+  const raw = process.env.RESEND_API_KEY;
+  if (raw == null) return null;
+  const key = raw.trim().replace(/^["']|["']$/g, "");
+  if (!key) return null;
+  // Placeholders from .env.example / incomplete setup
+  if (
+    key === "re_..." ||
+    key === "re_xxx" ||
+    key.toLowerCase().includes("your_api_key") ||
+    key.toLowerCase().includes("paste")
+  ) {
+    return null;
+  }
+  if (!key.startsWith("re_")) {
+    console.warn(
+      "[email] RESEND_API_KEY does not look like a Resend key (expected re_…)",
+    );
+  }
+  return key;
+}
+
 function getResend() {
-  const key = process.env.RESEND_API_KEY;
+  const key = getResendApiKey();
   if (!key) return null;
   return new Resend(key);
 }
 
 /** From address — branded domain (verified in Resend). */
 function fromAddress() {
-  return (
+  const raw =
     process.env.EMAIL_FROM ||
-    `Lily's Sweet Treats <orders@lilyssweettreatsva.com>`
-  );
+    `Lily's Sweet Treats <orders@lilyssweettreatsva.com>`;
+  return raw.trim().replace(/^["']|["']$/g, "");
 }
 
 /** Owner inbox — Lily by default. */
 function ownerInbox() {
-  return (process.env.ORDER_NOTIFY_EMAIL || site.email).trim();
+  return (process.env.ORDER_NOTIFY_EMAIL || site.email)
+    .trim()
+    .replace(/^["']|["']$/g, "");
+}
+
+/** True when order confirmation emails can send in this environment. */
+export function isResendConfigured() {
+  return Boolean(getResendApiKey());
 }
 
 function escapeHtml(value: string) {
@@ -240,18 +273,30 @@ function customerHtml(order: OrderEmailPayload) {
 }
 
 function customerText(order: OrderEmailPayload) {
+  const moneyLines = [
+    order.subtotalCents != null
+      ? `Subtotal: ${formatMoney(order.subtotalCents)}`
+      : "",
+    order.taxCents != null
+      ? `${order.taxRateLabel || "Sales tax"}: ${formatMoney(order.taxCents)}`
+      : "",
+    `Total paid: ${formatMoney(order.amountCents)}`,
+  ].filter(Boolean);
+
   return [
     `You're all set — ${site.shortName}`,
     "",
     `Hi ${order.customerName.split(" ")[0] || order.customerName},`,
     "",
-    `Payment received for ${order.productName} × ${order.quantity} (${formatMoney(order.amountCents)}).`,
+    `Payment received for ${order.productName} × ${order.quantity}.`,
+    ...moneyLines,
     "",
     `PICKUP WINDOW: ${order.pickupWindow}`,
     `ADDRESS: ${order.pickupAddress}`,
     order.notes ? `NOTES: ${order.notes}` : "",
     "",
-    "Porch pickup only — no delivery.",
+    "Porch pickup only — no delivery. All sales final once baked (see Policies).",
+    "Contains common bakery allergens (wheat, eggs, milk, soy; nuts possible).",
     `Questions? ${site.phone} or ${site.email}`,
     "",
     `— ${site.name}`,
@@ -279,9 +324,10 @@ export async function sendOrderEmails(
   const customerTo = (order.customerEmail || "").trim() || undefined;
 
   if (!resend) {
-    console.warn(
-      "[email] RESEND_API_KEY missing — skipped order emails for",
+    console.error(
+      "[email] RESEND_API_KEY missing or empty — skipped order emails for",
       order.paymentIntentId,
+      "| Set RESEND_API_KEY=re_… in .env.local (local) or Vercel env (production), then restart the server.",
     );
     return {
       sent: false,
@@ -293,7 +339,9 @@ export async function sendOrderEmails(
     };
   }
 
-  if (!fromAddress()) {
+  const from = fromAddress();
+  if (!from || !from.includes("@")) {
+    console.error("[email] EMAIL_FROM missing or invalid:", from);
     return {
       sent: false,
       reason: "missing_from_address",
@@ -303,8 +351,6 @@ export async function sendOrderEmails(
       customerSent: false,
     };
   }
-
-  const from = fromAddress();
   let ownerError: string | undefined;
   let customerError: string | undefined;
   let ownerId: string | undefined;

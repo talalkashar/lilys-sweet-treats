@@ -901,9 +901,32 @@ textarea.field {
 }
 
 .footer-inner,
-.footer-copy {
+.footer-copy,
+.footer-legal {
   position: relative;
   z-index: 1;
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  padding: 0 1rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--cocoa-soft);
+}
+
+.footer-legal-link {
+  color: var(--cocoa-soft);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footer-legal-link:hover {
+  color: var(--rose);
 }
 
 .footer-inner {
@@ -1669,8 +1692,7 @@ a.footer-detail:hover {
 
 /*
  * Side collage: tall main left, two stacked right.
- * Right tiles set the height (3:2 product shots). Main stretches to match
- * and zooms into the plate so airy studio backgrounds don’t leave empty bands.
+ * Explicit min-height so tiles never collapse to 0 (blank lavender boxes).
  */
 .story-photo-grid {
   display: grid;
@@ -1679,17 +1701,20 @@ a.footer-detail:hover {
   width: 100%;
   max-width: 28rem;
   gap: 0.7rem;
+  min-height: 16rem;
 }
 
 @media (min-width: 640px) {
   .story-photo-grid {
     gap: 0.8rem;
+    min-height: 18rem;
   }
 }
 
 @media (min-width: 1024px) {
   .story-photo-grid {
     max-width: 30rem;
+    min-height: 20rem;
   }
 }
 
@@ -1708,12 +1733,14 @@ a.footer-detail:hover {
   grid-column: 1;
   grid-row: 1 / span 2;
   align-self: stretch;
+  min-height: 100%;
 }
 
 /* Right pair — native product aspect so plates fill the frame */
 .story-photo--wide {
   grid-column: 2;
   aspect-ratio: 3 / 2;
+  min-height: 7.5rem;
 }
 
 .story-photo--feature {
@@ -1730,15 +1757,13 @@ a.footer-detail:hover {
 }
 
 /*
- * Main is taller than the photo’s native 3:2, so a plain cover shows too much
- * empty table/sky. Zoom into the subject so the roll fills the tile.
+ * Main is a real portrait tray shot — cover + slight center crop only.
+ * (No heavy scale; that blew up landscape product crops and broke layout.)
  */
 .story-photo-img--main,
 .story-photo--main img {
   object-fit: cover !important;
-  object-position: 50% 48% !important;
-  transform: scale(1.45);
-  transform-origin: center center;
+  object-position: 50% 45% !important;
 }
 
 /* Soft pink highlight for key story lines */

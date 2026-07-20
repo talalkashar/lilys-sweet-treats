@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { MenuGrid } from "@/components/MenuGrid";
 import { Reveal } from "@/components/Reveal";
-import { availableProducts } from "@/data/products";
 import { reviews } from "@/data/reviews";
 import { site } from "@/data/site";
 
@@ -13,8 +12,28 @@ const marqueeLines = [
   "Small batches · fresh ingredients",
 ];
 
+const storyCollage = [
+  {
+    src: "/brand/story/tray-rolls-v3.jpg",
+    alt: "Fresh tray of strawberry cinnamon rolls just out of the oven",
+    slot: "main" as const,
+  },
+  {
+    src: "/products/peach-main-v3.jpg",
+    alt: "Peach cobbler cinnamon roll",
+    slot: "wide" as const,
+  },
+  {
+    // Replaces sticky-with-nuts — same hero used on menu cards (always loads)
+    src: "/products/strawberry-main-v3.jpg",
+    alt: "Strawberry cinnamon roll with cream cheese frosting and jam",
+    slot: "wide" as const,
+  },
+];
+
 export default function Home() {
-  const gallery = availableProducts.filter((p) => p.image).slice(0, 3);
+  const storyMain = storyCollage.find((p) => p.slot === "main")!;
+  const storyWide = storyCollage.filter((p) => p.slot === "wide");
 
   return (
     <>
@@ -197,46 +216,32 @@ export default function Home() {
       {/* STORY + food photos */}
       <section className="story-band section-pad">
         <div className="shell grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-          <Reveal>
-            <div className="story-photo-grid">
-              <div className="story-photo story-photo--main">
-                {gallery[0]?.image ? (
-                  <Image
-                    src={gallery[0].image}
-                    alt={gallery[0].name}
-                    fill
-                    quality={90}
-                    className="story-photo-img story-photo-img--main"
-                    sizes="(max-width: 1024px) 50vw, 300px"
-                  />
-                ) : null}
-              </div>
-              <div className="story-photo story-photo--wide">
-                {gallery[1]?.image ? (
-                  <Image
-                    src={gallery[1].image}
-                    alt={gallery[1].name}
-                    fill
-                    quality={90}
-                    className="story-photo-img"
-                    sizes="(max-width: 1024px) 45vw, 240px"
-                  />
-                ) : null}
-              </div>
-              <div className="story-photo story-photo--wide">
-                {gallery[2]?.image ? (
-                  <Image
-                    src={gallery[2].image}
-                    alt={gallery[2].name}
-                    fill
-                    quality={90}
-                    className="story-photo-img"
-                    sizes="(max-width: 1024px) 45vw, 240px"
-                  />
-                ) : null}
-              </div>
+          {/* No Reveal on photos — avoid opacity:0 blank tiles */}
+          <div className="story-photo-grid">
+            <div className="story-photo story-photo--main">
+              <Image
+                src={storyMain.src}
+                alt={storyMain.alt}
+                fill
+                priority
+                quality={90}
+                className="story-photo-img story-photo-img--main"
+                sizes="(max-width: 1024px) 50vw, 300px"
+              />
             </div>
-          </Reveal>
+            {storyWide.map((photo) => (
+              <div key={photo.src} className="story-photo story-photo--wide">
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  quality={90}
+                  className="story-photo-img"
+                  sizes="(max-width: 1024px) 45vw, 240px"
+                />
+              </div>
+            ))}
+          </div>
 
           <Reveal delayMs={80}>
             <div>

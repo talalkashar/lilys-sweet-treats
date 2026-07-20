@@ -125,6 +125,24 @@ export function Footer() {
         </div>
       </div>
 
+      <div className="footer-legal">
+        <a href="/policies" className="footer-legal-link">
+          Order policies
+        </a>
+        <span className="footer-detail-sep" aria-hidden>
+          ·
+        </span>
+        <a href="/privacy" className="footer-legal-link">
+          Privacy
+        </a>
+        <span className="footer-detail-sep" aria-hidden>
+          ·
+        </span>
+        <span className="footer-detail footer-detail--plain">
+          VA sales tax at checkout
+        </span>
+      </div>
+
       <div className="footer-copy">
         © {new Date().getFullYear()} {site.name}
       </div>

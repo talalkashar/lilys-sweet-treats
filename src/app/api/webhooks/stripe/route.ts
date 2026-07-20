@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { notifyOrderPaidOnce } from "@/lib/order-notify";
-import { getStripe } from "@/lib/stripe";
+import { getStripe, getStripeWebhookSecret, stripeModeLabel } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 
@@ -12,14 +12,18 @@ export const runtime = "nodejs";
  * Dashboard → Webhooks:
  *   URL: https://www.lilyssweettreatsva.com/api/webhooks/stripe
  *   Event: payment_intent.succeeded
- *   Secret → STRIPE_WEBHOOK_SECRET
+ *   Secret → STRIPE_WEBHOOK_SECRET (or _LIVE / _TEST with STRIPE_LIVE_MODE)
  */
 export async function POST(req: Request) {
   const stripe = getStripe();
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const webhookSecret = getStripeWebhookSecret();
 
   if (!webhookSecret) {
-    console.error("[stripe webhook] STRIPE_WEBHOOK_SECRET is not set");
+    console.error(
+      "[stripe webhook] webhook secret not set for",
+      stripeModeLabel(),
+      "mode",
+    );
     return NextResponse.json(
       { error: "Webhook not configured" },
       { status: 500 },

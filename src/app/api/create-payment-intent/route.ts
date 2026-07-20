@@ -3,7 +3,11 @@ import { validateOrderInput } from "@/lib/order-validation";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { site } from "@/data/site";
 import { getStripe } from "@/lib/stripe";
-import { calculatePickupTax, formatCents } from "@/lib/tax";
+import {
+  calculatePickupTax,
+  stripeTaxErrorMessage,
+  taxBreakdownLabels,
+} from "@/lib/tax";
 
 export const runtime = "nodejs";
 
@@ -55,36 +59,18 @@ export async function POST(req: Request) {
       email,
       pickupWindow,
       notes,
-      amountCents: subtotalCents,
     } = parsed.data;
 
-    // Stripe Tax (porch pickup → tax at bakery address)
+    // Real tax: Stripe Tax at bakery (Haymarket, VA) pickup address
     let tax;
     try {
       tax = await calculatePickupTax(lines);
     } catch (taxErr) {
-      console.error("stripe tax calculation failed", taxErr);
-      const msg =
-        taxErr &&
-        typeof taxErr === "object" &&
-        "message" in taxErr &&
-        typeof (taxErr as { message: unknown }).message === "string"
-          ? (taxErr as { message: string }).message
-          : "";
-      if (msg.includes("not been activated") || msg.includes("stripe_tax")) {
-        return NextResponse.json(
-          {
-            error:
-              "Sales tax is not set up in Stripe yet. Enable Stripe Tax in the Dashboard (Tax → Get started), register Virginia, then try again.",
-          },
-          { status: 503 },
-        );
-      }
-      return NextResponse.json(
-        { error: "Could not calculate sales tax. Please try again." },
-        { status: 502 },
-      );
+      const { status, error } = stripeTaxErrorMessage(taxErr);
+      return NextResponse.json({ error }, { status });
     }
+
+    const labels = taxBreakdownLabels(tax);
 
     // Compact cart for Stripe metadata (500 char value limit)
     const orderLinesCompact = JSON.stringify(
@@ -98,13 +84,14 @@ export async function POST(req: Request) {
 
     const stripe = getStripe();
     const packCount = lines.length;
+
+    // Charge = Stripe Tax total; calculation linked for Tax reporting / remittance
     const paymentIntent = await stripe.paymentIntents.create({
       amount: tax.totalCents,
       currency: "usd",
       automatic_payment_methods: { enabled: true },
       receipt_email: email,
       description: `${orderSummary} (porch pickup)`.slice(0, 900),
-      // Link Stripe Tax calculation to this payment for reporting
       hooks: {
         inputs: {
           tax: {
@@ -131,6 +118,7 @@ export async function POST(req: Request) {
         taxCents: String(tax.taxCents),
         totalCents: String(tax.totalCents),
         taxCalculationId: tax.calculationId,
+        taxSource: "stripe",
         taxRateLabel: tax.rateLabel.slice(0, 100),
       },
     });
@@ -141,15 +129,14 @@ export async function POST(req: Request) {
       quantity: totalTreats,
       packLabel: `${packCount} pack${packCount === 1 ? "" : "s"}`,
       lineCount: packCount,
-      // Money breakdown for checkout UI
+      // Money breakdown for checkout UI (from Stripe Tax)
       subtotalCents: tax.subtotalCents,
       taxCents: tax.taxCents,
       totalCents: tax.totalCents,
       amount: tax.totalCents,
-      taxRateLabel: tax.rateLabel,
-      subtotalLabel: formatCents(tax.subtotalCents),
-      taxLabel: formatCents(tax.taxCents),
-      totalLabel: formatCents(tax.totalCents),
+      taxSource: "stripe",
+      taxCalculationId: tax.calculationId,
+      ...labels,
     });
   } catch (err) {
     console.error("create-payment-intent", err);
