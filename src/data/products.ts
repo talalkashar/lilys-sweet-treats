@@ -111,7 +111,7 @@ export const products: Product[] = [
   },
   {
     id: "peach-cobbler-cinnamon-rolls",
-    name: "Peach Cobbler Cinnamon Rolls",
+    name: "Caramel Peach Cobbler Cinnamon Rolls",
     price: 8.75,
     category: "rolls",
     description:
