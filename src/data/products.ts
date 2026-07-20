@@ -95,12 +95,12 @@ export const products: Product[] = [
     emoji: "🍓",
     // Card = best side hero. Gallery = top-down → high → mid → side (no dups).
     // v3 = pure iCloud shoot → Photoshop MCP (auto levels/contrast/bright + warm_film + web export)
-    image: "/products/strawberry-main-v3.jpg",
+    image: "/products/strawberry-main-v4.jpg",
     images: [
-      "/products/strawberry-g2-v3.jpg",
-      "/products/strawberry-g3-v3.jpg",
-      "/products/strawberry-g4-v3.jpg",
-      "/products/strawberry-g5-v3.jpg",
+      "/products/strawberry-g2-v4.jpg",
+      "/products/strawberry-g3-v4.jpg",
+      "/products/strawberry-g4-v4.jpg",
+      "/products/strawberry-g5-v4.jpg",
     ],
     popular: true,
     ingredients: [
@@ -118,12 +118,12 @@ export const products: Product[] = [
       "Peach cobbler flavor with cream cheese frosting, peach topping, and caramel drizzle.",
     emoji: "🍑",
     // Card = best side hero. Gallery = top-down → mid → 3/4 → side (no dups).
-    image: "/products/peach-main-v3.jpg",
+    image: "/products/peach-main-v4.jpg",
     images: [
-      "/products/peach-g2-v3.jpg",
-      "/products/peach-g3-v3.jpg",
-      "/products/peach-g4-v3.jpg",
-      "/products/peach-g5-v3.jpg",
+      "/products/peach-g2-v4.jpg",
+      "/products/peach-g3-v4.jpg",
+      "/products/peach-g4-v4.jpg",
+      "/products/peach-g5-v4.jpg",
     ],
     ingredients: [
       "Peaches",

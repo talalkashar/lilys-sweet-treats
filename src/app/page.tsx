@@ -14,18 +14,18 @@ const marqueeLines = [
 
 const storyCollage = [
   {
-    src: "/brand/story/tray-rolls-v3.jpg",
+    src: "/brand/story/tray-rolls-v4.jpg",
     alt: "Fresh tray of strawberry cinnamon rolls just out of the oven",
     slot: "main" as const,
   },
   {
-    src: "/products/peach-main-v3.jpg",
+    src: "/products/peach-main-v4.jpg",
     alt: "Peach cobbler cinnamon roll",
     slot: "wide" as const,
   },
   {
-    // Replaces sticky-with-nuts — same hero used on menu cards (always loads)
-    src: "/products/strawberry-main-v3.jpg",
+    // Studio-relit strawberry hero (matches sticky-nuts lighting family)
+    src: "/products/strawberry-main-v4.jpg",
     alt: "Strawberry cinnamon roll with cream cheese frosting and jam",
     slot: "wide" as const,
   },
