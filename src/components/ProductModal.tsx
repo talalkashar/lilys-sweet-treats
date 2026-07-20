@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { getProductGallery, type Product } from "@/data/products";
-import { packDeals, packPriceDollars } from "@/data/packs";
+import { packDealsForProduct, packPriceDollars } from "@/data/packs";
 
 type Props = {
   product: Product | null;
@@ -169,7 +169,7 @@ export function ProductModal({ product, onClose }: Props) {
                 Pack deals
               </p>
               <ul className="mt-2 space-y-1.5 text-sm text-[var(--cocoa)]">
-                {packDeals.map((pack) => (
+                {packDealsForProduct(product.id).map((pack) => (
                   <li
                     key={pack.id}
                     className="flex items-baseline justify-between gap-2"

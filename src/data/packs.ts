@@ -18,9 +18,20 @@ export type PackDeal = {
   savingsPerTreat: number;
   /** Highlight as the party option */
   featured?: boolean;
+  /** Limit this deal to specific products; omitted = available for all */
+  productIds?: string[];
 };
 
 export const packDeals: PackDeal[] = [
+  {
+    id: "pack-2-sticky-buns-with-nuts",
+    quantity: 2,
+    label: "2-pack",
+    displayName: "2-pack",
+    blurb: "A pair of caramel-glazed sticky buns with toasted nuts.",
+    savingsPerTreat: 0,
+    productIds: ["sticky-buns-with-nuts"],
+  },
   {
     id: "pack-4",
     quantity: 4,
@@ -48,15 +59,34 @@ export const packDeals: PackDeal[] = [
   },
 ];
 
-export const defaultPackId = packDeals[0]!.id;
+export const defaultPackId = packDeals.find((pack) => !pack.productIds)!.id;
 
-export function getPackDeal(id: string | null | undefined) {
-  if (!id) return undefined;
-  return packDeals.find((p) => p.id === id);
+export function packDealsForProduct(productId: string) {
+  return packDeals.filter(
+    (pack) => !pack.productIds || pack.productIds.includes(productId),
+  );
 }
 
-export function getPackByQuantity(quantity: number) {
-  return packDeals.find((p) => p.quantity === quantity);
+export function getPackDeal(
+  id: string | null | undefined,
+  productId?: string,
+) {
+  if (!id) return undefined;
+  return packDeals.find(
+    (pack) =>
+      pack.id === id &&
+      (!pack.productIds ||
+        (Boolean(productId) && pack.productIds.includes(productId!))),
+  );
+}
+
+export function getPackByQuantity(quantity: number, productId?: string) {
+  return packDeals.find(
+    (pack) =>
+      pack.quantity === quantity &&
+      (!pack.productIds ||
+        (Boolean(productId) && pack.productIds.includes(productId!))),
+  );
 }
 
 /** Full unit × qty before pack savings */
@@ -86,8 +116,11 @@ export function packPriceCents(unitPrice: number, pack: PackDeal) {
 }
 
 /** Lowest pack total for a product (for “from $X” labels) */
-export function startingPackPrice(unitPrice: number) {
-  return Math.min(...packDeals.map((p) => packPriceDollars(unitPrice, p)));
+export function startingPackPrice(unitPrice: number, productId?: string) {
+  const deals = productId
+    ? packDealsForProduct(productId)
+    : packDeals.filter((pack) => !pack.productIds);
+  return Math.min(...deals.map((pack) => packPriceDollars(unitPrice, pack)));
 }
 
 /** Human pack label e.g. "Party tray (12)" */

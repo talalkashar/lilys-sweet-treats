@@ -65,13 +65,19 @@ function clampText(value: string, max: number) {
   return value.trim().slice(0, max);
 }
 
-function resolvePack(line: OrderLineInput): PackDeal | null {
+function resolvePack(line: OrderLineInput, productId: string): PackDeal | null {
   if (line.packId) {
-    return getPackDeal(String(line.packId)) ?? null;
+    return getPackDeal(String(line.packId), productId) ?? null;
   }
   const qty = Math.floor(Number(line.quantity));
   if (!Number.isFinite(qty)) return null;
-  return packDeals.find((p) => p.quantity === qty) ?? null;
+  return (
+    packDeals.find(
+      (pack) =>
+        pack.quantity === qty &&
+        (!pack.productIds || pack.productIds.includes(productId)),
+    ) ?? null
+  );
 }
 
 function normalizeLineInputs(body: OrderInput): OrderLineInput[] {
@@ -98,7 +104,7 @@ function parseLine(
   if (!product) {
     return { ok: false, error: "Invalid product in cart" };
   }
-  const pack = resolvePack(raw);
+  const pack = resolvePack(raw, product.id);
   if (!pack) {
     return {
       ok: false,
