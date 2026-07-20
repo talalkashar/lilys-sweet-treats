@@ -6,6 +6,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Lily’s Sweet Treats — agent notes
 
+## Client handoff
+
+- Owner guide: **CLIENT-HANDOFF.md** (GitHub, Vercel, Stripe, Resend, domain).  
+- Menu edits: **PRODUCT-MENU.md**.  
+- Teaching Codex: **CODEX-FOR-CLIENT.md**.  
+- Vercel **Hobby** cannot invite collaborators — transfer the project to her account or upgrade to Pro.
+
 ## Deploy rule (important)
 
 - **Always change and verify on localhost first.**

@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lily’s Sweet Treats & More
 
-## Getting Started
+**Live:** https://www.lilyssweettreatsva.com  
+**Repo:** https://github.com/talalkashar/lilys-sweet-treats  
 
-First, run the development server:
+Homemade bakery site — pre-order + porch pickup (Haymarket, VA).  
+Stack: Next.js · Stripe (payments + Tax) · Resend (emails) · Vercel.
+
+---
+
+## Start here (client / owner)
+
+| Doc | Who |
+|-----|-----|
+| **[CLIENT-HANDOFF.md](./CLIENT-HANDOFF.md)** | Full access checklist: GitHub, Vercel, Stripe, Resend, domain |
+| **[PRODUCT-MENU.md](./PRODUCT-MENU.md)** | Change menu, prices, photos without an admin panel |
+| **[CODEX-FOR-CLIENT.md](./CODEX-FOR-CLIENT.md)** | Teach Codex / AI editing in one session |
+| **[AGENTS.md](./AGENTS.md)** | Rules for AI coding agents |
+
+---
+
+## Local dev
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local   # fill keys (prefer Stripe *test*)
+./start.sh                   # or npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Keep **`STRIPE_LIVE_MODE=false`** locally so you don’t charge real cards while testing.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Production
 
-To learn more about Next.js, take a look at the following resources:
+- Hosted on **Vercel** project `lilys-sweet-treats`  
+- Push to **`main`** → auto deploy  
+- Production uses **Stripe live** + VA sales tax  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Menu source of truth
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`src/data/products.ts` — hide with `available: false`, prices $8 / $8.75, packs in `src/data/packs.ts`.
