@@ -15,6 +15,7 @@ import {
   getPackDeal,
   maxPacksPerOrder,
   packDeals,
+  packDealsForProduct,
   packFullPrice,
   packPriceDollars,
   packSavings,
@@ -113,7 +114,7 @@ export function OrderForm() {
     return cart
       .map((line) => {
         const product = availableProducts.find((p) => p.id === line.productId);
-        const pack = getPackDeal(line.packId);
+        const pack = getPackDeal(line.packId, line.productId);
         if (!product || !pack) return null;
         const price = packPriceDollars(product.price, pack);
         const save = packSavings(product.price, pack);
@@ -142,6 +143,9 @@ export function OrderForm() {
   }, [cart]);
 
   const total = resolvedCart.reduce((sum, line) => sum + line.price, 0);
+  const activePackDeals = activeProduct
+    ? packDealsForProduct(activeProduct.id)
+    : packDeals.filter((pack) => !pack.productIds);
   const totalSavings = resolvedCart.reduce((sum, line) => sum + line.save, 0);
   const totalTreats = resolvedCart.reduce(
     (sum, line) => sum + line.pack.quantity,
@@ -201,7 +205,7 @@ export function OrderForm() {
     setError(null);
 
     if (resolvedCart.length === 0) {
-      setError("Tap a pack size (4, 8, or party tray) to add it to your order.");
+      setError("Tap a pack size to add it to your order.");
       setBusy(false);
       return;
     }
@@ -419,8 +423,8 @@ export function OrderForm() {
               </span>
             ) : null}
           </p>
-          <div className="grid gap-2.5 sm:grid-cols-3">
-            {packDeals.map((pack) => {
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+            {activePackDeals.map((pack) => {
               const price = activeProduct
                 ? packPriceDollars(activeProduct.price, pack)
                 : null;
