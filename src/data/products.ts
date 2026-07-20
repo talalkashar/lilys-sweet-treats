@@ -88,7 +88,7 @@ export const products: Product[] = [
   {
     id: "strawberry-cinnamon-rolls",
     name: "Strawberry Cinnamon Rolls",
-    price: 8.75,
+    price: 8,
     category: "rolls",
     description:
       "Soft cinnamon roll with cream cheese frosting and sweet strawberry jam.",
