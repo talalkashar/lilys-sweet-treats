@@ -178,7 +178,7 @@ Rules:
 
 | Product | Price | Status |
 |---------|-------|--------|
-| Strawberry Cinnamon Rolls | $8.75 | On menu |
+| Strawberry Cinnamon Rolls | $8 | On menu |
 | Peach Cobbler Cinnamon Rolls | $8.75 | On menu |
 | Sticky Buns with Nuts | $8.75 | On menu |
 | Sticky Buns without Nuts | $8 | On menu |
