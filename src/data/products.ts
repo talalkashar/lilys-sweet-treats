@@ -27,6 +27,8 @@ export type Product = {
   name: string;
   /** Unit price in dollars (e.g. 8 or 8.75) */
   price: number;
+  /** Set false to hide the per-treat price while retaining pack calculations */
+  showUnitPrice?: boolean;
   description: string;
   emoji: string;
   /** Which menu section: rolls | sticky | specialty */
@@ -150,6 +152,7 @@ export const products: Product[] = [
     id: "sticky-buns-with-nuts",
     name: "Sticky Buns with Nuts",
     price: 8.75,
+    showUnitPrice: false,
     category: "sticky",
     description: "Caramel glaze topped with toasted nuts.",
     emoji: "🥜",
@@ -160,6 +163,7 @@ export const products: Product[] = [
     id: "sticky-buns-without-nuts",
     name: "Sticky Buns without Nuts",
     price: 8,
+    showUnitPrice: false,
     category: "sticky",
     description: "Classic sticky bun and caramel, no nuts.",
     emoji: "🌀",

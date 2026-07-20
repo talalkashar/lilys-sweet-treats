@@ -124,6 +124,7 @@ Do **not** change an `id` after people may have linked `/order?product=that-id`.
 | `id` | yes | Stable key for URLs & checkout |
 | `name` | yes | Label customers see |
 | `price` | yes | Unit $ (8 or 8.75) |
+| `showUnitPrice` | optional | `false` hides the per-treat price while pack totals still use it |
 | `category` | yes | `rolls` · `sticky` · `specialty` |
 | `description` | yes | Short blurb |
 | `emoji` | yes | Fallback if image missing |

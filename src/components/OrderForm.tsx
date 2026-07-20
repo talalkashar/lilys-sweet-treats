@@ -399,11 +399,10 @@ export function OrderForm() {
                 <optgroup key={cat.id} label={cat.title}>
                   {items.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.name} ($
-                      {Number.isInteger(p.price)
-                        ? p.price.toFixed(0)
-                        : p.price.toFixed(2)}{" "}
-                      each)
+                      {p.name}
+                      {p.showUnitPrice !== false
+                        ? ` ($${Number.isInteger(p.price) ? p.price.toFixed(0) : p.price.toFixed(2)} each)`
+                        : ""}
                     </option>
                   ))}
                 </optgroup>

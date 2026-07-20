@@ -44,15 +44,17 @@ export function ProductCard({ product, onOpen }: Props) {
             <h3 className="font-display text-lg leading-snug text-[var(--cocoa)]">
               {product.name}
             </h3>
-            <p className="shrink-0 pt-0.5 text-sm font-semibold tabular-nums text-[var(--rose)]">
-              $
-              {Number.isInteger(product.price)
-                ? product.price.toFixed(0)
-                : product.price.toFixed(2)}
-              <span className="block text-[0.65rem] font-medium normal-case tracking-normal text-[var(--ink-muted)]">
-                each
-              </span>
-            </p>
+            {product.showUnitPrice !== false ? (
+              <p className="shrink-0 pt-0.5 text-sm font-semibold tabular-nums text-[var(--rose)]">
+                $
+                {Number.isInteger(product.price)
+                  ? product.price.toFixed(0)
+                  : product.price.toFixed(2)}
+                <span className="block text-[0.65rem] font-medium normal-case tracking-normal text-[var(--ink-muted)]">
+                  each
+                </span>
+              </p>
+            ) : null}
           </div>
           <p className="line-clamp-2 text-sm leading-relaxed text-[var(--cocoa-soft)]">
             {product.description}

@@ -150,15 +150,17 @@ export function ProductModal({ product, onClose }: Props) {
               >
                 {product.name}
               </h2>
-              <p className="shrink-0 text-sm font-semibold tabular-nums text-[var(--rose)]">
-                $
-                {Number.isInteger(product.price)
-                  ? product.price.toFixed(0)
-                  : product.price.toFixed(2)}
-                <span className="block text-[0.65rem] font-medium text-[var(--ink-muted)]">
-                  each
-                </span>
-              </p>
+              {product.showUnitPrice !== false ? (
+                <p className="shrink-0 text-sm font-semibold tabular-nums text-[var(--rose)]">
+                  $
+                  {Number.isInteger(product.price)
+                    ? product.price.toFixed(0)
+                    : product.price.toFixed(2)}
+                  <span className="block text-[0.65rem] font-medium text-[var(--ink-muted)]">
+                    each
+                  </span>
+                </p>
+              ) : null}
             </div>
             <p className="mt-3 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:text-base">
               {product.description}
