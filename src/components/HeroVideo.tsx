@@ -5,16 +5,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/data/site";
 
-const POSTER_SRC = "/brand/video/peach-cobbler-roll-poster.jpg";
-const VIDEO_SRC = "/brand/video/peach-cobbler-higgsfield.mp4";
+/** Bump when media is re-exported so reloads never show a stale poster/video pair. */
+const MEDIA_VERSION = "3";
+const POSTER_SRC = `/brand/video/peach-cobbler-roll-poster.jpg?v=${MEDIA_VERSION}`;
+const VIDEO_SRC = `/brand/video/peach-cobbler-higgsfield.mp4?v=${MEDIA_VERSION}`;
 
 /**
- * Full-bleed hero video — edge-to-edge under the floating header so it
- * reads as part of the top of the browser viewport.
+ * Full-bleed hero video.
+ * Poster is the exact first frame of the trimmed cinema clip so reload
+ * never flashes a different image before playback starts.
  */
 export function HeroVideo() {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [mediaReady, setMediaReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -28,26 +32,73 @@ export function HeroVideo() {
   useEffect(() => {
     const el = videoRef.current;
     if (!el || reducedMotion) return;
+
+    let cancelled = false;
+    let revealed = false;
+
+    const reveal = () => {
+      if (cancelled || revealed) return;
+      revealed = true;
+      setMediaReady(true);
+      el.muted = true;
+      const play = el.play();
+      if (play && typeof play.catch === "function") {
+        play.catch(() => {
+          /* autoplay blocked — matching poster stays */
+        });
+      }
+    };
+
     el.muted = true;
-    el.load();
-    const play = el.play();
-    if (play && typeof play.catch === "function") {
-      play.catch(() => {
-        /* autoplay blocked */
+    el.playsInline = true;
+    el.currentTime = 0;
+
+    // Prefer painted frames (not just metadata) before crossfade
+    const onPlaying = () => reveal();
+    const onLoadedData = () => {
+      if (el.readyState >= 2) reveal();
+    };
+
+    el.addEventListener("playing", onPlaying);
+    el.addEventListener("loadeddata", onLoadedData);
+
+    if (el.readyState >= 2) {
+      el.play()
+        .then(() => reveal())
+        .catch(() => {
+          /* keep poster */
+        });
+    } else {
+      el.load();
+      el.play().catch(() => {
+        /* keep poster until playing */
       });
     }
+
+    return () => {
+      cancelled = true;
+      el.removeEventListener("playing", onPlaying);
+      el.removeEventListener("loadeddata", onLoadedData);
+    };
   }, [reducedMotion]);
 
   return (
     <section className="hero-video" aria-label={`${site.shortName} kitchen`}>
       <div className="hero-video-media-wrap">
-        {reducedMotion || failed ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={POSTER_SRC} alt="" className="hero-video-media" />
-        ) : (
+        {/* Exact first frame of the trimmed clip — seamless with video start */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={POSTER_SRC}
+          alt=""
+          className="hero-video-poster"
+          fetchPriority="high"
+          decoding="async"
+        />
+
+        {reducedMotion || failed ? null : (
           <video
             ref={videoRef}
-            className="hero-video-media"
+            className={`hero-video-media${mediaReady ? " hero-video-media--ready" : ""}`}
             src={VIDEO_SRC}
             poster={POSTER_SRC}
             autoPlay

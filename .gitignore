@@ -44,3 +44,7 @@ next-env.d.ts
 tmp/
 .playwright-cli/
 print/
+
+# local automation artifacts
+.tmp/
+public/brand/video/*.pre-trim.mp4

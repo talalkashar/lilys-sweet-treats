@@ -12,6 +12,9 @@ type Props = {
 export function ProductCard({ product, onOpen }: Props) {
   const [imgFailed, setImgFailed] = useState(false);
   const showImage = Boolean(product.image) && !imgFailed;
+  const priceLabel = Number.isInteger(product.price)
+    ? product.price.toFixed(0)
+    : product.price.toFixed(2);
 
   return (
     <article className="card-product group flex h-full flex-col">
@@ -39,17 +42,14 @@ export function ProductCard({ product, onOpen }: Props) {
           )}
         </div>
 
-        <div className="flex flex-1 flex-col gap-1.5 p-4">
+        <div className="card-product-body flex flex-1 flex-col gap-1.5 p-4">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-display text-lg leading-snug text-[var(--cocoa)]">
+            <h3 className="font-display text-lg leading-snug text-[var(--cocoa)] sm:text-xl">
               {product.name}
             </h3>
             {product.showUnitPrice !== false ? (
-              <p className="shrink-0 pt-0.5 text-sm font-semibold tabular-nums text-[var(--rose)]">
-                $
-                {Number.isInteger(product.price)
-                  ? product.price.toFixed(0)
-                  : product.price.toFixed(2)}
+              <p className="card-product-price shrink-0 pt-0.5 text-sm font-semibold tabular-nums text-[var(--rose)]">
+                ${priceLabel}
                 <span className="block text-[0.65rem] font-medium normal-case tracking-normal text-[var(--ink-muted)]">
                   each
                 </span>
@@ -60,11 +60,11 @@ export function ProductCard({ product, onOpen }: Props) {
             {product.description}
           </p>
           <p className="text-xs font-medium text-[var(--cocoa-soft)]">
-            {product.category === "sticky" ? "2-pack · " : ""}
-            4-pack · 8-pack · party tray (12)
+            Pairs of 2 · 2 / 4 / 6 / 8 / 12 packs · mix flavors in twos
           </p>
-          <span className="mt-auto pt-3 text-sm font-semibold text-[var(--rose)]">
-            View details →
+          <span className="card-product-cta mt-auto">
+            View details
+            <span aria-hidden> →</span>
           </span>
         </div>
       </button>

@@ -2,7 +2,6 @@ import { site } from "@/data/site";
 import type { ValidOrderLine } from "@/lib/order-validation";
 import { getStripe } from "@/lib/stripe";
 import {
-  estimatePickupTax,
   formatCents,
   VA_PICKUP_TAX_LABEL,
 } from "@/lib/tax-rate";
@@ -61,7 +60,7 @@ export async function calculatePickupTax(
     line_items: lines.map((line, i) => ({
       amount: line.amountCents,
       quantity: 1,
-      reference: `${line.product.id}:${line.pack.id}:${i}`.slice(0, 500),
+      reference: `${line.pack.id}:${line.pairProductIds.join("+")}:${i}`.slice(0, 500),
       tax_code: BAKERY_TAX_CODE,
       tax_behavior: "exclusive" as const,
     })),

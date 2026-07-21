@@ -7,7 +7,7 @@
  * Pricing (unit, each treat):
  *   - No toppings → $8
  *   - With toppings → $8.75
- * Sold in packs only (4 / 8 / party tray 12) — see src/data/packs.ts
+ * Sold in packs only (2 / 4 / 6 / 8 / 12). Flavors in pairs of 2 — see src/data/packs.ts
  *
  * Quick actions:
  *   - HIDE a product: set available: false  (keeps data for later)

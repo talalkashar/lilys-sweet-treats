@@ -1,26 +1,33 @@
 import { availableProducts, getProduct } from "@/data/products";
 import {
   formatPackLabel,
-  getPackDeal,
+  formatPairComposition,
+  getPackById,
   maxPacksPerOrder,
   packDeals,
-  packPriceCents,
+  packPriceCentsFromPairUnitPrices,
+  pairSlotsForPack,
   type PackDeal,
 } from "@/data/packs";
 import { site } from "@/data/site";
 
 export type OrderLineInput = {
-  productId?: string;
   packId?: string;
+  /**
+   * Flavor for each pair slot (length = pack.quantity / 2).
+   * Each entry = two treats of that flavor.
+   */
+  pairProductIds?: string[];
+  /** Legacy: entire pack is one flavor */
+  productId?: string;
   quantity?: number;
 };
 
 export type OrderInput = {
-  /** Multi-pack cart (preferred) */
   items?: OrderLineInput[];
-  /** Legacy single-line fields still accepted */
   productId?: string;
   packId?: string;
+  pairProductIds?: string[];
   quantity?: number;
   name?: string;
   phone?: string;
@@ -30,17 +37,20 @@ export type OrderInput = {
 };
 
 export type ValidOrderLine = {
-  product: (typeof availableProducts)[number];
   pack: PackDeal;
+  /** One product id per pair slot */
+  pairProductIds: string[];
+  pairProducts: (typeof availableProducts)[number][];
   quantity: number;
   packLabel: string;
   lineLabel: string;
   amountCents: number;
+  /** Primary product (first pair) — legacy / tax reference */
+  product: (typeof availableProducts)[number];
 };
 
 export type ValidOrder = {
   lines: ValidOrderLine[];
-  /** Joined summary for Stripe / emails */
   orderSummary: string;
   totalTreats: number;
   name: string;
@@ -49,10 +59,6 @@ export type ValidOrder = {
   pickupWindow: string;
   notes: string;
   amountCents: number;
-  /**
-   * First line kept for any older readers of product/pack fields.
-   * Prefer `lines` + `orderSummary`.
-   */
   product: (typeof availableProducts)[number];
   pack: PackDeal;
   quantity: number;
@@ -65,31 +71,25 @@ function clampText(value: string, max: number) {
   return value.trim().slice(0, max);
 }
 
-function resolvePack(line: OrderLineInput, productId: string): PackDeal | null {
+function resolvePack(line: OrderLineInput): PackDeal | null {
   if (line.packId) {
-    return getPackDeal(String(line.packId), productId) ?? null;
+    return getPackById(String(line.packId)) ?? null;
   }
   const qty = Math.floor(Number(line.quantity));
   if (!Number.isFinite(qty)) return null;
-  return (
-    packDeals.find(
-      (pack) =>
-        pack.quantity === qty &&
-        (!pack.productIds || pack.productIds.includes(productId)),
-    ) ?? null
-  );
+  return packDeals.find((pack) => pack.quantity === qty) ?? null;
 }
 
 function normalizeLineInputs(body: OrderInput): OrderLineInput[] {
   if (Array.isArray(body.items) && body.items.length > 0) {
     return body.items;
   }
-  // Legacy single-line order
-  if (body.productId) {
+  if (body.productId || body.packId || body.pairProductIds) {
     return [
       {
         productId: body.productId,
         packId: body.packId,
+        pairProductIds: body.pairProductIds,
         quantity: body.quantity,
       },
     ];
@@ -100,35 +100,80 @@ function normalizeLineInputs(body: OrderInput): OrderLineInput[] {
 function parseLine(
   raw: OrderLineInput,
 ): { ok: true; line: ValidOrderLine } | { ok: false; error: string } {
-  const product = getProduct(raw.productId || "");
-  if (!product) {
-    return { ok: false, error: "Invalid product in cart" };
-  }
-  const pack = resolvePack(raw, product.id);
+  const pack = resolvePack(raw);
   if (!pack) {
     return {
       ok: false,
-      error: "Each cart item needs a pack size: 4-pack, 8-pack, or party tray (12).",
+      error:
+        "Each cart item needs a pack size: 2-pack, 4-pack, 6-pack, 8-pack, or party tray (12).",
     };
   }
-  const amountCents = packPriceCents(product.price, pack);
+
+  const slots = pairSlotsForPack(pack);
+  let pairIds: string[] = [];
+
+  if (Array.isArray(raw.pairProductIds) && raw.pairProductIds.length > 0) {
+    pairIds = raw.pairProductIds.map(String);
+  } else if (raw.productId) {
+    // Legacy mono-flavor: fill every pair with that product
+    pairIds = Array.from({ length: slots }, () => String(raw.productId));
+  } else {
+    return {
+      ok: false,
+      error: "Choose a flavor pair for every slot in the pack.",
+    };
+  }
+
+  if (pairIds.length !== slots) {
+    return {
+      ok: false,
+      error: `A ${pack.label} needs exactly ${slots} flavor pair${slots === 1 ? "" : "s"} (${pack.quantity} treats, two of each chosen flavor).`,
+    };
+  }
+
+  const pairProducts: (typeof availableProducts)[number][] = [];
+  for (const id of pairIds) {
+    const product = getProduct(id);
+    if (!product) {
+      return { ok: false, error: "Invalid flavor in pack" };
+    }
+    // Pack restricted to specific products (if any)
+    if (pack.productIds && !pack.productIds.includes(product.id)) {
+      return {
+        ok: false,
+        error: `${product.name} is not available in a ${pack.label}.`,
+      };
+    }
+    pairProducts.push(product);
+  }
+
+  const amountCents = packPriceCentsFromPairUnitPrices(
+    pairProducts.map((p) => p.price),
+    pack,
+  );
   const packLabel = formatPackLabel(pack);
+  const composition = formatPairComposition(pairProducts.map((p) => p.name));
+  const lineLabel = `${packLabel}: ${composition}`;
+  const product = pairProducts[0]!;
+
   return {
     ok: true,
     line: {
-      product,
       pack,
+      pairProductIds: pairIds,
+      pairProducts,
       quantity: pack.quantity,
       packLabel,
-      lineLabel: `${product.name} — ${packLabel}`,
+      lineLabel,
       amountCents,
+      product,
     },
   };
 }
 
 /**
  * Server-side order validation. Never trust client prices.
- * Supports multiple packs per checkout (mixed flavors / sizes).
+ * Packs are pair-based: each pair = 2 of the same flavor.
  */
 export function validateOrderInput(body: OrderInput):
   | { ok: true; data: ValidOrder }

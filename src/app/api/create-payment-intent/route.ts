@@ -75,10 +75,11 @@ export async function POST(req: Request) {
     // Compact cart for Stripe metadata (500 char value limit)
     const orderLinesCompact = JSON.stringify(
       lines.map((l) => ({
-        p: l.product.id,
         k: l.pack.id,
         q: l.quantity,
         c: l.amountCents,
+        // pair product ids (each = 2 treats of that flavor)
+        pairs: l.pairProductIds,
       })),
     ).slice(0, 490);
 

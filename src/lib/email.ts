@@ -140,7 +140,6 @@ function ownerHtml(order: OrderEmailPayload) {
 }
 
 function customerHtml(order: OrderEmailPayload) {
-  const firstName = escapeHtml(
     order.customerName.split(" ")[0] || order.customerName,
   );
   const notesBlock = order.notes

@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Outfit } from "next/font/google";
 import { BakeryAtmosphere } from "@/components/BakeryAtmosphere";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { MobileStickyCta } from "@/components/MobileStickyCta";
 import { ViewMode } from "@/components/ViewMode";
 import { site } from "@/data/site";
 import "./globals.css";
@@ -89,6 +90,7 @@ export default function RootLayout({
         <Header />
         <main className="relative z-[1] flex-1">{children}</main>
         <Footer />
+        <MobileStickyCta />
       </body>
     </html>
   );

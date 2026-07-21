@@ -2528,55 +2528,197 @@ a.footer-detail:hover {
 
 
 
-/* Header over hero: glass / seamless into browser top */
-.site-header--over-hero {
-  background-color: transparent !important;
-  border-top-color: transparent !important;
-  border-bottom-color: transparent !important;
-  box-shadow: none !important;
-}
 
-.site-header--over-hero::before {
-  opacity: 0 !important;
-}
 
-.site-header--over-hero::after {
-  background: linear-gradient(
+/* ========== Smooth header state (over hero ↔ scrolled) ========== */
+.site-header {
+  --header-surface: transparent;
+  --header-border: transparent;
+  --header-pattern: 0;
+  --header-veil: linear-gradient(
     180deg,
-    rgba(20, 12, 18, 0.38) 0%,
-    rgba(20, 12, 18, 0.12) 70%,
+    rgba(20, 12, 18, 0.34) 0%,
+    rgba(20, 12, 18, 0.1) 68%,
     transparent 100%
-  ) !important;
+  );
+  --header-title: #ffffff;
+  --header-muted: rgba(255, 245, 250, 0.86);
+  --header-link: rgba(255, 255, 255, 0.92);
+  --header-link-hover: #ffd6ea;
+
+  background-color: var(--header-surface) !important;
+  border-top-color: var(--header-border) !important;
+  border-bottom-color: var(--header-border) !important;
+  box-shadow: none;
 }
 
-.site-header--over-hero .site-header-inner p,
-.site-header--over-hero nav a {
-  color: #fff !important;
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
+/* No transition on first paint after refresh — only after scroll state is known */
+.site-header--boot,
+.site-header--boot::before,
+.site-header--boot::after,
+.site-header--boot .site-header-title,
+.site-header--boot .site-header-subtitle,
+.site-header--boot .header-nav-link {
+  transition: none !important;
 }
 
-.site-header--over-hero nav a:hover {
-  color: #ffd6ea !important;
+.site-header--ready,
+.site-header--ready::before,
+.site-header--ready::after {
+  transition:
+    background-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    backdrop-filter 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-header--ready .site-header-title,
+.site-header--ready .site-header-subtitle,
+.site-header--ready .header-nav-link {
+  transition:
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    text-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-header::before {
+  opacity: var(--header-pattern) !important;
+}
+
+.site-header::after {
+  background: var(--header-veil) !important;
+  opacity: 1 !important;
+  transition: background 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+}
+
+.site-header-title {
+  color: var(--header-title) !important;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.22);
+}
+
+.site-header-subtitle {
+  color: var(--header-muted) !important;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.18);
+}
+
+.header-nav-link {
+  color: var(--header-link) !important;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+}
+
+.header-nav-link:hover {
+  color: var(--header-link-hover) !important;
+}
+
+/* Over hero: glass clear */
+.site-header--over-hero {
+  --header-surface: transparent;
+  --header-border: transparent;
+  --header-pattern: 0;
+  --header-veil: linear-gradient(
+    180deg,
+    rgba(20, 12, 18, 0.34) 0%,
+    rgba(20, 12, 18, 0.1) 68%,
+    transparent 100%
+  );
+  --header-title: #ffffff;
+  --header-muted: rgba(255, 245, 250, 0.86);
+  --header-link: rgba(255, 255, 255, 0.92);
+  --header-link-hover: #ffd6ea;
+  box-shadow: none !important;
 }
 
 .site-header--over-hero .logo-mark {
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
 }
 
-/* When menu open over hero, give solid sheet for readability */
+/* Scrolled: soft solid lilac — same brand bar, eased in */
+.site-header--scrolled {
+  --header-surface: rgba(214, 190, 249, 0.94);
+  --header-border: #b89ae8;
+  --header-pattern: 0.45;
+  --header-veil: rgba(214, 190, 249, 0.28);
+  --header-title: var(--cocoa, #4a3540);
+  --header-muted: var(--ink-muted, #7a6570);
+  --header-link: var(--cocoa-soft, #6b5560);
+  --header-link-hover: var(--rose, #d45d8c);
+  box-shadow: var(--shadow-soft) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.site-header--scrolled .site-header-title,
+.site-header--scrolled .site-header-subtitle,
+.site-header--scrolled .header-nav-link {
+  text-shadow: none;
+}
+
+.site-header--scrolled .logo-mark {
+  box-shadow: 0 2px 8px rgba(155, 123, 201, 0.12);
+}
+
 .site-header--over-hero .site-header-menu {
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(12px);
 }
 
-.site-header--over-hero .site-header-menu a {
-  color: var(--cocoa) !important;
-  text-shadow: none !important;
+/* ========== Hero video: seamless poster → video ========== */
+.hero-video-media-wrap {
+  background: #1a1218;
+}
+
+.hero-video-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+}
+
+.hero-video-media {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  opacity: 0;
+  /* Short crossfade only — poster is the exact first frame */
+  transition: opacity 0.28s ease-out;
+  will-change: opacity;
+}
+
+.hero-video-media--ready {
+  opacity: 1;
+}
+
+.hero-video-shade,
+.hero-video-vignette {
+  z-index: 2;
+}
+
+.hero-video-content {
+  z-index: 3;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .site-header--ready,
+  .site-header--ready::before,
+  .site-header--ready::after,
+  .site-header--ready .site-header-title,
+  .site-header--ready .site-header-subtitle,
+  .site-header--ready .header-nav-link,
   .hero-video-media {
-    /* static poster already used in component */
+    transition: none !important;
+  }
+
+  .hero-video-media--ready {
+    opacity: 1;
   }
 }
 
@@ -2695,3 +2837,380 @@ html[data-view="desktop"]::before {
   pointer-events: none;
 }
 
+
+/* ========== Mobile polish (keep pink personality) ========== */
+
+/* Room for sticky order bar on phones */
+@media (max-width: 767px) {
+  /* Only pad when sticky CTA is actually mounted (hidden on /order) */
+  body:has(.mobile-sticky-cta) {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Hero: readable CTAs, stronger bottom fade, thumb-friendly */
+  .hero-video {
+    min-height: 100svh;
+    min-height: 100dvh;
+  }
+
+  .hero-video-shade {
+    background: linear-gradient(
+      180deg,
+      rgba(28, 18, 26, 0.48) 0%,
+      rgba(28, 18, 26, 0.14) 28%,
+      rgba(28, 18, 26, 0.28) 52%,
+      rgba(18, 10, 16, 0.82) 100%
+    );
+  }
+
+  .hero-video-content {
+    padding-top: clamp(4.75rem, 14vw, 6rem);
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+    min-height: 100svh;
+    min-height: 100dvh;
+  }
+
+  .hero-video-brand {
+    width: 100%;
+    max-width: none;
+    gap: 0.7rem;
+  }
+
+  .hero-video-logo {
+    width: min(38vw, 8.25rem);
+  }
+
+  .hero-video-title {
+    font-size: clamp(2.05rem, 9.2vw, 2.55rem);
+    max-width: 12ch;
+  }
+
+  .hero-video-sub {
+    max-width: 28ch;
+    font-size: 0.98rem;
+  }
+
+  .hero-video-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.55rem;
+    margin-top: 0.35rem;
+  }
+
+  .hero-video-actions .btn-primary,
+  .hero-video-actions .btn-secondary {
+    width: 100%;
+    min-height: 3rem;
+    justify-content: center;
+  }
+
+  /* Header: slightly shorter, clearer over video */
+  .site-header-bar {
+    height: 4.15rem;
+    column-gap: 0.65rem;
+  }
+
+  .site-header-brand .logo-mark {
+    width: 3.15rem;
+    height: 3.15rem;
+  }
+
+  /* Love banner: keep rolls + color, slightly smaller floaters for clarity */
+  .love-banner {
+    min-height: clamp(20rem, 78vw, 26rem);
+    padding: 2rem 1.1rem 2.25rem;
+  }
+
+  .love-floater-img {
+    width: clamp(2.6rem, 12vw, 3.6rem) !important;
+    height: auto !important;
+  }
+
+  .love-banner-title {
+    font-size: clamp(1.85rem, 7.5vw, 2.25rem);
+  }
+
+  .love-schedule {
+    width: min(100%, 22rem);
+    margin-inline: auto;
+    padding: 1rem 1.1rem !important;
+  }
+
+  .love-schedule-line {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  /* Menu: larger type + clearer CTA chip */
+  .section-menu .menu-intro .section-title {
+    font-size: clamp(2.1rem, 8.5vw, 2.6rem);
+  }
+
+  .section-menu .menu-intro .prose-soft {
+    font-size: 1.05rem;
+    line-height: 1.55;
+  }
+
+  .card-product-body {
+    padding: 1rem 1rem 1.1rem;
+    gap: 0.45rem;
+  }
+
+  .card-product-price {
+    font-size: 1rem;
+  }
+
+  .card-product-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.85rem;
+    min-height: 2.65rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    background: linear-gradient(
+      135deg,
+      #ff8ec4 0%,
+      #ff6aad 55%,
+      #f45d9a 100%
+    );
+    color: #fff !important;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 8px 18px rgba(244, 93, 154, 0.28);
+  }
+
+  .card-product:hover .card-product-cta,
+  .card-product:active .card-product-cta {
+    filter: brightness(1.03);
+  }
+
+  /* Story / custom section spacing */
+  .story-band.section-pad {
+    padding-block: 2.25rem;
+  }
+
+  /* Reviews & CTA breathing room above sticky bar */
+  .section-reviews.section-pad,
+  .cta-band.section-pad {
+    padding-bottom: 2.5rem;
+  }
+
+  /* Order page */
+  .order-mobile-schedule {
+    border-radius: 1.1rem;
+    border: 2px solid #5bb88a;
+    background: #f3faf6;
+    box-shadow: 0 10px 28px rgba(47, 158, 107, 0.1);
+    padding: 0.95rem 1.05rem;
+    color: var(--cocoa);
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .order-mobile-schedule p + p {
+    margin-top: 0.2rem;
+  }
+
+  .order-mobile-schedule-kicker {
+    margin: 0 0 0.35rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #2f9e6b;
+  }
+
+  .order-mobile-schedule-note {
+    margin-top: 0.4rem !important;
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+  }
+
+  .order-aside .section-title {
+    font-size: clamp(1.85rem, 7vw, 2.2rem);
+  }
+
+  .form-shell {
+    border-radius: 1.15rem;
+  }
+
+  .form-shell .btn-primary {
+    min-height: 3.05rem;
+    font-size: 1rem;
+  }
+
+  /* Pack pickers: bigger taps */
+  .form-shell button[type="button"].relative {
+    min-height: 4.5rem;
+  }
+}
+
+/* Sticky mobile CTA — always colorful, never beige */
+.mobile-sticky-cta {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobile-sticky-cta {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    padding: 0.55rem 0.75rem
+      calc(0.55rem + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(
+      180deg,
+      rgba(255, 235, 244, 0.2) 0%,
+      rgba(255, 214, 232, 0.92) 28%,
+      #ffd6ea 100%
+    );
+    border-top: 2px solid rgba(255, 142, 196, 0.55);
+    box-shadow: 0 -10px 30px rgba(180, 80, 130, 0.14);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .mobile-sticky-cta-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    max-width: 34rem;
+    margin-inline: auto;
+  }
+
+  .mobile-sticky-cta-title {
+    margin: 0;
+    font-family: var(--font-display), Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--cocoa);
+  }
+
+  .mobile-sticky-cta-meta {
+    margin: 0.15rem 0 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--rose-deep, #c44d7a);
+  }
+
+  .mobile-sticky-cta-btn {
+    flex-shrink: 0;
+    min-height: 2.85rem;
+    padding-inline: 1.15rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff7eb8, #f24d8a 70%, #e23d7a);
+    box-shadow: 0 8px 18px rgba(226, 61, 122, 0.32);
+  }
+
+  .mobile-sticky-cta-btn:hover {
+    filter: brightness(1.04);
+  }
+}
+
+/* Desktop: product CTA stays text-style; mobile uses chip above */
+@media (min-width: 768px) {
+  .card-product-cta {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--rose);
+  }
+
+  .mobile-sticky-cta {
+    display: none !important;
+  }
+
+  body:has(.mobile-sticky-cta) {
+    padding-bottom: 0;
+  }
+}
+
+/* Forced mobile view frame should also show sticky CTA behavior */
+html[data-view="mobile"] body:has(.mobile-sticky-cta) {
+  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+html[data-view="mobile"] .mobile-sticky-cta {
+  display: block;
+  max-width: 430px;
+  margin-inline: auto;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: 100%;
+}
+
+html[data-view="desktop"] .mobile-sticky-cta {
+  display: none !important;
+}
+
+html[data-view="desktop"] body:has(.mobile-sticky-cta) {
+  padding-bottom: 0;
+}
+
+/* Soften hover lift on touch devices so cards don't feel jumpy */
+@media (hover: none) {
+  .card-product:hover {
+    transform: none;
+  }
+
+  .card-product:active {
+    transform: scale(0.995);
+  }
+}
+
+
+/* Forced mobile preview: sticky CTA + padding even on wide viewports */
+html[data-view="mobile"] .mobile-sticky-cta {
+  display: block;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  padding: 0.55rem 0.75rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 235, 244, 0.2) 0%,
+    rgba(255, 214, 232, 0.92) 28%,
+    #ffd6ea 100%
+  );
+  border-top: 2px solid rgba(255, 142, 196, 0.55);
+  box-shadow: 0 -10px 30px rgba(180, 80, 130, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+html[data-view="mobile"] .mobile-sticky-cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+html[data-view="mobile"] body:has(.mobile-sticky-cta) {
+  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+html[data-view="desktop"] .mobile-sticky-cta {
+  display: none !important;
+}
+
+html[data-view="mobile"] .order-mobile-schedule {
+  display: block;
+}
+
+html[data-view="desktop"] .order-mobile-schedule {
+  display: none !important;
+}

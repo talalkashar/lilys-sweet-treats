@@ -171,7 +171,7 @@ export default function Home() {
               <p className="section-label">Menu</p>
               <h2 className="section-title mt-2">What we&apos;re baking</h2>
               <p className="prose-soft mt-3">
-                Tap a treat for details, then pre-order in packs of 4, 8, or 12.
+                Tap a treat for details, then pre-order in packs of 2, 4, 6, 8, or 12. Flavors come in pairs of two of the same kind — mix pairs in larger packs.
               </p>
             </div>
           </Reveal>

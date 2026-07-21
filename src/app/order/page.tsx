@@ -10,8 +10,8 @@ export const metadata = {
 
 export default function OrderPage() {
   return (
-    <div className="min-h-[70vh] bg-[var(--cream)]/80">
-      <div className="shell py-8 sm:py-12">
+    <div className="order-page min-h-[70vh] bg-[var(--cream)]/80">
+      <div className="shell py-6 sm:py-12">
         <Link
           href="/#menu"
           className="text-sm font-medium text-[var(--cocoa-soft)] transition hover:text-[var(--rose)]"
@@ -19,8 +19,20 @@ export default function OrderPage() {
           ← Back to menu
         </Link>
 
-        <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,17.5rem)_minmax(0,1fr)] lg:items-start lg:gap-10">
-          <aside className="lg:sticky lg:top-32">
+        {/* Mobile-first schedule strip — always visible before the form */}
+        <div className="order-mobile-schedule mt-4 sm:hidden" aria-label="Order schedule">
+          <p className="order-mobile-schedule-kicker">This week</p>
+          <p>
+            <strong>Order:</strong> Mon–Wed by noon
+          </p>
+          <p>
+            <strong>Pickup:</strong> Fri 4–6 PM · Sat 9–11 AM
+          </p>
+          <p className="order-mobile-schedule-note">Haymarket porch pickup</p>
+        </div>
+
+        <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,17.5rem)_minmax(0,1fr)] lg:items-start lg:gap-10">
+          <aside className="order-aside lg:sticky lg:top-32">
             <p className="section-label">Checkout</p>
             <h1 className="section-title mt-2">Order for pickup</h1>
             <p className="prose-soft mt-3">
@@ -28,7 +40,7 @@ export default function OrderPage() {
               Saturday in Haymarket.
             </p>
 
-            <div className="mt-6 space-y-3 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+            <div className="mt-6 hidden space-y-3 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:block">
               <div className="rounded-lg border border-[var(--blush)]/40 bg-white px-3 py-3">
                 <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
                   Order window
@@ -57,13 +69,16 @@ export default function OrderPage() {
                   Packs
                 </p>
                 <p className="mt-1.5 font-medium text-[var(--cocoa)]">
-                  4-pack · 8-pack · Party tray (12)
+                  2-pack · 4-pack · 6-pack · 8-pack · Party tray (12)
+                </p>
+                <p className="mt-1 text-xs text-[var(--ink-muted)]">
+                  Flavors in pairs of 2 (same flavor per pair). Mix pairs in larger packs.
                 </p>
               </div>
             </div>
           </aside>
 
-          <div className="min-w-0 max-w-xl lg:max-w-none">
+          <div className="order-form-wrap min-w-0 max-w-xl lg:max-w-none">
             <Suspense
               fallback={
                 <div className="form-shell p-8 text-center text-sm text-[var(--cocoa-soft)]">

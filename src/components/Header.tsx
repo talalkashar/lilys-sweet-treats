@@ -13,22 +13,26 @@ const links = [
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [ready, setReady] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 48);
     onScroll();
+    // Enable transitions only after the real scroll position is known
+    // so refresh never animates purple → glass (or the reverse).
+    requestAnimationFrame(() => setReady(true));
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <header
-      className={`site-header sticky top-0 z-50 transition-[background,box-shadow,border-color,backdrop-filter] duration-300 ${
-        scrolled
-          ? "site-header--scrolled shadow-[var(--shadow-soft)]"
-          : "site-header--over-hero"
-      }`}
+      className={[
+        "site-header sticky top-0 z-50",
+        ready ? "site-header--ready" : "site-header--boot",
+        scrolled ? "site-header--scrolled" : "site-header--over-hero",
+      ].join(" ")}
     >
       <div className="site-header-inner shell site-header-bar">
         <Link
@@ -47,22 +51,18 @@ export function Header() {
             />
           </span>
           <div className="min-w-0 leading-tight">
-            <p className="truncate font-display text-lg text-[var(--cocoa)] sm:text-xl">
+            <p className="site-header-title truncate font-display text-lg sm:text-xl">
               {site.shortName}
             </p>
-            <p className="hidden text-xs font-medium uppercase tracking-[0.1em] text-[var(--ink-muted)] sm:block">
+            <p className="site-header-subtitle hidden text-xs font-medium uppercase tracking-[0.1em] sm:block">
               Porch pickup only
             </p>
           </div>
         </Link>
 
-        <nav className="header-nav-desktop hidden items-center text-base font-medium text-[var(--cocoa-soft)] lg:flex">
+        <nav className="header-nav-desktop hidden items-center text-base font-medium lg:flex">
           {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="header-nav-link transition-colors hover:text-[var(--rose)]"
-            >
+            <Link key={l.href} href={l.href} className="header-nav-link">
               {l.label}
             </Link>
           ))}

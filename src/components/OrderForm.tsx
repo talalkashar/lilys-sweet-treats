@@ -12,13 +12,13 @@ import {
 } from "@/data/products";
 import {
   formatPackLabel,
-  getPackDeal,
+  formatPairComposition,
+  getPackById,
   maxPacksPerOrder,
   packDeals,
-  packDealsForProduct,
-  packFullPrice,
-  packPriceDollars,
-  packSavings,
+  packPriceDollarsFromPairUnitPrices,
+  pairRuleCopy,
+  pairSlotsForPack,
   type PackDeal,
 } from "@/data/packs";
 import { site } from "@/data/site";
@@ -33,8 +33,9 @@ const stripePromise = loadStripe(getStripePublishableKey());
 
 type CartLine = {
   id: string;
-  productId: string;
   packId: string;
+  /** One product id per pair (2 treats of that flavor) */
+  pairProductIds: string[];
 };
 
 type ContactState = {
@@ -64,14 +65,17 @@ const elementsAppearance: StripeElementsOptions["appearance"] = {
   },
 };
 
+function defaultProductId(preferred?: string | null) {
+  if (preferred && availableProducts.some((p) => p.id === preferred)) {
+    return preferred;
+  }
+  return availableProducts[0]?.id ?? "";
+}
+
 export function OrderForm() {
   const searchParams = useSearchParams();
   const productParam = searchParams.get("product");
-
-  const starterProductId =
-    productParam && availableProducts.some((p) => p.id === productParam)
-      ? productParam
-      : (availableProducts[0]?.id ?? "");
+  const starterId = defaultProductId(productParam);
 
   const [contact, setContact] = useState<ContactState>({
     name: "",
@@ -80,17 +84,24 @@ export function OrderForm() {
     pickupWindow: site.pickupWindows[0] ?? "",
     notes: "",
   });
-  /** Flavor currently selected for the next pack click */
-  const [activeProductId, setActiveProductId] = useState(starterProductId);
-  /** Cart starts empty — packs only appear when customer clicks a pack option */
-  const [cart, setCart] = useState<CartLine[]>([]);
 
+  /** Pack size currently being built */
+  const [builderPackId, setBuilderPackId] = useState(
+    () => packDeals.find((p) => p.quantity === 4)?.id ?? packDeals[0]!.id,
+  );
+  /** Flavor for each pair slot in the builder */
+  const [pairSlots, setPairSlots] = useState<string[]>(() => {
+    const pack = packDeals.find((p) => p.quantity === 4) ?? packDeals[0]!;
+    const n = pairSlotsForPack(pack);
+    return Array.from({ length: n }, () => starterId);
+  });
+
+  const [cart, setCart] = useState<CartLine[]>([]);
   const [step, setStep] = useState<Step>("details");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [justAdded, setJustAdded] = useState<string | null>(null);
-  /** Tax breakdown from Stripe Tax (set when starting payment) */
   const [taxQuote, setTaxQuote] = useState<{
     subtotalLabel: string;
     taxLabel: string;
@@ -105,64 +116,90 @@ export function OrderForm() {
     };
   }, []);
 
-  const activeProduct = useMemo(
-    () => availableProducts.find((p) => p.id === activeProductId),
-    [activeProductId],
+  const builderPack = useMemo(
+    () => getPackById(builderPackId) ?? packDeals[0]!,
+    [builderPackId],
+  );
+
+  const slotsNeeded = pairSlotsForPack(builderPack);
+
+  /** Keep pair slot count in sync when pack size changes */
+  useEffect(() => {
+    setPairSlots((prev) => {
+      const next = Array.from({ length: slotsNeeded }, (_, i) => {
+        return prev[i] || prev[0] || starterId;
+      });
+      return next;
+    });
+  }, [slotsNeeded, starterId]);
+
+  const builderPairProducts = useMemo(() => {
+    return pairSlots.map(
+      (id) => availableProducts.find((p) => p.id === id) ?? availableProducts[0]!,
+    );
+  }, [pairSlots]);
+
+  const builderPrice = useMemo(() => {
+    if (builderPairProducts.length !== slotsNeeded) return null;
+    return packPriceDollarsFromPairUnitPrices(
+      builderPairProducts.map((p) => p.price),
+      builderPack,
+    );
+  }, [builderPairProducts, builderPack, slotsNeeded]);
+
+  const builderComposition = useMemo(
+    () => formatPairComposition(builderPairProducts.map((p) => p.name)),
+    [builderPairProducts],
   );
 
   const resolvedCart = useMemo(() => {
     return cart
       .map((line) => {
-        const product = availableProducts.find((p) => p.id === line.productId);
-        const pack = getPackDeal(line.packId, line.productId);
-        if (!product || !pack) return null;
-        const price = packPriceDollars(product.price, pack);
-        const save = packSavings(product.price, pack);
-        const full = packFullPrice(product.price, pack);
+        const pack = getPackById(line.packId);
+        if (!pack) return null;
+        if (line.pairProductIds.length !== pairSlotsForPack(pack)) return null;
+        const pairProducts = line.pairProductIds.map(
+          (id) => availableProducts.find((p) => p.id === id)!,
+        );
+        if (pairProducts.some((p) => !p)) return null;
+        const price = packPriceDollarsFromPairUnitPrices(
+          pairProducts.map((p) => p.price),
+          pack,
+        );
+        const composition = formatPairComposition(
+          pairProducts.map((p) => p.name),
+        );
         return {
           ...line,
-          product,
           pack,
+          pairProducts,
           price,
-          save,
-          full,
-          label: `${product.name} — ${formatPackLabel(pack)}`,
+          composition,
+          label: `${formatPackLabel(pack)}: ${composition}`,
         };
       })
       .filter(Boolean) as Array<{
       id: string;
-      productId: string;
       packId: string;
-      product: (typeof availableProducts)[number];
+      pairProductIds: string[];
       pack: PackDeal;
+      pairProducts: (typeof availableProducts)[number][];
       price: number;
-      save: number;
-      full: number;
+      composition: string;
       label: string;
     }>;
   }, [cart]);
 
   const total = resolvedCart.reduce((sum, line) => sum + line.price, 0);
-  const activePackDeals = activeProduct
-    ? packDealsForProduct(activeProduct.id)
-    : packDeals.filter((pack) => !pack.productIds);
-  const totalSavings = resolvedCart.reduce((sum, line) => sum + line.save, 0);
   const totalTreats = resolvedCart.reduce(
     (sum, line) => sum + line.pack.quantity,
     0,
   );
 
-  /** Live cart tax estimate (Haymarket VA porch pickup). Final amount confirmed at payment. */
   const cartTax = useMemo(() => {
     const subtotalCents = Math.round(total * 100);
     return estimatePickupTax(subtotalCents);
   }, [total]);
-
-  /** How many of each pack size are already in cart for the active flavor */
-  const countInCartForActive = (packId: string) =>
-    cart.filter(
-      (l) => l.productId === activeProductId && l.packId === packId,
-    ).length;
 
   function updateContact<K extends keyof ContactState>(
     key: K,
@@ -176,26 +213,53 @@ export function OrderForm() {
     setJustAdded(null);
   }
 
-  /** Clicking a pack option always ADDS that pack for the selected flavor */
-  function addPack(pack: PackDeal) {
-    if (!activeProductId) {
-      setError("Choose a treat flavor first.");
-      return;
-    }
+  function setPairSlot(index: number, productId: string) {
+    setPairSlots((prev) => {
+      const next = [...prev];
+      next[index] = productId;
+      return next;
+    });
+  }
+
+  function fillAllPairs(productId: string) {
+    setPairSlots(Array.from({ length: slotsNeeded }, () => productId));
+  }
+
+  function selectPackSize(pack: PackDeal) {
+    setBuilderPackId(pack.id);
+    setError(null);
+  }
+
+  function addBuiltPack() {
     if (cart.length >= maxPacksPerOrder) {
       setError(`You can add up to ${maxPacksPerOrder} packs per order.`);
       return;
+    }
+    if (pairSlots.length !== slotsNeeded || pairSlots.some((id) => !id)) {
+      setError("Pick a flavor for every pair in this pack.");
+      return;
+    }
+    // Validate products exist
+    for (const id of pairSlots) {
+      if (!availableProducts.some((p) => p.id === id)) {
+        setError("Invalid flavor selected.");
+        return;
+      }
     }
     setError(null);
     const id = newLineId();
     setCart((prev) => [
       ...prev,
-      { id, productId: activeProductId, packId: pack.id },
+      {
+        id,
+        packId: builderPack.id,
+        pairProductIds: [...pairSlots],
+      },
     ]);
-    setJustAdded(`${activeProductId}:${pack.id}:${id}`);
+    setJustAdded(id);
     if (highlightTimer.current) clearTimeout(highlightTimer.current);
     highlightTimer.current = setTimeout(() => {
-      setJustAdded((cur) => (cur?.endsWith(id) ? null : cur));
+      setJustAdded((cur) => (cur === id ? null : cur));
     }, 1200);
   }
 
@@ -205,7 +269,7 @@ export function OrderForm() {
     setError(null);
 
     if (resolvedCart.length === 0) {
-      setError("Tap a pack size to add it to your order.");
+      setError("Add at least one pack to your order.");
       setBusy(false);
       return;
     }
@@ -216,9 +280,8 @@ export function OrderForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: resolvedCart.map((line) => ({
-            productId: line.productId,
             packId: line.packId,
-            quantity: line.pack.quantity,
+            pairProductIds: line.pairProductIds,
           })),
           name: contact.name,
           phone: contact.phone,
@@ -256,6 +319,27 @@ export function OrderForm() {
       setBusy(false);
     }
   }
+
+  const flavorOptions = (
+    <>
+      {menuCategories.map((cat) => {
+        const items = productsInCategory(cat.id);
+        if (items.length === 0) return null;
+        return (
+          <optgroup key={cat.id} label={cat.title}>
+            {items.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+                {p.showUnitPrice !== false
+                  ? ` ($${Number.isInteger(p.price) ? p.price.toFixed(0) : p.price.toFixed(2)} each)`
+                  : ""}
+              </option>
+            ))}
+          </optgroup>
+        );
+      })}
+    </>
+  );
 
   if (step === "pay" && clientSecret && taxQuote) {
     return (
@@ -332,9 +416,8 @@ export function OrderForm() {
           Your order
         </h3>
         <p className="mt-1.5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
-          Pick a flavor, then tap each pack you want — 4-pack, 8-pack, or party
-          tray. Every tap adds to your cart. Switch flavors anytime and keep
-          adding.
+          {pairRuleCopy} Pick a pack size, choose each pair&apos;s flavor, then
+          add it to your cart. Add more packs anytime.
         </p>
       </div>
 
@@ -347,6 +430,7 @@ export function OrderForm() {
             required
             value={contact.name}
             onChange={(e) => updateContact("name", e.target.value)}
+            name="name"
             className="field"
             placeholder="Full name"
             autoComplete="name"
@@ -361,6 +445,7 @@ export function OrderForm() {
             type="tel"
             value={contact.phone}
             onChange={(e) => updateContact("phone", e.target.value)}
+            name="phone"
             className="field"
             placeholder="Best number for pickup day"
             autoComplete="tel"
@@ -375,115 +460,134 @@ export function OrderForm() {
             type="email"
             value={contact.email}
             onChange={(e) => updateContact("email", e.target.value)}
+            name="email"
             className="field"
             placeholder="you@email.com"
             autoComplete="email"
           />
         </label>
 
-        {/* Flavor picker */}
-        <label className="block sm:col-span-2">
-          <span className="mb-1.5 block text-sm font-medium text-[var(--cocoa)]">
-            1. Choose a flavor
-          </span>
-          <select
-            value={activeProductId}
-            onChange={(e) => setActiveProductId(e.target.value)}
-            className="field"
-            required
-          >
-            {menuCategories.map((cat) => {
-              const items = productsInCategory(cat.id);
-              if (items.length === 0) return null;
-              return (
-                <optgroup key={cat.id} label={cat.title}>
-                  {items.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                      {p.showUnitPrice !== false
-                        ? ` ($${Number.isInteger(p.price) ? p.price.toFixed(0) : p.price.toFixed(2)} each)`
-                        : ""}
-                    </option>
-                  ))}
-                </optgroup>
-              );
-            })}
-          </select>
-        </label>
-
-        {/* Pack options — each click ADDS to cart */}
+        {/* 1. Pack size */}
         <div className="sm:col-span-2">
           <p className="mb-2 text-sm font-medium text-[var(--cocoa)]">
-            2. Tap packs to add them
-            {activeProduct ? (
-              <span className="font-normal text-[var(--ink-muted)]">
-                {" "}
-                · for {activeProduct.name}
-              </span>
-            ) : null}
+            1. Choose a pack size
           </p>
-          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-            {activePackDeals.map((pack) => {
-              const price = activeProduct
-                ? packPriceDollars(activeProduct.price, pack)
-                : null;
-              const save = activeProduct
-                ? packSavings(activeProduct.price, pack)
-                : 0;
-              const inCart = countInCartForActive(pack.id);
-              const disabled = cart.length >= maxPacksPerOrder;
-
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-5">
+            {packDeals.map((pack) => {
+              const selected = pack.id === builderPackId;
+              const pairs = pairSlotsForPack(pack);
               return (
                 <button
                   key={pack.id}
                   type="button"
-                  disabled={disabled || !activeProduct}
-                  onClick={() => addPack(pack)}
-                  className={`relative flex flex-col rounded-2xl border-2 px-3.5 py-3.5 text-left transition ${
-                    inCart > 0
+                  onClick={() => selectPackSize(pack)}
+                  className={`relative flex flex-col rounded-2xl border-2 px-3 py-3 text-left transition ${
+                    selected
                       ? "border-[var(--rose)] bg-[var(--lavender-soft)] shadow-[var(--shadow-soft)]"
                       : "border-[var(--blush)]/70 bg-white hover:border-[var(--rose)] hover:bg-[var(--lavender-soft)]/50"
-                  } disabled:cursor-not-allowed disabled:opacity-50`}
+                  }`}
                 >
                   {pack.featured ? (
-                    <span className="absolute -top-2 right-3 rounded-full bg-[var(--rose)] px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-white">
+                    <span className="absolute -top-2 right-2 rounded-full bg-[var(--rose)] px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-white">
                       Party
-                    </span>
-                  ) : null}
-                  {inCart > 0 ? (
-                    <span className="absolute -top-2 left-3 rounded-full bg-[var(--cocoa)] px-2 py-0.5 text-[0.65rem] font-bold tabular-nums text-white">
-                      ×{inCart} in cart
                     </span>
                   ) : null}
                   <span className="font-display text-lg text-[var(--cocoa)]">
                     {pack.displayName}
                   </span>
                   <span className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-                    {pack.quantity} treats
+                    {pack.quantity} treats · {pairs} pair{pairs === 1 ? "" : "s"}
                   </span>
                   <span className="mt-1 text-xs leading-snug text-[var(--cocoa-soft)]">
                     {pack.blurb}
-                  </span>
-                  {price != null ? (
-                    <span className="mt-2 text-sm font-semibold tabular-nums text-[var(--rose)]">
-                      + ${price.toFixed(2)}
-                      {save > 0 ? (
-                        <span className="ml-1.5 text-xs font-medium text-[var(--mint)]">
-                          save ${save.toFixed(2)}
-                        </span>
-                      ) : null}
-                    </span>
-                  ) : null}
-                  <span className="mt-2 text-xs font-bold uppercase tracking-wide text-[var(--rose)]">
-                    Tap to add
                   </span>
                 </button>
               );
             })}
           </div>
+        </div>
+
+        {/* 2. Pair flavors */}
+        <div className="sm:col-span-2">
+          <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
+            <p className="text-sm font-medium text-[var(--cocoa)]">
+              2. Choose flavor for each pair
+              <span className="font-normal text-[var(--ink-muted)]">
+                {" "}
+                · {builderPack.displayName} ({slotsNeeded} pair
+                {slotsNeeded === 1 ? "" : "s"})
+              </span>
+            </p>
+            <label className="flex items-center gap-2 text-xs text-[var(--cocoa-soft)]">
+              <span className="whitespace-nowrap">Fill all pairs:</span>
+              <select
+                className="field !py-1.5 !text-xs"
+                value=""
+                onChange={(e) => {
+                  if (e.target.value) fillAllPairs(e.target.value);
+                  e.target.value = "";
+                }}
+                aria-label="Fill all pairs with one flavor"
+              >
+                <option value="">Same flavor…</option>
+                {flavorOptions}
+              </select>
+            </label>
+          </div>
+
+          <div className="grid gap-2.5 sm:grid-cols-2">
+            {Array.from({ length: slotsNeeded }, (_, i) => (
+              <label
+                key={`pair-${builderPackId}-${i}`}
+                className="block rounded-2xl border border-[var(--blush)]/70 bg-white px-3.5 py-3"
+              >
+                <span className="mb-1.5 flex items-center justify-between gap-2 text-sm font-medium text-[var(--cocoa)]">
+                  <span>
+                    Pair {i + 1}
+                    <span className="font-normal text-[var(--ink-muted)]">
+                      {" "}
+                      · 2 treats, same flavor
+                    </span>
+                  </span>
+                </span>
+                <select
+                  value={pairSlots[i] || starterId}
+                  onChange={(e) => setPairSlot(i, e.target.value)}
+                  className="field"
+                  required
+                >
+                  {flavorOptions}
+                </select>
+              </label>
+            ))}
+          </div>
+
+          <div className="mt-3 flex flex-col gap-2 rounded-2xl border border-[var(--blush)]/50 bg-[var(--cream)]/60 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0 text-sm">
+              <p className="font-medium text-[var(--cocoa)]">
+                {formatPackLabel(builderPack)}
+              </p>
+              <p className="text-[var(--cocoa-soft)]">{builderComposition}</p>
+            </div>
+            <div className="flex shrink-0 items-center gap-3">
+              {builderPrice != null ? (
+                <span className="text-lg font-semibold tabular-nums text-[var(--rose)]">
+                  ${builderPrice.toFixed(2)}
+                </span>
+              ) : null}
+              <button
+                type="button"
+                onClick={addBuiltPack}
+                disabled={cart.length >= maxPacksPerOrder}
+                className="btn-primary"
+              >
+                Add pack
+              </button>
+            </div>
+          </div>
           <p className="mt-2 text-xs leading-relaxed text-[var(--ink-muted)]">
-            Want a 4-pack <em>and</em> an 8-pack? Tap both — each adds to your
-            total. Change the flavor above, then tap more packs to mix.
+            Example: a 4-pack can be 4× strawberry, or 2× strawberry + 2× peach.
+            You cannot put just one treat of a flavor — always pairs of two.
           </p>
         </div>
 
@@ -493,22 +597,20 @@ export function OrderForm() {
             <p className="text-sm font-medium text-[var(--cocoa)]">Your cart</p>
             <p className="text-xs text-[var(--ink-muted)]">
               {resolvedCart.length === 0
-                ? "Empty — tap a pack above"
+                ? "Empty — build a pack above"
                 : `${resolvedCart.length} pack${resolvedCart.length === 1 ? "" : "s"} · ${totalTreats} treats`}
             </p>
           </div>
 
           {resolvedCart.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-[var(--blush)] bg-[var(--cream)]/60 px-4 py-6 text-center text-sm text-[var(--ink-muted)]">
-              No packs yet. Choose a flavor, then tap{" "}
-              <strong className="text-[var(--cocoa)]">4-pack</strong>,{" "}
-              <strong className="text-[var(--cocoa)]">8-pack</strong>, or{" "}
-              <strong className="text-[var(--cocoa)]">Party tray</strong>.
+              No packs yet. Choose a size, pick each pair&apos;s flavor, then tap{" "}
+              <strong className="text-[var(--cocoa)]">Add pack</strong>.
             </div>
           ) : (
             <ul className="space-y-2">
               {resolvedCart.map((line) => {
-                const highlight = justAdded?.endsWith(line.id);
+                const highlight = justAdded === line.id;
                 return (
                   <li
                     key={line.id}
@@ -520,13 +622,10 @@ export function OrderForm() {
                   >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-[var(--cocoa)]">
-                        {line.product.name}
+                        {formatPackLabel(line.pack)}
                       </p>
                       <p className="text-xs text-[var(--ink-muted)]">
-                        {formatPackLabel(line.pack)}
-                        {line.save > 0
-                          ? ` · save $${line.save.toFixed(2)}`
-                          : ""}
+                        {line.composition}
                       </p>
                     </div>
                     <div className="flex shrink-0 items-center gap-3">
@@ -621,18 +720,21 @@ export function OrderForm() {
               </div>
               <p className="mt-2 text-xs leading-relaxed text-[var(--ink-muted)]">
                 {resolvedCart.length} pack
-                {resolvedCart.length === 1 ? "" : "s"} · {totalTreats} treats
-                {totalSavings > 0
-                  ? ` · save $${totalSavings.toFixed(2)}`
-                  : ""}
-                . Exact sales tax is calculated by Stripe Tax when you continue
-                to payment (Haymarket, VA porch pickup). By continuing you agree
-                to our{" "}
-                <a href="/policies" className="font-semibold text-[var(--rose)] underline-offset-2 hover:underline">
+                {resolvedCart.length === 1 ? "" : "s"} · {totalTreats} treats.
+                Exact sales tax is calculated by Stripe Tax when you continue to
+                payment (Haymarket, VA porch pickup). By continuing you agree to
+                our{" "}
+                <a
+                  href="/policies"
+                  className="font-semibold text-[var(--rose)] underline-offset-2 hover:underline"
+                >
                   order policies
                 </a>{" "}
                 and{" "}
-                <a href="/privacy" className="font-semibold text-[var(--rose)] underline-offset-2 hover:underline">
+                <a
+                  href="/privacy"
+                  className="font-semibold text-[var(--rose)] underline-offset-2 hover:underline"
+                >
                   privacy policy
                 </a>
                 .
