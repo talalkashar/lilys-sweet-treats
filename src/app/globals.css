@@ -3161,55 +3161,75 @@ body {
   }
 }
 
-/* ========== View modes + mobile chrome (single source of truth) ========== */
 
-/* Preview chip — bottom-left, never over logo/header */
-html[data-view="mobile"]::before,
-html[data-view="desktop"]::before {
-  content: attr(data-view) " view";
-  position: fixed;
-  z-index: 80;
-  top: auto;
-  bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
-  left: 0.6rem;
-  padding: 0.28rem 0.65rem;
-  border-radius: 999px;
-  font-family: var(--font-body), system-ui, sans-serif;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #fff;
-  background: rgba(20, 12, 18, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  pointer-events: none;
-  white-space: nowrap;
-}
+/* ========== View modes: real phone preview on desktop ==========
+   Problem: media queries use the *browser* width. Opening ?view=mobile on a
+   1440px Chrome window still used desktop layout inside a 430px body — broken.
+   Solution: re-apply mobile layout under html[data-view="mobile"] always.
+   ========================================================================= */
 
-/* Order page has no sticky bar — pin chip under header instead */
-html[data-view="mobile"]:not(:has(.mobile-sticky-cta))::before,
-html[data-view="desktop"]::before {
-  bottom: auto;
-  top: calc(4.6rem + env(safe-area-inset-top, 0px));
-}
-
-/* Forced mobile frame (desktop browser preview) */
 html[data-view="mobile"] {
-  background: #1a1218;
+  background: #141016;
 }
 
+/* Centered device frame */
 html[data-view="mobile"] body {
-  max-width: 430px;
+  max-width: 390px;
   width: 100%;
   margin-inline: auto;
   min-height: 100dvh;
+  min-height: 100vh;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 24px 80px rgba(0, 0, 0, 0.45);
-  background-color: var(--cream, #fff8fb);
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 0 0 10px rgba(0, 0, 0, 0.35),
+    0 30px 80px rgba(0, 0, 0, 0.55);
+  background-color: var(--cream, #fffaf8);
+  position: relative;
+  overflow-x: clip;
 }
 
+/* Preview label — outside the phone, top center of frame */
+html[data-view="mobile"]::before {
+  content: "mobile preview";
+  position: fixed;
+  z-index: 90;
+  top: 0.65rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(20, 12, 18, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+html[data-view="desktop"]::before {
+  content: "desktop preview";
+  position: fixed;
+  z-index: 90;
+  top: 0.65rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(20, 12, 18, 0.75);
+  pointer-events: none;
+}
+
+/* Chrome: phone nav only */
 html[data-view="mobile"] .header-nav-desktop,
 html[data-view="mobile"] .header-cta-desktop {
   display: none !important;
@@ -3220,36 +3240,149 @@ html[data-view="mobile"] .header-menu-btn {
 }
 
 html[data-view="mobile"] .site-header-bar {
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  height: 3.75rem;
+  column-gap: 0.65rem;
 }
 
-html[data-view="desktop"] .header-nav-desktop {
-  display: flex !important;
+/* Sticky header stays inside the 390 frame */
+html[data-view="mobile"] .site-header {
+  width: 100%;
+  max-width: 390px;
+  margin-inline: auto;
+  left: 0;
+  right: 0;
 }
 
-html[data-view="desktop"] .header-cta-desktop {
-  display: inline-flex !important;
+/* Transparent over-hero chrome (same as real phones) */
+html[data-view="mobile"] .site-header--over-hero {
+  background: transparent !important;
+  border-bottom-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
-html[data-view="desktop"] .header-menu-btn,
-html[data-view="desktop"] .site-header-menu {
+html[data-view="mobile"] .site-header--over-hero .site-header-title,
+html[data-view="mobile"] .site-header--over-hero .site-header-subtitle {
   display: none !important;
 }
 
-html[data-view="desktop"] .site-header-bar {
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+html[data-view="mobile"] .site-header--over-hero .logo-mark {
+  width: 2.65rem;
+  height: 2.65rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
 }
 
-/* Sticky CTA in forced mobile: match phone frame width, full rules */
+html[data-view="mobile"] .site-header--over-hero .header-menu-btn {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(20, 12, 18, 0.32);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+
+html[data-view="mobile"] .site-header--over-hero .header-menu-btn .flex span {
+  background: #fff;
+}
+
+html[data-view="mobile"] .site-header--scrolled {
+  background: rgba(255, 250, 248, 0.92) !important;
+  border-bottom: 1px solid rgba(255, 196, 220, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 24px rgba(44, 34, 40, 0.06);
+}
+
+html[data-view="mobile"] .site-header--scrolled .site-header-title {
+  display: block !important;
+}
+
+html[data-view="mobile"] .site-header--scrolled .header-menu-btn {
+  border-color: var(--blush);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: none;
+}
+
+html[data-view="mobile"] .site-header--scrolled .header-menu-btn .flex span {
+  background: var(--cocoa);
+}
+
+/* Hero — phone layout even when browser is wide */
+html[data-view="mobile"] .hero-video {
+  min-height: 100svh;
+  min-height: 100dvh;
+  width: 100%;
+}
+
+html[data-view="mobile"] .hero-video-content {
+  padding-top: clamp(5.25rem, 16vw, 6.5rem);
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  min-height: 100svh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+}
+
+html[data-view="mobile"] .hero-video-brand {
+  width: 100%;
+  max-width: none;
+  gap: 0.7rem;
+}
+
+html[data-view="mobile"] .hero-video-logo {
+  width: min(38vw, 8.25rem);
+}
+
+html[data-view="mobile"] .hero-video-title {
+  font-size: clamp(2.05rem, 9.2vw, 2.55rem);
+  max-width: 12ch;
+}
+
+html[data-view="mobile"] .hero-video-sub {
+  max-width: 28ch;
+  font-size: 0.98rem;
+}
+
+html[data-view="mobile"] .hero-video-actions {
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.55rem;
+  margin-top: 0.35rem;
+}
+
+html[data-view="mobile"] .hero-video-actions .btn-primary,
+html[data-view="mobile"] .hero-video-actions .btn-secondary {
+  width: 100%;
+  min-height: 3rem;
+  justify-content: center;
+}
+
+html[data-view="mobile"] .hero-video-shade {
+  background: linear-gradient(
+    180deg,
+    rgba(28, 18, 26, 0.48) 0%,
+    rgba(28, 18, 26, 0.14) 28%,
+    rgba(28, 18, 26, 0.28) 52%,
+    rgba(18, 10, 16, 0.82) 100%
+  );
+}
+
+/* Shell / content padding for phone frame */
+html[data-view="mobile"] .shell {
+  padding-inline: 1rem;
+  max-width: 100%;
+}
+
+/* Sticky order bar — centered on the phone frame (fix transform fight) */
 html[data-view="mobile"] .mobile-sticky-cta {
   display: block !important;
   position: fixed;
-  left: 50%;
+  /* Align to the 390px phone frame without translateX (avoids fight with show/hide) */
+  left: max(0px, calc(50% - 195px));
   right: auto;
   bottom: 0;
-  transform: translateX(-50%);
-  width: min(100%, 430px);
-  max-width: 430px;
+  width: 390px;
+  max-width: 100vw;
   z-index: 60;
   padding: 0.6rem 0.85rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(
@@ -3261,6 +3394,20 @@ html[data-view="mobile"] .mobile-sticky-cta {
   border-top: 2px solid rgba(255, 142, 196, 0.55);
   box-shadow: 0 -10px 30px rgba(180, 80, 130, 0.16);
   box-sizing: border-box;
+  /* Hidden until scrolled past hero — Y only */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(110%);
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
+}
+
+html[data-view="mobile"] .mobile-sticky-cta--visible,
+html[data-view="mobile"] .mobile-sticky-cta.mobile-sticky-cta--visible {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
 }
 
 html[data-view="mobile"] .mobile-sticky-cta-inner {
@@ -3278,27 +3425,26 @@ html[data-view="mobile"] .mobile-sticky-cta-copy {
   overflow: hidden;
 }
 
-html[data-view="mobile"] .mobile-sticky-cta-title,
-html[data-view="mobile"] .mobile-sticky-cta-meta {
+html[data-view="mobile"] .mobile-sticky-cta-title {
   margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--cocoa);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-html[data-view="mobile"] .mobile-sticky-cta-title {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--cocoa);
-  line-height: 1.15;
-}
-
 html[data-view="mobile"] .mobile-sticky-cta-meta {
-  margin-top: 0.12rem;
+  margin: 0.12rem 0 0;
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--rose-deep, #c44d7a);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 html[data-view="mobile"] .mobile-sticky-cta-btn {
@@ -3310,18 +3456,39 @@ html[data-view="mobile"] body:has(.mobile-sticky-cta--visible) {
   padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
 }
 
-html[data-view="desktop"] .mobile-sticky-cta {
-  display: none !important;
-}
-
+/* Order page schedule strip always on in mobile preview */
 html[data-view="mobile"] .order-mobile-schedule {
-  display: block;
+  display: block !important;
 }
 
+/* Desktop force-view: full desktop chrome */
+html[data-view="desktop"] .header-nav-desktop {
+  display: flex !important;
+}
+
+html[data-view="desktop"] .header-cta-desktop {
+  display: inline-flex !important;
+}
+
+html[data-view="desktop"] .header-menu-btn,
+html[data-view="desktop"] .site-header-menu,
+html[data-view="desktop"] .mobile-sticky-cta,
 html[data-view="desktop"] .order-mobile-schedule {
   display: none !important;
 }
 
+html[data-view="desktop"] .site-header-bar {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+/* Menu cards / forms feel phone-sized in preview */
+html[data-view="mobile"] .form-shell {
+  border-radius: 1.15rem;
+}
+
+html[data-view="mobile"] .card-product-cta {
+  /* keep mobile chip style if defined */
+}
 
 
 /* ========== Hero chrome: don't block the video ========== */
@@ -3416,21 +3583,6 @@ html[data-view="desktop"] .order-mobile-schedule {
   }
 }
 
-/* Forced mobile view: same sticky reveal behavior */
-html[data-view="mobile"] .mobile-sticky-cta {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(110%);
-  transition:
-    opacity 0.28s ease,
-    transform 0.28s ease;
-}
-
-html[data-view="mobile"] .mobile-sticky-cta--visible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
 
 /* Hero content top padding under transparent header — keep title clear of logo */
 @media (max-width: 767px) {
@@ -3445,7 +3597,13 @@ html[data-view="mobile"] .mobile-sticky-cta--visible {
   .mobile-sticky-cta.mobile-sticky-cta--visible {
     opacity: 1 !important;
     pointer-events: auto !important;
-    transform: translateY(0) !important;
+    transform: translateY(0) !important; /* real phones: full-width bar */
+  }
+
+  /* When centered in desktop mobile-preview, keep X centering */
+  html[data-view="mobile"] .mobile-sticky-cta.mobile-sticky-cta--visible {
+    transform: none !important;
+    translate: none;
   }
 }
 
