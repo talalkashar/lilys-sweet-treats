@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const securityHeaders = [
   { key: "X-DNS-Prefetch-Control", value: "on" },
@@ -34,6 +35,10 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Pin Turbopack to this app (avoids parent ~/package-lock.json confusion)
+  turbopack: {
+    root: path.resolve(process.cwd()),
+  },
   images: {
     qualities: [75, 90, 95, 100],
   },

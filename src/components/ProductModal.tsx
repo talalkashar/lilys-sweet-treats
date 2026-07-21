@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { getProductGallery, type Product } from "@/data/products";
 import { packDealsForProduct, packPriceDollars } from "@/data/packs";
@@ -15,16 +15,19 @@ export function ProductModal({ product, onClose }: Props) {
   const gallery = product ? getProductGallery(product) : [];
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
+  // Client-only portal (SSR-safe)
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  // Reset gallery UI when product changes (React-recommended render adjust)
+  const [seenProductId, setSeenProductId] = useState(product?.id);
+  if (product?.id !== seenProductId) {
+    setSeenProductId(product?.id);
     setActiveIndex(0);
     setLightboxOpen(false);
-  }, [product?.id]);
+  }
 
   useEffect(() => {
     if (!product) return;

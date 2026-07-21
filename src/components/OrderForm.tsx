@@ -123,16 +123,6 @@ export function OrderForm() {
 
   const slotsNeeded = pairSlotsForPack(builderPack);
 
-  /** Keep pair slot count in sync when pack size changes */
-  useEffect(() => {
-    setPairSlots((prev) => {
-      const next = Array.from({ length: slotsNeeded }, (_, i) => {
-        return prev[i] || prev[0] || starterId;
-      });
-      return next;
-    });
-  }, [slotsNeeded, starterId]);
-
   const builderPairProducts = useMemo(() => {
     return pairSlots.map(
       (id) => availableProducts.find((p) => p.id === id) ?? availableProducts[0]!,
@@ -228,6 +218,10 @@ export function OrderForm() {
   function selectPackSize(pack: PackDeal) {
     setBuilderPackId(pack.id);
     setError(null);
+    const n = pairSlotsForPack(pack);
+    setPairSlots((prev) =>
+      Array.from({ length: n }, (_, i) => prev[i] || prev[0] || starterId),
+    );
   }
 
   function addBuiltPack() {

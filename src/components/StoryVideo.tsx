@@ -76,10 +76,6 @@ export function StoryVideo() {
   }, []);
 
   useEffect(() => {
-    setFailed(false);
-  }, [active.src]);
-
-  useEffect(() => {
     const el = videoRef.current;
     if (!el || reducedMotion) return;
     el.muted = true;
@@ -116,7 +112,10 @@ export function StoryVideo() {
                       ? "story-video-tab story-video-tab--active"
                       : "story-video-tab"
                   }
-                  onClick={() => setActiveId(clip.id)}
+                  onClick={() => {
+                    setFailed(false);
+                    setActiveId(clip.id);
+                  }}
                 >
                   {clip.label}
                 </button>
