@@ -2763,96 +2763,6 @@ a.footer-detail:hover {
   justify-self: end;
 }
 
-/* ========== Forced view modes: ?view=mobile | ?view=desktop ========== */
-html[data-view="mobile"] {
-  background: #1a1218;
-}
-
-html[data-view="mobile"] body {
-  max-width: 430px;
-  width: 100%;
-  margin-inline: auto;
-  min-height: 100dvh;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 24px 80px rgba(0, 0, 0, 0.45);
-  background-color: var(--cream, #fff8fb);
-}
-
-/* Always show mobile chrome in forced mobile view */
-html[data-view="mobile"] .header-nav-desktop {
-  display: none !important;
-}
-
-html[data-view="mobile"] .header-cta-desktop {
-  display: none !important;
-}
-
-html[data-view="mobile"] .header-menu-btn {
-  display: flex !important;
-}
-
-html[data-view="mobile"] .site-header-bar {
-  grid-template-columns: minmax(0, 1fr) auto;
-}
-
-/* Always show desktop chrome in forced desktop view */
-html[data-view="desktop"] .header-nav-desktop {
-  display: flex !important;
-}
-
-html[data-view="desktop"] .header-cta-desktop {
-  display: inline-flex !important;
-}
-
-html[data-view="desktop"] .header-menu-btn {
-  display: none !important;
-}
-
-html[data-view="desktop"] .site-header-menu {
-  display: none !important;
-}
-
-html[data-view="desktop"] .site-header-bar {
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-}
-
-/* Soft note for forced frames — corner chip, never over logo/title */
-html[data-view="mobile"]::before,
-html[data-view="desktop"]::before {
-  content: attr(data-view) " view";
-  position: fixed;
-  z-index: 70;
-  top: auto;
-  bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
-  left: 0.65rem;
-  right: auto;
-  transform: none;
-  padding: 0.28rem 0.65rem;
-  border-radius: 999px;
-  font-family: var(--font-body), system-ui, sans-serif;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #fff;
-  background: rgba(20, 12, 18, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  pointer-events: none;
-  max-width: 40vw;
-  white-space: nowrap;
-}
-
-/* On order (no sticky bar) keep chip off the bottom form CTAs */
-html[data-view="mobile"]:has(body:not(:has(.mobile-sticky-cta)))::before,
-html[data-view="desktop"]::before {
-  bottom: auto;
-  top: calc(4.5rem + env(safe-area-inset-top, 0px));
-  left: 0.65rem;
-}
-
-
 /* ========== Mobile polish (keep pink personality) ========== */
 
 /* Room for sticky order bar on phones */
@@ -3177,28 +3087,7 @@ html[data-view="desktop"]::before {
   }
 }
 
-/* Forced mobile view frame should also show sticky CTA behavior */
-html[data-view="mobile"] body:has(.mobile-sticky-cta) {
-  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
-}
 
-html[data-view="mobile"] .mobile-sticky-cta {
-  display: block;
-  max-width: 430px;
-  margin-inline: auto;
-  left: 50%;
-  right: auto;
-  transform: translateX(-50%);
-  width: 100%;
-}
-
-html[data-view="desktop"] .mobile-sticky-cta {
-  display: none !important;
-}
-
-html[data-view="desktop"] body:has(.mobile-sticky-cta) {
-  padding-bottom: 0;
-}
 
 /* Soften hover lift on touch devices so cards don't feel jumpy */
 @media (hover: none) {
@@ -3212,51 +3101,6 @@ html[data-view="desktop"] body:has(.mobile-sticky-cta) {
 }
 
 
-/* Forced mobile preview: sticky CTA + padding even on wide viewports */
-html[data-view="mobile"] .mobile-sticky-cta {
-  display: block;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 60;
-  padding: 0.55rem 0.75rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(
-    180deg,
-    rgba(255, 235, 244, 0.2) 0%,
-    rgba(255, 214, 232, 0.92) 28%,
-    #ffd6ea 100%
-  );
-  border-top: 2px solid rgba(255, 142, 196, 0.55);
-  box-shadow: 0 -10px 30px rgba(180, 80, 130, 0.14);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-html[data-view="mobile"] .mobile-sticky-cta-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  max-width: 34rem;
-  margin-inline: auto;
-}
-
-html[data-view="mobile"] body:has(.mobile-sticky-cta) {
-  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
-}
-
-html[data-view="desktop"] .mobile-sticky-cta {
-  display: none !important;
-}
-
-html[data-view="mobile"] .order-mobile-schedule {
-  display: block;
-}
-
-html[data-view="desktop"] .order-mobile-schedule {
-  display: none !important;
-}
 
 
 /* Mobile nav panel: solid, never under sticky, no content bleed */
@@ -3310,18 +3154,164 @@ body {
   }
 }
 
+/* ========== View modes + mobile chrome (single source of truth) ========== */
+
+/* Preview chip — bottom-left, never over logo/header */
+html[data-view="mobile"]::before,
+html[data-view="desktop"]::before {
+  content: attr(data-view) " view";
+  position: fixed;
+  z-index: 80;
+  top: auto;
+  bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  left: 0.6rem;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(20, 12, 18, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Order page has no sticky bar — pin chip under header instead */
+html[data-view="mobile"]:not(:has(.mobile-sticky-cta))::before,
+html[data-view="desktop"]::before {
+  bottom: auto;
+  top: calc(4.6rem + env(safe-area-inset-top, 0px));
+}
+
+/* Forced mobile frame (desktop browser preview) */
+html[data-view="mobile"] {
+  background: #1a1218;
+}
+
+html[data-view="mobile"] body {
+  max-width: 430px;
+  width: 100%;
+  margin-inline: auto;
+  min-height: 100dvh;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 24px 80px rgba(0, 0, 0, 0.45);
+  background-color: var(--cream, #fff8fb);
+}
+
+html[data-view="mobile"] .header-nav-desktop,
+html[data-view="mobile"] .header-cta-desktop {
+  display: none !important;
+}
+
+html[data-view="mobile"] .header-menu-btn {
+  display: flex !important;
+}
+
+html[data-view="mobile"] .site-header-bar {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+html[data-view="desktop"] .header-nav-desktop {
+  display: flex !important;
+}
+
+html[data-view="desktop"] .header-cta-desktop {
+  display: inline-flex !important;
+}
+
+html[data-view="desktop"] .header-menu-btn,
+html[data-view="desktop"] .site-header-menu {
+  display: none !important;
+}
+
+html[data-view="desktop"] .site-header-bar {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+/* Sticky CTA in forced mobile: match phone frame width, full rules */
+html[data-view="mobile"] .mobile-sticky-cta {
+  display: block !important;
+  position: fixed;
+  left: 50%;
+  right: auto;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(100%, 430px);
+  max-width: 430px;
+  z-index: 60;
+  padding: 0.6rem 0.85rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 236, 245, 0.98) 0%,
+    #ffd6ea 40%,
+    #ffcfe6 100%
+  );
+  border-top: 2px solid rgba(255, 142, 196, 0.55);
+  box-shadow: 0 -10px 30px rgba(180, 80, 130, 0.16);
+  box-sizing: border-box;
+}
+
+html[data-view="mobile"] .mobile-sticky-cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  min-width: 0;
+  width: 100%;
+}
+
 html[data-view="mobile"] .mobile-sticky-cta-copy {
   min-width: 0;
   flex: 1 1 auto;
   overflow: hidden;
 }
+
 html[data-view="mobile"] .mobile-sticky-cta-title,
 html[data-view="mobile"] .mobile-sticky-cta-meta {
+  margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+html[data-view="mobile"] .mobile-sticky-cta-title {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--cocoa);
+  line-height: 1.15;
+}
+
+html[data-view="mobile"] .mobile-sticky-cta-meta {
+  margin-top: 0.12rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--rose-deep, #c44d7a);
+}
+
 html[data-view="mobile"] .mobile-sticky-cta-btn {
   flex: 0 0 auto;
   white-space: nowrap;
 }
+
+html[data-view="mobile"] body:has(.mobile-sticky-cta) {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+html[data-view="desktop"] .mobile-sticky-cta {
+  display: none !important;
+}
+
+html[data-view="mobile"] .order-mobile-schedule {
+  display: block;
+}
+
+html[data-view="desktop"] .order-mobile-schedule {
+  display: none !important;
+}
+
