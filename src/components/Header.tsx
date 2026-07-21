@@ -71,13 +71,13 @@ export function Header() {
         <div className="site-header-actions flex items-center justify-end gap-2.5">
           <Link
             href="/order"
-            className="btn-primary header-cta-desktop hidden sm:inline-flex"
+            className="btn-primary header-cta-desktop hidden lg:inline-flex"
           >
             Order pickup
           </Link>
           <button
             type="button"
-            className="header-menu-btn flex h-11 w-11 items-center justify-center rounded-full border border-[var(--blush)] bg-white/90 lg:hidden"
+            className="header-menu-btn flex h-10 w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 text-white backdrop-blur-md lg:hidden sm:h-11 sm:w-11"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}

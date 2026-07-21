@@ -2768,7 +2768,7 @@ a.footer-detail:hover {
 /* Room for sticky order bar on phones */
 @media (max-width: 767px) {
   /* Only pad when sticky CTA is actually mounted (hidden on /order) */
-  body:has(.mobile-sticky-cta) {
+  body:has(.mobile-sticky-cta--visible) {
     padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   }
 
@@ -2993,6 +2993,13 @@ a.footer-detail:hover {
     right: 0;
     bottom: 0;
     z-index: 60;
+    /* Hidden until scrolled past hero — keeps video clear */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(110%);
+    transition:
+      opacity 0.28s ease,
+      transform 0.28s ease;
     padding: 0.6rem 0.85rem
       calc(0.6rem + env(safe-area-inset-bottom, 0px));
     /* Solid enough that footer/content never show through */
@@ -3082,8 +3089,8 @@ a.footer-detail:hover {
     display: none !important;
   }
 
-  body:has(.mobile-sticky-cta) {
-    padding-bottom: 0;
+  body:has(.mobile-sticky-cta--visible) {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -3299,7 +3306,7 @@ html[data-view="mobile"] .mobile-sticky-cta-btn {
   white-space: nowrap;
 }
 
-html[data-view="mobile"] body:has(.mobile-sticky-cta) {
+html[data-view="mobile"] body:has(.mobile-sticky-cta--visible) {
   padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
 }
 
@@ -3315,3 +3322,135 @@ html[data-view="desktop"] .order-mobile-schedule {
   display: none !important;
 }
 
+
+
+/* ========== Hero chrome: don't block the video ========== */
+@media (max-width: 1023px) {
+  /* Transparent glass over full-bleed hero — no solid bar */
+  .site-header--over-hero {
+    background: transparent !important;
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .site-header--over-hero .site-header-bar {
+    height: 3.75rem;
+  }
+
+  /* Logo only on mobile over hero — drop wordmark so less covers video */
+  .site-header--over-hero .site-header-title,
+  .site-header--over-hero .site-header-subtitle {
+    display: none;
+  }
+
+  .site-header--over-hero .logo-mark {
+    width: 2.65rem;
+    height: 2.65rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+    border: 1.5px solid rgba(255, 255, 255, 0.55);
+  }
+
+  /* Frosted round menu control — sits on video without a white plate */
+  .site-header--over-hero .header-menu-btn {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(20, 12, 18, 0.32);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  }
+
+  .site-header--over-hero .header-menu-btn span:not(.sr-only) {
+    background: #fff !important;
+  }
+
+  .site-header--over-hero .header-menu-btn .flex span {
+    background: #fff;
+  }
+
+  /* Never show header Order CTA on phone/tablet — sticky + menu handle it */
+  .header-cta-desktop {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header-cta-desktop.lg\:inline-flex,
+  .header-cta-desktop {
+    /* let Tailwind utility win on desktop via specificity below */
+  }
+  a.header-cta-desktop {
+    display: inline-flex !important;
+  }
+}
+
+/* When scrolled, restore normal solid header chrome */
+@media (max-width: 1023px) {
+  .site-header--scrolled {
+    background: rgba(255, 250, 248, 0.92) !important;
+    border-bottom: 1px solid rgba(255, 196, 220, 0.45);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 24px rgba(44, 34, 40, 0.06);
+  }
+
+  .site-header--scrolled .site-header-title {
+    display: block;
+  }
+
+  .site-header--scrolled .header-menu-btn {
+    border-color: var(--blush);
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--cocoa);
+    box-shadow: none;
+  }
+
+  .site-header--scrolled .header-menu-btn .flex span {
+    background: var(--cocoa);
+  }
+
+  .site-header--scrolled .logo-mark {
+    width: 3rem;
+    height: 3rem;
+    border-color: transparent;
+  }
+}
+
+/* Forced mobile view: same sticky reveal behavior */
+html[data-view="mobile"] .mobile-sticky-cta {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(110%);
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
+}
+
+html[data-view="mobile"] .mobile-sticky-cta--visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Hero content top padding under transparent header — keep title clear of logo */
+@media (max-width: 767px) {
+  .hero-video-content {
+    padding-top: clamp(5.25rem, 16vw, 6.5rem);
+  }
+}
+
+
+/* Sticky order bar: only when .mobile-sticky-cta--visible (scrolled past hero) */
+@media (max-width: 767px) {
+  .mobile-sticky-cta.mobile-sticky-cta--visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
+}
+
+html[data-view="mobile"] .mobile-sticky-cta.mobile-sticky-cta--visible {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
+}
