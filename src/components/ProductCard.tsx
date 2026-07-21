@@ -60,7 +60,7 @@ export function ProductCard({ product, onOpen }: Props) {
             {product.description}
           </p>
           <p className="text-xs font-medium text-[var(--cocoa-soft)]">
-            {product.id === "sticky-buns-with-nuts" ? "2-pack · " : ""}
+            {product.category === "sticky" ? "2-pack · " : ""}
             4-pack · 8-pack · party tray (12)
           </p>
           <span className="mt-auto pt-3 text-sm font-semibold text-[var(--rose)]">

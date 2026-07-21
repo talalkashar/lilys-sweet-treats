@@ -33,6 +33,15 @@ export const packDeals: PackDeal[] = [
     productIds: ["sticky-buns-with-nuts"],
   },
   {
+    id: "pack-2-sticky-buns-without-nuts",
+    quantity: 2,
+    label: "2-pack",
+    displayName: "2-pack",
+    blurb: "A pair of classic caramel-glazed sticky buns without nuts.",
+    savingsPerTreat: 0,
+    productIds: ["sticky-buns-without-nuts"],
+  },
+  {
     id: "pack-4",
     quantity: 4,
     label: "4-pack",
