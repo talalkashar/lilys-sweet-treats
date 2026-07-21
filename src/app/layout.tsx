@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 import { BakeryAtmosphere } from "@/components/BakeryAtmosphere";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { JsonLd } from "@/components/JsonLd";
 import { MobileStickyCta } from "@/components/MobileStickyCta";
 import { ViewMode } from "@/components/ViewMode";
 import { site } from "@/data/site";
@@ -20,8 +21,14 @@ const body = Outfit({
   weight: ["300", "400", "500", "600", "700"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#faf6f1",
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.lilyssweettreatsva.com"),
+  metadataBase: new URL(site.url),
   title: {
     default: `${site.name} | Pre-order & Porch Pickup`,
     template: `%s | ${site.shortName}`,
@@ -38,20 +45,28 @@ export const metadata: Metadata = {
     "peach cobbler cinnamon rolls",
     "party tray",
     "preorder",
+    "home bakery Haymarket",
+    "homemade cinnamon rolls Virginia",
   ],
   authors: [{ name: site.name }],
+  creator: site.name,
+  publisher: site.name,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: `${site.name} | Pre-order & Porch Pickup`,
     description: site.description,
-    url: "https://www.lilyssweettreatsva.com",
+    url: site.url,
     siteName: site.name,
     locale: "en_US",
     type: "website",
     images: [
       {
+        // Actual asset is ~1704×966; keep honest dimensions for crawlers
         url: "/brand/logo-full.png",
-        width: 1200,
-        height: 630,
+        width: 1704,
+        height: 966,
         alt: `${site.name} logo`,
       },
     ],
@@ -69,7 +84,22 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
+  // Set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION in Vercel after GSC gives you the code
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? {
+        verification: {
+          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+        },
+      }
+    : {}),
 };
 
 export default function RootLayout({
@@ -84,6 +114,7 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} h-full`}
     >
       <body className="flex min-h-full flex-col antialiased">
+        <JsonLd />
         <ViewMode />
         <BakeryAtmosphere />
 

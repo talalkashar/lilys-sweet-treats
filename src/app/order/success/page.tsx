@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/data/site";
 import { isResendConfigured } from "@/lib/email";
@@ -6,6 +7,24 @@ import { getStripe } from "@/lib/stripe";
 
 /** Always run on the server with the payment_intent query — never cache this page. */
 export const dynamic = "force-dynamic";
+
+/** Payment confirmation — must not be indexed or listed in sitemaps. */
+export const metadata: Metadata = {
+  title: "Order confirmation",
+  description: "Your porch pickup order confirmation.",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
+  alternates: {
+    canonical: "/order/success",
+  },
+};
 
 type Props = {
   searchParams: Promise<{ payment_intent?: string; redirect_status?: string }>;

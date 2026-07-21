@@ -5,6 +5,11 @@ export const site = {
   tagline: "Homemade treats, made with love",
   description:
     "Pre-order online for porch pickup in Haymarket, VA. Small-batch bakes ordered Monday–Wednesday by noon for Friday and Saturday pickup.",
+  /**
+   * Canonical production origin (www). Apex redirects here via Vercel.
+   * Used for sitemap, robots, metadataBase, Open Graph, and JSON-LD.
+   */
+  url: "https://www.lilyssweettreatsva.com",
   logo: "/brand/logo.png",
   /** Full brand board for large display (hero) */
   logoFull: "/brand/logo-full.png",

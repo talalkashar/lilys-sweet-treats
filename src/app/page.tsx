@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { MenuGrid } from "@/components/MenuGrid";
@@ -5,6 +6,21 @@ import { Reveal } from "@/components/Reveal";
 import { HeroVideo } from "@/components/HeroVideo";
 import { reviews } from "@/data/reviews";
 import { site } from "@/data/site";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: `${site.name} | Pre-order & Porch Pickup in Haymarket, VA`,
+  },
+  description: site.description,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: `${site.name} | Pre-order & Porch Pickup in Haymarket, VA`,
+    description: site.description,
+    url: site.url,
+  },
+};
 
 const marqueeLines = [
   "Order Monday–Wednesday by noon",

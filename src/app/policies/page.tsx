@@ -5,6 +5,14 @@ import { site } from "@/data/site";
 export const metadata: Metadata = {
   title: "Order Policies",
   description: `Pickup, refunds, allergens, and sales tax for ${site.shortName} porch pickup.`,
+  alternates: {
+    canonical: "/policies",
+  },
+  openGraph: {
+    title: `Order Policies | ${site.shortName}`,
+    description: `Pickup, refunds, allergens, and sales tax for ${site.shortName} porch pickup.`,
+    url: "/policies",
+  },
 };
 
 export default function PoliciesPage() {

@@ -1,11 +1,22 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { OrderForm } from "@/components/OrderForm";
 import { site } from "@/data/site";
 
-export const metadata = {
-  title: `Order pickup | ${site.name}`,
-  description: "Pre-order and pay for porch pickup in Haymarket, VA.",
+export const metadata: Metadata = {
+  title: "Order pickup",
+  description:
+    "Pre-order and pay online for porch pickup in Haymarket, VA. Order Monday–Wednesday by noon for Friday or Saturday pickup.",
+  alternates: {
+    canonical: "/order",
+  },
+  openGraph: {
+    title: `Order pickup | ${site.shortName}`,
+    description:
+      "Pre-order and pay online for porch pickup in Haymarket, VA. Order Monday–Wednesday by noon for Friday or Saturday pickup.",
+    url: "/order",
+  },
 };
 
 export default function OrderPage() {

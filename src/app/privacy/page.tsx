@@ -5,6 +5,14 @@ import { site } from "@/data/site";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: `How ${site.shortName} collects and uses your information for porch-pickup orders.`,
+  alternates: {
+    canonical: "/privacy",
+  },
+  openGraph: {
+    title: `Privacy Policy | ${site.shortName}`,
+    description: `How ${site.shortName} collects and uses your information for porch-pickup orders.`,
+    url: "/privacy",
+  },
 };
 
 export default function PrivacyPage() {
