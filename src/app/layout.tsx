@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Outfit } from "next/font/google";
 import { BakeryAtmosphere } from "@/components/BakeryAtmosphere";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { ViewMode } from "@/components/ViewMode";
 import { site } from "@/data/site";
 import "./globals.css";
 
@@ -82,6 +83,7 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} h-full`}
     >
       <body className="flex min-h-full flex-col antialiased">
+        <ViewMode />
         <BakeryAtmosphere />
 
         <Header />

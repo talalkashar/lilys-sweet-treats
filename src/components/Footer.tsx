@@ -116,18 +116,12 @@ export function Footer() {
           <a className="footer-detail" href={`mailto:${site.email}`}>
             {site.email}
           </a>
-          <span className="footer-detail-sep footer-detail-sep--wide" aria-hidden>
-            ·
-          </span>
-          <p className="footer-detail footer-detail--plain">
-            Porch pickup only
-          </p>
         </div>
       </div>
 
       <div className="footer-legal">
         <a href="/policies" className="footer-legal-link">
-          Order policies
+          Policies
         </a>
         <span className="footer-detail-sep" aria-hidden>
           ·
@@ -135,12 +129,6 @@ export function Footer() {
         <a href="/privacy" className="footer-legal-link">
           Privacy
         </a>
-        <span className="footer-detail-sep" aria-hidden>
-          ·
-        </span>
-        <span className="footer-detail footer-detail--plain">
-          VA sales tax at checkout
-        </span>
       </div>
 
       <div className="footer-copy">

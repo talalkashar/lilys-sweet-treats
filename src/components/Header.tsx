@@ -16,7 +16,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 6);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -24,14 +24,16 @@ export function Header() {
 
   return (
     <header
-      className={`site-header sticky top-0 z-50 transition-[box-shadow] duration-200 ${
-        scrolled ? "site-header--scrolled shadow-[var(--shadow-soft)]" : ""
+      className={`site-header sticky top-0 z-50 transition-[background,box-shadow,border-color,backdrop-filter] duration-300 ${
+        scrolled
+          ? "site-header--scrolled shadow-[var(--shadow-soft)]"
+          : "site-header--over-hero"
       }`}
     >
-      <div className="site-header-inner shell flex h-[5.5rem] items-center justify-between gap-3 sm:h-[6.5rem] lg:h-[7rem]">
+      <div className="site-header-inner shell site-header-bar">
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-3"
+          className="site-header-brand flex min-w-0 items-center gap-3"
           onClick={() => setOpen(false)}
         >
           <span className="logo-mark">
@@ -54,25 +56,28 @@ export function Header() {
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-7 text-base font-medium text-[var(--cocoa-soft)] lg:flex">
+        <nav className="header-nav-desktop hidden items-center text-base font-medium text-[var(--cocoa-soft)] lg:flex">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="transition-colors hover:text-[var(--rose)]"
+              className="header-nav-link transition-colors hover:text-[var(--rose)]"
             >
               {l.label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-2.5">
-          <Link href="/order" className="btn-primary hidden sm:inline-flex">
+        <div className="site-header-actions flex items-center justify-end gap-2.5">
+          <Link
+            href="/order"
+            className="btn-primary header-cta-desktop hidden sm:inline-flex"
+          >
             Order pickup
           </Link>
           <button
             type="button"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--blush)] bg-white lg:hidden"
+            className="header-menu-btn flex h-11 w-11 items-center justify-center rounded-full border border-[var(--blush)] bg-white/90 lg:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}

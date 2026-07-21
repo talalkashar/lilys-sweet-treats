@@ -119,7 +119,7 @@ export const products: Product[] = [
     description:
       "Peach cobbler flavor with cream cheese frosting, peach topping, and caramel drizzle.",
     emoji: "🍑",
-    // Card = best side hero. Gallery = top-down → mid → 3/4 → side (no dups).
+    // v4 = last good studio-relit set (v5 polish overcooked — do not use)
     image: "/products/peach-main-v4.jpg",
     images: [
       "/products/peach-g2-v4.jpg",

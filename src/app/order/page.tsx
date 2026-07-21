@@ -24,71 +24,43 @@ export default function OrderPage() {
             <p className="section-label">Checkout</p>
             <h1 className="section-title mt-2">Order for pickup</h1>
             <p className="prose-soft mt-3">
-              {site.qualityNote} Order Monday–Wednesday by noon, then choose a
-              Friday or Saturday pickup window.
+              Choose flavors and pack sizes, then pay here. Pickup is Friday or
+              Saturday in Haymarket.
             </p>
 
-            <ol className="mt-6 space-y-2 text-sm text-[var(--cocoa-soft)]">
-              {[
-                "Choose a flavor, then tap each pack you want (adds to cart)",
-                "Pay securely on this page",
-                "Pick up Friday 4–6 PM or Saturday 9–11 AM",
-              ].map((line, i) => (
-                <li
-                  key={line}
-                  className="flex gap-2.5 rounded-lg border border-[var(--blush)]/40 bg-white px-3 py-2.5"
-                >
-                  <span className="font-semibold tabular-nums text-[var(--rose)]">
-                    {i + 1}
-                  </span>
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ol>
+            <div className="mt-6 space-y-3 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+              <div className="rounded-lg border border-[var(--blush)]/40 bg-white px-3 py-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
+                  Order window
+                </p>
+                <p className="mt-1.5 font-medium text-[var(--cocoa)]">
+                  Monday–Wednesday by noon
+                </p>
+              </div>
 
-            <div className="mt-6 rounded-lg border border-[var(--blush)]/40 bg-white px-3 py-3 text-sm leading-relaxed text-[var(--cocoa-soft)]">
-              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
-                Ordering window
-              </p>
-              <p className="mt-1.5 font-medium text-[var(--cocoa)]">
-                {site.orderingWindow}
-              </p>
-              <p className="mt-1 text-xs text-[var(--ink-muted)]">
-                {site.orderingClosesNote}
-              </p>
+              <div className="rounded-lg border border-[var(--blush)]/40 bg-white px-3 py-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
+                  Pickup
+                </p>
+                <ul className="mt-1.5 space-y-1 font-medium text-[var(--cocoa)]">
+                  {site.pickupWindows.map((window) => (
+                    <li key={window}>{window}</li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-xs text-[var(--ink-muted)]">
+                  Full address is on your confirmation after payment.
+                </p>
+              </div>
+
+              <div className="rounded-lg border border-[var(--blush)]/40 bg-white px-3 py-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
+                  Packs
+                </p>
+                <p className="mt-1.5 font-medium text-[var(--cocoa)]">
+                  4-pack · 8-pack · Party tray (12)
+                </p>
+              </div>
             </div>
-
-            <div className="mt-3 rounded-lg border border-[var(--blush)]/40 bg-white px-3 py-3 text-sm leading-relaxed text-[var(--cocoa-soft)]">
-              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
-                Pack deals
-              </p>
-              <p className="mt-1.5 font-medium text-[var(--cocoa)]">
-                4-pack · 8-pack · Party tray (12)
-              </p>
-              <p className="mt-1 text-xs text-[var(--ink-muted)]">
-                Tap 4-pack, then 8-pack, then party tray — each tap adds to your
-                total. Switch flavors and keep tapping to mix.
-              </p>
-            </div>
-
-            <div className="mt-3 rounded-lg border border-[var(--blush)]/40 bg-white px-3 py-3 text-sm leading-relaxed text-[var(--cocoa-soft)]">
-              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
-                Pickup windows
-              </p>
-              <ul className="mt-1.5 space-y-1 font-medium text-[var(--cocoa)]">
-                {site.pickupWindows.map((window) => (
-                  <li key={window}>{window}</li>
-                ))}
-              </ul>
-              <p className="mt-2 text-xs text-[var(--ink-muted)]">
-                {site.locationNote} Full porch address is on the confirmation
-                page and email after payment.
-              </p>
-            </div>
-
-            <p className="mt-4 text-sm leading-relaxed text-[var(--ink-muted)]">
-              {site.howToOrder}
-            </p>
           </aside>
 
           <div className="min-w-0 max-w-xl lg:max-w-none">

@@ -2,14 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { MenuGrid } from "@/components/MenuGrid";
 import { Reveal } from "@/components/Reveal";
+import { HeroVideo } from "@/components/HeroVideo";
 import { reviews } from "@/data/reviews";
 import { site } from "@/data/site";
 
 const marqueeLines = [
-  "Baked with love just for you",
-  "Order Monday through Wednesday by noon",
+  "Order Monday–Wednesday by noon",
   "Pickup Friday 4–6 PM · Saturday 9–11 AM",
-  "Small batches · fresh ingredients",
+  "Haymarket, VA · porch pickup only",
 ];
 
 const storyCollage = [
@@ -24,7 +24,6 @@ const storyCollage = [
     slot: "wide" as const,
   },
   {
-    // Studio-relit strawberry hero (matches sticky-nuts lighting family)
     src: "/products/strawberry-main-v4.jpg",
     alt: "Strawberry cinnamon roll with cream cheese frosting and jam",
     slot: "wide" as const,
@@ -37,116 +36,9 @@ export default function Home() {
 
   return (
     <>
-      {/* HERO — big centered logo, copy stacked below */}
-      <section className="hero-shell">
-        <div className="hero-deco hero-deco--blob" aria-hidden />
-        <div className="hero-deco hero-deco--dot" aria-hidden />
-
-        {/* Bakery treats frame the logo */}
-        <div className="hero-treats" aria-hidden>
-          <div className="hero-treat hero-treat--L1">
-            <Image
-              src="/brand/hero/macaron-tower.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="hero-treat-img"
-              sizes="(max-width: 899px) 4.75rem, 12rem"
-            />
-          </div>
-          <div className="hero-treat hero-treat--L2">
-            <Image
-              src="/brand/hero/cinnamon-roll.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="hero-treat-img"
-              sizes="(max-width: 899px) 4.5rem, 11rem"
-            />
-          </div>
-          <div className="hero-treat hero-treat--L3">
-            <Image
-              src="/brand/hero/macaron-bow.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="hero-treat-img"
-              sizes="(max-width: 899px) 4.6rem, 10.5rem"
-            />
-          </div>
-          <div className="hero-treat hero-treat--R1">
-            <Image
-              src="/brand/hero/cookie-bow.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="hero-treat-img"
-              sizes="(max-width: 899px) 4.5rem, 11rem"
-            />
-          </div>
-          <div className="hero-treat hero-treat--R2">
-            <Image
-              src="/brand/hero/floral-cake.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="hero-treat-img"
-              sizes="(max-width: 899px) 4.6rem, 10.5rem"
-            />
-          </div>
-          <div className="hero-treat hero-treat--R3">
-            <Image
-              src="/brand/hero/swiss-rolls.png"
-              alt=""
-              width={1254}
-              height={1254}
-              className="hero-treat-img"
-              sizes="(max-width: 899px) 4.75rem, 12rem"
-            />
-          </div>
-        </div>
-
-        <div className="shell hero-stack">
-          {/* Large centered logo */}
-          <div className="hero-logo-stage">
-            <div className="hero-logo-glow" aria-hidden />
-            <div className="hero-logo-float">
-              <Image
-                src="/brand/logo-mark-hero.png"
-                alt={`${site.name} logo`}
-                width={1254}
-                height={1254}
-                priority
-                quality={95}
-                className="hero-logo-img"
-                sizes="(max-width: 640px) min(88vw, 26rem), min(70vw, 36rem)"
-              />
-            </div>
-          </div>
-
-          {/* Copy below logo, centered */}
-          <div className="hero-copy">
-            <p className="anim-fade-up hero-eyebrow">
-              We are {site.shortName}
-            </p>
-
-            <h1 className="anim-fade-up anim-delay-1 hero-title mt-3">
-              Baked with love{" "}
-              <span className="hero-accent">just for you!</span>
-            </h1>
-
-            <p className="anim-fade-up anim-delay-1 hero-subline">
-              We bake fresh in small batches.
-            </p>
-
-            <p className="anim-fade-up anim-delay-2 hero-lead mt-6 sm:mt-7">
-              {site.qualityNote}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Rainbow marquee — colorful porch pickup banner */}
+        {/* Full-bleed kitchen video hero — flush with top of browser under header */}
+      <HeroVideo />
+     {/* Schedule marquee */}
       <div className="marquee-bar" aria-hidden>
         <div className="marquee-track">
           {Array.from({ length: 12 }).map((_, i) => (
@@ -160,12 +52,11 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Weekly schedule band — floating treats + order/pickup info */}
+      {/* Weekly schedule */}
       <section
         className="love-banner"
         aria-label="Weekly ordering and pickup schedule"
       >
-        {/* Fewer pink rolls — more motion around the edges */}
         <div className="love-banner-floaters" aria-hidden>
           {Array.from({ length: 10 }, (_, i) => (
             <div
@@ -188,10 +79,9 @@ export default function Home() {
         </div>
 
         <div className="love-banner-copy">
-          <p className="love-banner-kicker">From our kitchen</p>
+          <p className="love-banner-kicker">This week</p>
           <h2 className="love-banner-title">
-            A home bakery made to
-            <span className="love-banner-title-line">sweeten your day</span>
+            How ordering works
           </h2>
           <div
             className="love-schedule"
@@ -202,77 +92,72 @@ export default function Home() {
             }}
           >
             <p className="love-schedule-line">
-              <strong>Order:</strong> {site.orderingWindow}
+              <strong>Order:</strong> Monday–Wednesday by noon
             </p>
             <p className="love-schedule-line">
-              <strong>Closes:</strong> {site.orderingClosesLabel} — pre-orders
-              close promptly at noon.
+              <strong>Pickup:</strong> Friday 4–6 PM or Saturday 9–11 AM
             </p>
-            <p className="love-schedule-note">{site.locationNote}</p>
+            <p className="love-schedule-note">
+              We bake your order fresh for the weekend.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* STORY + food photos */}
-      <section className="story-band section-pad">
-        <div className="shell grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-          {/* No Reveal on photos — avoid opacity:0 blank tiles */}
-          <div className="story-photo-grid">
-            <div className="story-photo story-photo--main">
-              <Image
-                src={storyMain.src}
-                alt={storyMain.alt}
-                fill
-                priority
-                quality={90}
-                className="story-photo-img story-photo-img--main"
-                sizes="(max-width: 1024px) 50vw, 300px"
-              />
-            </div>
-            {storyWide.map((photo) => (
-              <div key={photo.src} className="story-photo story-photo--wide">
+      {/* Kitchen photos + custom orders */}
+      <section className="story-band section-pad" aria-label="From our kitchen">
+        <div className="shell">
+<div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+            <div className="story-photo-grid">
+              <div className="story-photo story-photo--main">
                 <Image
-                  src={photo.src}
-                  alt={photo.alt}
+                  src={storyMain.src}
+                  alt={storyMain.alt}
                   fill
                   quality={90}
-                  className="story-photo-img"
-                  sizes="(max-width: 1024px) 45vw, 240px"
+                  className="story-photo-img story-photo-img--main"
+                  sizes="(max-width: 1024px) 50vw, 300px"
                 />
               </div>
-            ))}
-          </div>
-
-          <Reveal delayMs={80}>
-            <div>
-              <p className="section-label">From our kitchen</p>
-              <h2 className="section-title mt-2">
-                Every treat is made fresh, right here
-              </h2>
-              <p className="prose-soft mt-4">
-                From cinnamon rolls to sticky buns, everything is prepared fresh
-                to order for porch pickup.{" "}
-                <span
-                  className="text-highlight-soft"
-                  style={{
-                    backgroundColor: "#ffd6e8",
-                    padding: "0.12em 0.28em",
-                    borderRadius: "0.35em",
-                    fontWeight: 700,
-                    color: "#2c2228",
-                  }}
-                >
-                  Be on the lookout for new flavors and let us know what
-                  you&apos;d like to see on the menu next. Looking for something
-                  specific? Give us a call to discuss custom flavors. We&apos;d
-                  be happy to make something just for you.
-                </span>
-              </p>
-              <Link href="#menu" className="btn-secondary mt-7">
-                Explore the menu
-              </Link>
+              {storyWide.map((photo) => (
+                <div key={photo.src} className="story-photo story-photo--wide">
+                  <Image
+                    src={photo.src}
+                    alt={photo.alt}
+                    fill
+                    quality={90}
+                    className="story-photo-img"
+                    sizes="(max-width: 1024px) 45vw, 240px"
+                  />
+                </div>
+              ))}
             </div>
-          </Reveal>
+
+            <Reveal delayMs={80}>
+              <div>
+                <p className="section-label">Custom flavors</p>
+                <h2 className="section-title mt-2">
+                  Want something special?
+                </h2>
+                <p className="prose-soft mt-4">
+                  Menu rotates weekly. Looking for a flavor you don&apos;t see?
+                  Call us — we&apos;re happy to talk through custom orders when
+                  we can.
+                </p>
+                <div className="mt-7 flex flex-wrap gap-2.5">
+                  <Link href="#menu" className="btn-secondary">
+                    See the menu
+                  </Link>
+                  <a
+                    href={`tel:${site.phone.replace(/\D/g, "")}`}
+                    className="btn-primary"
+                  >
+                    Call {site.phone}
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
 
@@ -283,13 +168,10 @@ export default function Home() {
         <div className="shell">
           <Reveal>
             <div className="menu-intro max-w-2xl">
-              <p className="section-label">This week&apos;s menu</p>
-              <h2 className="section-title mt-2">
-                Fresh bakes for porch pickup
-              </h2>
+              <p className="section-label">Menu</p>
+              <h2 className="section-title mt-2">What we&apos;re baking</h2>
               <p className="prose-soft mt-3">
-                Browse what we are baking right now. Tap a treat for details and
-                ingredients, then pre-order Monday–Wednesday by noon.
+                Tap a treat for details, then pre-order in packs of 4, 8, or 12.
               </p>
             </div>
           </Reveal>
@@ -298,23 +180,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Guest reviews */}
+      {/* Reviews */}
       <section id="reviews" className="section-reviews section-pad">
         <div className="section-reviews-glow" aria-hidden />
         <div className="shell relative">
           <Reveal>
             <div className="reviews-header">
-              <p className="section-label">From our guests</p>
-              <h2 className="section-title mt-2">
-                Sweet words from people nearby
-              </h2>
-              <p className="prose-soft mx-auto mt-2.5 text-center">
-                A few notes from folks who have ordered for porch pickup.
-              </p>
-              <div className="reviews-rating-pill" aria-hidden>
-                <span className="reviews-rating-stars">★★★★★</span>
-                <span className="reviews-rating-text">Loved by local guests</span>
-              </div>
+              <p className="section-label">Reviews</p>
+              <h2 className="section-title mt-2">What guests say</h2>
             </div>
           </Reveal>
 
@@ -379,21 +252,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA band (Dolce: “Let’s make your day sweeter”) */}
+      {/* Final CTA */}
       <section className="cta-band section-pad">
         <div className="shell text-center">
           <Reveal>
-            <p className="section-label" style={{ color: "#6f4fa0" }}>
-              Ready when you are
-            </p>
-            <h2 className="section-title mt-2" style={{ color: "#6f4fa0" }}>
-              Let&apos;s make your day sweeter
+            <h2 className="section-title" style={{ color: "#6f4fa0" }}>
+              Ready to order?
             </h2>
             <p
               className="prose-soft mx-auto mt-3 text-center"
               style={{ color: "#6f4fa0" }}
             >
-              {site.thankYouNote}
+              Pre-order by Wednesday noon for weekend pickup.
             </p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
               <Link href="/order" className="btn-primary">
@@ -401,7 +271,7 @@ export default function Home() {
               </Link>
               <a
                 href={`tel:${site.phone.replace(/\D/g, "")}`}
-                className="btn-primary"
+                className="btn-secondary"
               >
                 Call {site.phone}
               </a>
