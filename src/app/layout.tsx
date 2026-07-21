@@ -92,14 +92,16 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  // Set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION in Vercel after GSC gives you the code
-  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-    ? {
-        verification: {
-          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-        },
-      }
-    : {}),
+  /**
+   * Google Search Console ownership.
+   * Prefer env override; fall back to the Domain-property token so HTML-tag
+   * verification works for the URL-prefix property without extra Vercel setup.
+   */
+  verification: {
+    google:
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+      "hFFZbPnrYg4ddoxt9jpaknU3tITllQmXtXhl49i0ZCA",
+  },
 };
 
 export default function RootLayout({
