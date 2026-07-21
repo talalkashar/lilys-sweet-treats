@@ -95,14 +95,14 @@ export const products: Product[] = [
     description:
       "Soft cinnamon roll with cream cheese frosting and sweet strawberry jam.",
     emoji: "🍓",
-    // Card = best side hero. Gallery = top-down → high → mid → side (no dups).
-    // v3 = pure iCloud shoot → Photoshop MCP (auto levels/contrast/bright + warm_film + web export)
-    image: "/products/strawberry-main-v4.jpg",
+    // Card = best side hero. Gallery = top-down → high → mid → detail.
+    // studio = unified 1248×832 crop + white-balance across all live products
+    image: "/products/strawberry-main-studio-v2.jpg",
     images: [
-      "/products/strawberry-g2-v4.jpg",
-      "/products/strawberry-g3-v4.jpg",
-      "/products/strawberry-g4-v4.jpg",
-      "/products/strawberry-g5-v4.jpg",
+      "/products/strawberry-g2-studio-v2.jpg",
+      "/products/strawberry-g3-studio-v2.jpg",
+      "/products/strawberry-g4-studio-v2.jpg",
+      "/products/strawberry-g5-studio-v2.jpg",
     ],
     popular: true,
     ingredients: [
@@ -119,13 +119,13 @@ export const products: Product[] = [
     description:
       "Peach cobbler flavor with cream cheese frosting, peach topping, and caramel drizzle.",
     emoji: "🍑",
-    // v4 = last good studio-relit set (v5 polish overcooked — do not use)
-    image: "/products/peach-main-v4.jpg",
+    // studio = same format/grade as strawberry + sticky sets
+    image: "/products/peach-main-studio-v2.jpg",
     images: [
-      "/products/peach-g2-v4.jpg",
-      "/products/peach-g3-v4.jpg",
-      "/products/peach-g4-v4.jpg",
-      "/products/peach-g5-v4.jpg",
+      "/products/peach-g2-studio-v2.jpg",
+      "/products/peach-g3-studio-v2.jpg",
+      "/products/peach-g4-studio-v2.jpg",
+      "/products/peach-g5-studio-v2.jpg",
     ],
     ingredients: [
       "Peaches",
@@ -152,22 +152,33 @@ export const products: Product[] = [
     id: "sticky-buns-with-nuts",
     name: "Sticky Buns with Nuts",
     price: 8.75,
-    showUnitPrice: false,
     category: "sticky",
     description: "Caramel glaze topped with toasted nuts.",
     emoji: "🥜",
-    image: "/products/sticky-bun-with-nuts.png",
+    // studio = unified format with rolls
+    image: "/products/sticky-bun-nuts-main-studio-v2.jpg",
+    images: [
+      "/products/sticky-bun-nuts-g2-studio-v2.jpg",
+      "/products/sticky-bun-nuts-g3-studio-v2.jpg",
+      "/products/sticky-bun-nuts-g4-studio-v2.jpg",
+      "/products/sticky-bun-nuts-g5-studio-v2.jpg",
+    ],
     ingredients: ["Caramel", "Toasted nuts", "Cinnamon"],
   },
   {
     id: "sticky-buns-without-nuts",
     name: "Sticky Buns without Nuts",
     price: 8,
-    showUnitPrice: false,
     category: "sticky",
     description: "Classic sticky bun and caramel, no nuts.",
     emoji: "🌀",
-    image: "/products/sticky-bun-no-nuts.png",
+    image: "/products/sticky-bun-plain-main-studio-v2.jpg",
+    images: [
+      "/products/sticky-bun-plain-g2-studio-v2.jpg",
+      "/products/sticky-bun-plain-g3-studio-v2.jpg",
+      "/products/sticky-bun-plain-g4-studio-v2.jpg",
+      "/products/sticky-bun-plain-g5-studio-v2.jpg",
+    ],
     ingredients: ["Caramel", "Cinnamon"],
   },
 

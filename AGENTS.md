@@ -13,10 +13,29 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Teaching Codex: **CODEX-FOR-CLIENT.md**.  
 - Vercel **Hobby** cannot invite collaborators — transfer the project to her account or upgrade to Pro.
 
-## Deploy rule (important)
+## Localhost-only rule (HARD — never violate)
 
-- **Always change and verify on localhost first.**
-- **Do not deploy to Vercel/production** unless the user explicitly says to push, deploy, or go live.
+**Default mode: work ONLY on localhost.** Do not touch the live site without explicit user approval.
+
+### Allowed without asking
+- Edit local files under this repo
+- Run / restart `start.sh` / `npm run dev` on localhost
+- Local builds, lint, smoke tests against `http://localhost:3000`
+
+### NEVER do unless the user clearly approves in this conversation
+- Deploy to Vercel / production / preview that replaces live
+- `git push` (especially `main`) if it can auto-deploy
+- Change Vercel production env vars, domains, or project settings
+- Run production Stripe/live charges for testing
+- Anything that updates **https://www.lilyssweettreatsva.com** (or the apex domain)
+
+### If live/production work is needed
+1. Finish and verify on **localhost** first.
+2. Tell the user what would go live.
+3. Wait for explicit approval (e.g. “push”, “deploy”, “go live”, “update production”).
+4. Only then push/deploy.
+
+**No implied approval.** “Looks good”, “ship it later”, or prior session deploys do **not** authorize a new production update.
 
 ## Menu / products (most common task)
 

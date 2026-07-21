@@ -35,12 +35,12 @@ const storyCollage = [
     slot: "main" as const,
   },
   {
-    src: "/products/peach-main-v4.jpg",
+    src: "/products/peach-main-studio-v2.jpg",
     alt: "Peach cobbler cinnamon roll",
     slot: "wide" as const,
   },
   {
-    src: "/products/strawberry-main-v4.jpg",
+    src: "/products/strawberry-main-studio-v2.jpg",
     alt: "Strawberry cinnamon roll with cream cheese frosting and jam",
     slot: "wide" as const,
   },
@@ -120,10 +120,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Kitchen photos + custom orders */}
+      {/* Kitchen photos + custom orders — images left, copy right on desktop */}
       <section className="story-band section-pad" aria-label="From our kitchen">
         <div className="shell">
-<div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+          <div className="story-band-row">
             <div className="story-photo-grid">
               <div className="story-photo story-photo--main">
                 <Image
@@ -132,7 +132,7 @@ export default function Home() {
                   fill
                   quality={90}
                   className="story-photo-img story-photo-img--main"
-                  sizes="(max-width: 1024px) 50vw, 300px"
+                  sizes="(max-width: 1024px) 55vw, 420px"
                 />
               </div>
               {storyWide.map((photo) => (
@@ -143,13 +143,13 @@ export default function Home() {
                     fill
                     quality={90}
                     className="story-photo-img"
-                    sizes="(max-width: 1024px) 45vw, 240px"
+                    sizes="(max-width: 1024px) 45vw, 340px"
                   />
                 </div>
               ))}
             </div>
 
-            <Reveal delayMs={80}>
+            <Reveal delayMs={80} className="story-band-copy">
               <div>
                 <p className="section-label">Custom flavors</p>
                 <h2 className="section-title mt-2">
