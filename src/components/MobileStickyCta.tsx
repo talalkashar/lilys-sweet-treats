@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 /**
- * Thumb-friendly order bar on small screens only.
+ * Thumb-friendly order bar on phone + tablet (≤1023px).
  * Hidden on /order, desktop (CSS), and while the hero is still on screen
  * so it never covers the full-bleed video.
  */
