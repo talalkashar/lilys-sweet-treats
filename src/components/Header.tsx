@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { site } from "@/data/site";
 
@@ -12,6 +13,8 @@ const links = [
 ];
 
 export function Header() {
+  const pathname = usePathname() || "/";
+  const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [ready, setReady] = useState(false);
   const [open, setOpen] = useState(false);
@@ -26,12 +29,16 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Glass-over-video only on homepage hero. Inner pages always use solid bar
+  // (otherwise white type / hidden title on cream looks broken).
+  const overHero = isHome && !scrolled;
+
   return (
     <header
       className={[
         "site-header sticky top-0 z-50",
         ready ? "site-header--ready" : "site-header--boot",
-        scrolled ? "site-header--scrolled" : "site-header--over-hero",
+        overHero ? "site-header--over-hero" : "site-header--scrolled",
       ].join(" ")}
     >
       <div className="site-header-inner shell site-header-bar">
@@ -77,21 +84,23 @@ export function Header() {
           </Link>
           <button
             type="button"
-            className="header-menu-btn flex h-10 w-10 items-center justify-center rounded-full border border-white/35 bg-black/25 text-white backdrop-blur-md lg:hidden sm:h-11 sm:w-11"
+            className="header-menu-btn flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-black/30 text-white backdrop-blur-md lg:hidden sm:h-11 sm:w-11"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
             <span className="sr-only">Menu</span>
-            <div className="flex w-3.5 flex-col gap-0.5">
+            <div className="header-menu-icon" aria-hidden>
               <span
-                className={`h-0.5 w-full rounded bg-[var(--cocoa)] transition ${open ? "translate-y-[3px] rotate-45" : ""}`}
+                className={
+                  open ? "translate-y-[0.28rem] rotate-45" : undefined
+                }
               />
+              <span className={open ? "opacity-0" : undefined} />
               <span
-                className={`h-0.5 w-full rounded bg-[var(--cocoa)] transition ${open ? "opacity-0" : ""}`}
-              />
-              <span
-                className={`h-0.5 w-full rounded bg-[var(--cocoa)] transition ${open ? "-translate-y-[3px] -rotate-45" : ""}`}
+                className={
+                  open ? "-translate-y-[0.28rem] -rotate-45" : undefined
+                }
               />
             </div>
           </button>
