@@ -1,6 +1,6 @@
 /** Business details. Update anytime. */
 export const site = {
-  name: "Lily's Sweet Treats & More",
+  name: "Lily's Sweet Treats",
   shortName: "Lily's Sweet Treats",
   tagline: "Homemade treats, made with love",
   /**

@@ -1,4 +1,4 @@
-# Lily’s Sweet Treats & More
+# Lily’s Sweet Treats
 
 **Live:** https://www.lilyssweettreatsva.com  
 **Repo:** https://github.com/talalkashar/lilys-sweet-treats  
