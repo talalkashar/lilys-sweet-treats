@@ -24,9 +24,10 @@ export const site = {
   logoFull: "/brand/logo-full.png",
   /**
    * Primary image for Google / Open Graph / link previews.
-   * Food photo (not logo) so search & shares pop.
+   * Square 1200×1200 food photo (same pattern as FORGE) so LinkedIn
+   * auto-pulls a real thumbnail for Experience / share cards.
    */
-  ogImage: "/brand/og-default.jpg",
+  ogImage: "/images/og/lilys-og.jpg",
   /** Purple cupcake wall — sitewide texture */
   pattern: "/brand/pattern.png",
   /** Soft line-art cupcakes for lighter section washes */

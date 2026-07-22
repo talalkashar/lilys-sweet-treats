@@ -65,8 +65,9 @@ export const metadata: Metadata = {
       {
         url: site.ogImage,
         width: 1200,
-        height: 630,
+        height: 1200,
         alt: "Fresh homemade cinnamon rolls from Lily's Sweet Treats in Haymarket, VA",
+        type: "image/jpeg",
       },
     ],
   },
@@ -74,7 +75,14 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: site.searchTitle,
     description: site.description,
-    images: [site.ogImage],
+    images: [
+      {
+        url: site.ogImage,
+        width: 1200,
+        height: 1200,
+        alt: "Fresh homemade cinnamon rolls from Lily's Sweet Treats in Haymarket, VA",
+      },
+    ],
   },
   icons: {
     icon: [{ url: "/brand/logo-mark.png", type: "image/png" }],
