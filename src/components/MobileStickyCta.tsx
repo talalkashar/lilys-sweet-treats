@@ -16,24 +16,41 @@ export function MobileStickyCta() {
   useEffect(() => {
     if (pathname.startsWith("/order")) return;
 
-    const update = () => {
+    let last = false;
+    let ticking = false;
+
+    const measure = () => {
       const hero = document.querySelector(".hero-video");
+      let next: boolean;
       if (!hero) {
         // No hero (inner pages) — show after a little scroll
-        setVisible(window.scrollY > 120);
-        return;
+        next = window.scrollY > 120;
+      } else {
+        const bottom = hero.getBoundingClientRect().bottom;
+        // Reveal once hero has mostly left the viewport
+        next = bottom < window.innerHeight * 0.45;
       }
-      const bottom = hero.getBoundingClientRect().bottom;
-      // Reveal once hero has mostly left the viewport
-      setVisible(bottom < window.innerHeight * 0.45);
+      if (next !== last) {
+        last = next;
+        setVisible(next);
+      }
     };
 
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        measure();
+      });
+    };
+
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", measure);
     return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measure);
     };
   }, [pathname]);
 

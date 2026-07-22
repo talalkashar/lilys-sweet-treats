@@ -131,6 +131,9 @@ body {
   overflow: hidden;
   pointer-events: none;
   background: var(--cream);
+  /* Fixed layers + heavy PNG tiles: isolate from main document scroll work */
+  contain: layout style;
+  transform: translateZ(0);
 }
 
 .site-wallpaper-layer {
@@ -142,8 +145,14 @@ body {
   background-position: center top;
   background-size: min(42vw, 22rem) auto;
   opacity: 0.3;
-  animation: wallpaper-breathe 28s ease-in-out infinite;
-  will-change: transform;
+  /* Desktop-only motion — fixed animated layers tank mobile scroll FPS */
+  animation: none;
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .site-wallpaper-layer {
+    animation: wallpaper-breathe 28s ease-in-out infinite;
+  }
 }
 
 /* Soft line-art cupcakes under the wall for a second layer of brand texture */
@@ -151,8 +160,12 @@ body {
   background-image: url("/brand/backgrounds/cupcake-pattern-soft.png");
   background-size: min(36vw, 18rem) auto;
   opacity: 0.18;
-  animation-duration: 36s;
-  animation-direction: reverse;
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .site-wallpaper-layer--soft {
+    animation: wallpaper-breathe 36s ease-in-out infinite reverse;
+  }
 }
 
 /* Cream + lavender wash so type and cards stay crisp */
@@ -1440,13 +1453,31 @@ a.footer-detail:hover {
 .love-floater {
   position: absolute;
   filter: drop-shadow(0 10px 16px rgba(120, 40, 80, 0.18));
-  will-change: transform;
   opacity: 0.92;
 }
 
 .love-floater--drift {
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
+}
+
+/* Static floaters on phones — 10 concurrent transform animations = scroll lag */
+@media (max-width: 767px) {
+  .love-floater--drift {
+    animation: none !important;
+  }
+
+  .love-floater {
+    filter: drop-shadow(0 6px 10px rgba(120, 40, 80, 0.12));
+  }
+
+  /* Fewer decorations on narrow screens */
+  .love-floater--d4,
+  .love-floater--d5,
+  .love-floater--d9,
+  .love-floater--d10 {
+    display: none;
+  }
 }
 
 .love-floater-img {
@@ -2871,11 +2902,12 @@ body:has(.hero-video) .site-header {
   opacity: 0;
   /* Short crossfade only — poster is the exact first frame */
   transition: opacity 0.28s ease-out;
-  will-change: opacity;
 }
 
 .hero-video-media--ready {
   opacity: 1;
+  /* Own compositor layer once playing — avoids scroll paint thrash */
+  transform: translateZ(0);
 }
 
 .hero-video-shade,
@@ -3258,8 +3290,9 @@ body:has(.hero-video) .site-header {
     );
     border-top: 2px solid rgba(255, 142, 196, 0.55);
     box-shadow: 0 -10px 30px rgba(180, 80, 130, 0.16);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    /* Solid fill already — skip backdrop blur (expensive while scrolling) */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     /* Avoid horizontal bleed on narrow phones */
     max-width: 100vw;
     box-sizing: border-box;
@@ -3346,6 +3379,16 @@ body:has(.hero-video) .site-header {
 
   .card-product:active {
     transform: scale(0.995);
+  }
+
+  /* Touch devices: skip continuous wallpaper motion + rainbow shimmer cost */
+  .site-wallpaper-layer {
+    animation: none !important;
+  }
+
+  .marquee-rainbow {
+    animation: none !important;
+    background-position: 0 0;
   }
 }
 

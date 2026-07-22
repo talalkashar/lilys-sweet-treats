@@ -20,7 +20,13 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
+    let last = false;
+    const onScroll = () => {
+      const next = window.scrollY > 48;
+      if (next === last) return;
+      last = next;
+      setScrolled(next);
+    };
     onScroll();
     // Enable transitions only after the real scroll position is known
     // so refresh never animates purple → glass (or the reverse).

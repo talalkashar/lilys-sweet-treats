@@ -11,6 +11,21 @@ const POSTER_SRC = `/brand/video/peach-cobbler-roll-poster.jpg?v=${MEDIA_VERSION
 const VIDEO_SRC = `/brand/video/peach-cobbler-higgsfield.mp4?v=${MEDIA_VERSION}`;
 
 /**
+ * iOS Safari is strict: muted + playsInline must be real DOM attributes *and*
+ * element properties before play(). React's muted prop alone is not enough on
+ * some WebKit builds. Gesture unlock covers Low Power Mode / blocked autoplay.
+ */
+function armInlinePlayback(el: HTMLVideoElement) {
+  el.defaultMuted = true;
+  el.muted = true;
+  el.volume = 0;
+  el.playsInline = true;
+  el.setAttribute("muted", "");
+  el.setAttribute("playsinline", "");
+  el.setAttribute("webkit-playsinline", "");
+}
+
+/**
  * Full-bleed hero video.
  * Poster is the exact first frame of the trimmed cinema clip so reload
  * never flashes a different image before playback starts.
@@ -20,6 +35,7 @@ export function HeroVideo() {
   const [failed, setFailed] = useState(false);
   const [mediaReady, setMediaReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -31,59 +47,112 @@ export function HeroVideo() {
 
   useEffect(() => {
     const el = videoRef.current;
+    const section = sectionRef.current;
     if (!el || reducedMotion) return;
 
     let cancelled = false;
     let revealed = false;
+    let inView = true;
 
     const reveal = () => {
       if (cancelled || revealed) return;
       revealed = true;
       setMediaReady(true);
-      el.muted = true;
-      const play = el.play();
-      if (play && typeof play.catch === "function") {
-        play.catch(() => {
-          /* autoplay blocked — matching poster stays */
-        });
+    };
+
+    const tryPlay = () => {
+      if (cancelled || !inView) return;
+      armInlinePlayback(el);
+
+      const playPromise = el.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise
+          .then(() => {
+            reveal();
+          })
+          .catch(() => {
+            // Autoplay blocked (common on iOS Low Power Mode) — unlock on gesture.
+          });
       }
     };
 
-    el.muted = true;
-    el.playsInline = true;
-    el.currentTime = 0;
+    armInlinePlayback(el);
 
-    // Prefer painted frames (not just metadata) before crossfade
-    const onPlaying = () => reveal();
+    const onPlaying = () => {
+      reveal();
+    };
+    const onCanPlay = () => {
+      if (!revealed) tryPlay();
+    };
     const onLoadedData = () => {
-      if (el.readyState >= 2) reveal();
+      if (el.readyState >= 2) tryPlay();
     };
 
     el.addEventListener("playing", onPlaying);
+    el.addEventListener("canplay", onCanPlay);
     el.addEventListener("loadeddata", onLoadedData);
 
-    if (el.readyState >= 2) {
-      el.play()
-        .then(() => reveal())
-        .catch(() => {
-          /* keep poster */
-        });
-    } else {
-      el.load();
-      el.play().catch(() => {
-        /* keep poster until playing */
-      });
+    // First attempt as soon as the element is in the tree
+    tryPlay();
+
+    // If autoplay is blocked, the first user gesture must start playback.
+    // Scroll/touchstart are enough — no need to tap the video itself.
+    const unlock = () => {
+      if (cancelled || revealed) return;
+      tryPlay();
+    };
+    const unlockOpts: AddEventListenerOptions = { capture: true, passive: true };
+    window.addEventListener("touchstart", unlock, unlockOpts);
+    window.addEventListener("pointerdown", unlock, unlockOpts);
+    window.addEventListener("click", unlock, unlockOpts);
+    window.addEventListener("scroll", unlock, unlockOpts);
+
+    // Pause when offscreen so mobile scroll isn't fighting 1080p decode.
+    let io: IntersectionObserver | null = null;
+    if (section && typeof IntersectionObserver !== "undefined") {
+      io = new IntersectionObserver(
+        ([entry]) => {
+          inView = Boolean(entry?.isIntersecting);
+          if (!inView) {
+            el.pause();
+            return;
+          }
+          tryPlay();
+        },
+        { threshold: 0.12, rootMargin: "8% 0px" },
+      );
+      io.observe(section);
     }
+
+    const onVisibility = () => {
+      if (document.hidden) {
+        el.pause();
+      } else if (inView) {
+        tryPlay();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
       cancelled = true;
       el.removeEventListener("playing", onPlaying);
+      el.removeEventListener("canplay", onCanPlay);
       el.removeEventListener("loadeddata", onLoadedData);
+      window.removeEventListener("touchstart", unlock, unlockOpts);
+      window.removeEventListener("pointerdown", unlock, unlockOpts);
+      window.removeEventListener("click", unlock, unlockOpts);
+      window.removeEventListener("scroll", unlock, unlockOpts);
+      document.removeEventListener("visibilitychange", onVisibility);
+      io?.disconnect();
     };
   }, [reducedMotion]);
 
   return (
-    <section className="hero-video" aria-label={`${site.shortName} kitchen`}>
+    <section
+      ref={sectionRef}
+      className="hero-video"
+      aria-label={`${site.shortName} kitchen`}
+    >
       <div className="hero-video-media-wrap">
         {/* Exact first frame of the trimmed clip — seamless with video start */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
