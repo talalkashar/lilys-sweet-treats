@@ -27,7 +27,8 @@ export const site = {
    * Square 1200×1200 food photo (same pattern as FORGE) so LinkedIn
    * auto-pulls a real thumbnail for Experience / share cards.
    */
-  ogImage: "/images/og/lilys-og.jpg",
+  // Root path is easiest for LinkedIn/crawlers (same idea as a dedicated OG asset)
+  ogImage: "/og.jpg",
   /** Purple cupcake wall — sitewide texture */
   pattern: "/brand/pattern.png",
   /** Soft line-art cupcakes for lighter section washes */

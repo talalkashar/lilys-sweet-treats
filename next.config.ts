@@ -59,6 +59,26 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        // LinkedIn / social crawlers cache OG assets; long TTL + simple paths help previews
+        source: "/og.jpg",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+          { key: "Content-Type", value: "image/jpeg" },
+        ],
+      },
+      {
+        source: "/images/og/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
     ];
   },
 };
