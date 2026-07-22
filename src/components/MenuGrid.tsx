@@ -22,7 +22,7 @@ export function MenuGrid() {
 
           return (
             <section key={cat.id} aria-labelledby={`menu-${cat.id}`}>
-              <Reveal delayMs={catIndex * 25}>
+              <Reveal delayMs={catIndex * 40}>
                 <div className="menu-cat-header">
                   <h3
                     id={`menu-${cat.id}`}
@@ -39,7 +39,7 @@ export function MenuGrid() {
               {/* Full-width stacked rows — no incomplete multi-col holes */}
               <div className="menu-product-list">
                 {items.map((p, i) => (
-                  <Reveal key={p.id} delayMs={catIndex * 25 + i * 40}>
+                  <Reveal key={p.id} delayMs={catIndex * 40 + i * 65}>
                     <ProductCard product={p} onOpen={setActive} />
                   </Reveal>
                 ))}

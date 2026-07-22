@@ -156,7 +156,7 @@ export default function Home() {
               ))}
             </div>
 
-            <Reveal delayMs={80} className="story-band-copy">
+            <Reveal delayMs={120} className="story-band-copy">
               <div>
                 <p className="section-label">Custom flavors</p>
                 <h2 className="section-title mt-2">
@@ -220,7 +220,7 @@ export default function Home() {
 
           <div className="reviews-board mt-8">
             {reviews.map((review, i) => (
-              <Reveal key={review.id} delayMs={i * 40}>
+              <Reveal key={review.id} delayMs={i * 70}>
                 <figure
                   className={`review-note review-note--${(i % 6) + 1}${
                     i === 0 ? " review-note--featured" : ""

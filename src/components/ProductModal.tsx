@@ -96,7 +96,7 @@ export function ProductModal({ product, onClose }: Props) {
                     alt={product.name}
                     fill
                     quality={90}
-                    className="object-cover transition duration-200 group-hover:scale-[1.02]"
+                    className="object-cover transition duration-700 ease-out group-hover:scale-[1.03]"
                     style={{
                       objectPosition:
                         activeIndex === 0 && product.imagePosition

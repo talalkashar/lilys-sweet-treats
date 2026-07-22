@@ -74,6 +74,18 @@
   --header-bar-h: 4.5rem;
   --header-border-y: 6px; /* 3px top + 3px bottom */
   --header-offset: calc(var(--header-bar-h) + var(--header-border-y));
+
+  /*
+   * Motion system — silk, not snap.
+   * Long ease-out curves + roomy durations so UI glides instead of popping.
+   */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.4, 0.05, 0.2, 1);
+  --ease-float: cubic-bezier(0.45, 0.05, 0.25, 1);
+  --dur-fast: 0.38s;
+  --dur-med: 0.58s;
+  --dur-slow: 0.88s;
+  --dur-reveal: 0.95s;
 }
 
 @media (min-width: 640px) {
@@ -103,6 +115,12 @@ html {
      that can leave void space past the footer after scroll. */
   height: auto;
   min-height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 section[id] {
@@ -287,8 +305,8 @@ body {
   line-height: 1.4;
   outline: none;
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color var(--dur-med) var(--ease-out-soft),
+    box-shadow var(--dur-med) var(--ease-out-soft);
 }
 
 select.field {
@@ -956,7 +974,7 @@ textarea.field {
   color: var(--cocoa-soft);
   font-weight: 600;
   text-decoration: none;
-  transition: color 0.15s ease;
+  transition: color var(--dur-med) var(--ease-out-soft);
 }
 
 .footer-legal-link:hover {
@@ -1090,10 +1108,11 @@ a.footer-detail:hover {
   border: 1px solid #ffc2db;
   box-shadow: 0 4px 12px rgba(255, 180, 210, 0.28);
   transition:
-    color 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
+    color var(--dur-med) var(--ease-out-soft),
+    background var(--dur-med) var(--ease-out-soft),
+    border-color var(--dur-med) var(--ease-out-soft),
+    transform var(--dur-med) var(--ease-out-soft),
+    box-shadow var(--dur-med) var(--ease-out-soft);
 }
 
 .footer-social-icon {
@@ -1106,7 +1125,8 @@ a.footer-detail:hover {
   color: #4a2036;
   background: linear-gradient(135deg, #ffc8e0 0%, #ffb6d4 55%, #ffa8cb 100%);
   border-color: #ffb6d4;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(255, 180, 210, 0.34);
 }
 
 @media (max-width: 520px) {
@@ -1139,10 +1159,12 @@ a.footer-detail:hover {
   padding: 0.75rem 1.35rem;
   min-height: 2.75rem; /* comfortable mobile tap target */
   transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    transform var(--dur-med) var(--ease-out-soft),
+    background var(--dur-med) var(--ease-out-soft),
+    border-color var(--dur-med) var(--ease-out-soft),
+    box-shadow var(--dur-med) var(--ease-out-soft),
+    color var(--dur-med) var(--ease-out-soft),
+    filter var(--dur-med) var(--ease-out-soft);
 }
 
 @media (max-width: 639px) {
@@ -1165,7 +1187,8 @@ a.footer-detail:hover {
   background: linear-gradient(135deg, #ffc8e0 0%, #ffb6d4 55%, #ffa8cb 100%);
   color: #4a2036;
   border-color: #ffb6d4;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(255, 180, 210, 0.36);
 }
 
 .btn-secondary {
@@ -1176,7 +1199,8 @@ a.footer-detail:hover {
 
 .btn-secondary:hover {
   border-color: var(--rose);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(44, 34, 40, 0.07);
 }
 
 /* ---------- Cards ---------- */
@@ -1187,23 +1211,23 @@ a.footer-detail:hover {
   box-shadow: var(--shadow-soft);
   overflow: hidden;
   transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    border-color 0.2s ease;
+    transform var(--dur-slow) var(--ease-out-soft),
+    box-shadow var(--dur-slow) var(--ease-out-soft),
+    border-color var(--dur-med) var(--ease-out-soft);
 }
 
 .card-product:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-lift);
   border-color: var(--blush-deep);
 }
 
 .card-product:hover .card-product-img {
-  transform: scale(1.03);
+  transform: scale(1.035);
 }
 
 .card-product-img {
-  transition: transform 0.45s ease;
+  transition: transform var(--dur-slow) var(--ease-out-soft);
 }
 
 .step-card {
@@ -2017,7 +2041,10 @@ a.footer-detail:hover {
   line-height: 1.2;
   color: var(--ink-muted);
   background: transparent;
-  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+  transition:
+    background var(--dur-med) var(--ease-out-soft),
+    color var(--dur-med) var(--ease-out-soft),
+    box-shadow var(--dur-med) var(--ease-out-soft);
 }
 
 .story-video-tab:hover {
@@ -2300,14 +2327,16 @@ a.footer-detail:hover {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform var(--dur-slow) var(--ease-out-soft),
+    box-shadow var(--dur-slow) var(--ease-out-soft);
 }
 
 .review-note:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.95) inset,
-    0 12px 28px rgba(44, 34, 40, 0.08);
+    0 14px 32px rgba(44, 34, 40, 0.09);
 }
 
 /* Slight organic tilt + paper tints (no layout shift on reduced motion) */
@@ -2482,11 +2511,11 @@ a.footer-detail:hover {
 
 /* ---------- Modal ---------- */
 .modal-backdrop {
-  animation: fadeIn 0.2s ease both;
+  animation: fadeIn var(--dur-med) var(--ease-out-soft) both;
 }
 
 .modal-panel {
-  animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: modalPop var(--dur-slow) var(--ease-out-soft) both;
 }
 
 /* Horizontal product modal matches homepage card rows (sm+) */
@@ -2512,11 +2541,11 @@ a.footer-detail:hover {
 @keyframes modalPop {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(22px) scale(0.985);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -2524,10 +2553,10 @@ a.footer-detail:hover {
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(18px);
     transition:
-      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity var(--dur-reveal) var(--ease-out-soft),
+      transform var(--dur-reveal) var(--ease-out-soft);
   }
 
   .reveal-in {
@@ -2536,20 +2565,20 @@ a.footer-detail:hover {
   }
 
   .anim-fade-up {
-    animation: fadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: fadeUp var(--dur-reveal) var(--ease-out-soft) both;
   }
 
   .anim-delay-1 {
-    animation-delay: 0.06s;
+    animation-delay: 0.1s;
   }
   .anim-delay-2 {
-    animation-delay: 0.12s;
-  }
-  .anim-delay-3 {
     animation-delay: 0.18s;
   }
+  .anim-delay-3 {
+    animation-delay: 0.26s;
+  }
   .anim-delay-4 {
-    animation-delay: 0.24s;
+    animation-delay: 0.34s;
   }
 }
 
@@ -2582,7 +2611,7 @@ a.footer-detail:hover {
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -2791,19 +2820,29 @@ body:has(.hero-video) .site-header {
 .site-header--ready::before,
 .site-header--ready::after {
   transition:
-    background-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    backdrop-filter 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    background-color var(--dur-slow) var(--ease-out-soft),
+    border-color var(--dur-slow) var(--ease-out-soft),
+    box-shadow var(--dur-slow) var(--ease-out-soft),
+    opacity var(--dur-slow) var(--ease-out-soft),
+    backdrop-filter var(--dur-slow) var(--ease-out-soft),
+    border-width var(--dur-med) var(--ease-out-soft);
 }
 
 .site-header--ready .site-header-title,
 .site-header--ready .site-header-subtitle,
 .site-header--ready .header-nav-link {
   transition:
-    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    text-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    color var(--dur-slow) var(--ease-out-soft),
+    text-shadow var(--dur-slow) var(--ease-out-soft),
+    opacity var(--dur-med) var(--ease-out-soft);
+}
+
+.site-header--ready .logo-mark {
+  transition:
+    width var(--dur-med) var(--ease-out-soft),
+    height var(--dur-med) var(--ease-out-soft),
+    box-shadow var(--dur-med) var(--ease-out-soft),
+    border-color var(--dur-med) var(--ease-out-soft);
 }
 
 .site-header::before {
@@ -2918,8 +2957,8 @@ body:has(.hero-video) .site-header {
   object-fit: cover;
   object-position: center 42%;
   opacity: 0;
-  /* Short crossfade only — poster is the exact first frame */
-  transition: opacity 0.28s ease-out;
+  /* Soft crossfade — poster is the exact first frame */
+  transition: opacity var(--dur-slow) var(--ease-out-soft);
 }
 
 .hero-video-media--ready {
@@ -2977,6 +3016,10 @@ body:has(.hero-video) .site-header {
 .header-nav-link {
   white-space: nowrap;
   letter-spacing: 0.02em;
+  transition:
+    color var(--dur-med) var(--ease-out-soft),
+    text-shadow var(--dur-med) var(--ease-out-soft),
+    opacity var(--dur-med) var(--ease-out-soft);
 }
 
 .site-header-actions {
@@ -2987,6 +3030,11 @@ body:has(.hero-video) .site-header {
 /* Hamburger: white bars over video, cocoa when scrolled / solid bar */
 .header-menu-btn {
   flex-shrink: 0;
+  transition:
+    background-color var(--dur-med) var(--ease-out-soft),
+    border-color var(--dur-med) var(--ease-out-soft),
+    box-shadow var(--dur-med) var(--ease-out-soft),
+    color var(--dur-med) var(--ease-out-soft);
 }
 
 .header-menu-btn .header-menu-icon {
@@ -3003,9 +3051,9 @@ body:has(.hero-video) .site-header {
   border-radius: 999px;
   background: #fff;
   transition:
-    transform 0.2s ease,
-    opacity 0.2s ease,
-    background-color 0.35s ease;
+    transform var(--dur-med) var(--ease-out-soft),
+    opacity var(--dur-med) var(--ease-out-soft),
+    background-color var(--dur-slow) var(--ease-out-soft);
 }
 
 .site-header--scrolled .header-menu-btn .header-menu-icon span {
@@ -3290,8 +3338,8 @@ body:has(.hero-video) .site-header {
     pointer-events: none;
     transform: translateY(110%);
     transition:
-      opacity 0.28s ease,
-      transform 0.28s ease;
+      opacity var(--dur-slow) var(--ease-out-soft),
+      transform var(--dur-slow) var(--ease-out-soft);
     padding: 0.6rem 0.85rem
       calc(0.6rem + env(safe-area-inset-bottom, 0px));
     /* Solid enough that footer/content never show through */
@@ -3396,7 +3444,13 @@ body:has(.hero-video) .site-header {
   }
 
   .card-product:active {
-    transform: scale(0.995);
+    transform: scale(0.992);
+    transition-duration: var(--dur-fast);
+  }
+
+  .btn-primary:active,
+  .btn-secondary:active {
+    transform: translateY(0) scale(0.985);
   }
 
   /* Touch devices: skip continuous wallpaper motion + rainbow shimmer cost */

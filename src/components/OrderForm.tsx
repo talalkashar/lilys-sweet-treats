@@ -475,7 +475,7 @@ export function OrderForm() {
                   key={pack.id}
                   type="button"
                   onClick={() => selectPackSize(pack)}
-                  className={`relative flex flex-col rounded-2xl border-2 px-3 py-3 text-left transition ${
+                  className={`relative flex flex-col rounded-2xl border-2 px-3 py-3 text-left transition duration-500 ease-out ${
                     selected
                       ? "border-[var(--rose)] bg-[var(--lavender-soft)] shadow-[var(--shadow-soft)]"
                       : "border-[var(--blush)]/70 bg-white hover:border-[var(--rose)] hover:bg-[var(--lavender-soft)]/50"
@@ -608,7 +608,7 @@ export function OrderForm() {
                 return (
                   <li
                     key={line.id}
-                    className={`flex items-center justify-between gap-3 rounded-xl border px-3.5 py-3 transition ${
+                    className={`flex items-center justify-between gap-3 rounded-xl border px-3.5 py-3 transition duration-500 ease-out ${
                       highlight
                         ? "border-[var(--rose)] bg-[var(--lavender-soft)]"
                         : "border-[var(--blush)]/70 bg-white"
