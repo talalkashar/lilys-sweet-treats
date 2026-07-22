@@ -3,8 +3,17 @@ export const site = {
   name: "Lily's Sweet Treats & More",
   shortName: "Lily's Sweet Treats",
   tagline: "Homemade treats, made with love",
+  /**
+   * Meta / search description only (Google, social previews).
+   * Not the on-page marketing copy.
+   */
   description:
-    "Pre-order online for porch pickup in Haymarket, VA. Small-batch bakes ordered Monday–Wednesday by noon for Friday and Saturday pickup.",
+    "Homemade bakery in Haymarket, VA. Pre-order cinnamon rolls, sticky buns, and sweet treats online for porch pickup Friday and Saturday.",
+  /**
+   * Search + social title focus (shorter than legal/display name).
+   * Used in default <title> / Open Graph where we want a cleaner result.
+   */
+  searchTitle: "Lily's Sweet Treats | Homemade Bakery in Haymarket, VA",
   /**
    * Canonical production origin (www). Apex redirects here via Vercel.
    * Used for sitemap, robots, metadataBase, Open Graph, and JSON-LD.
@@ -13,6 +22,11 @@ export const site = {
   logo: "/brand/logo.png",
   /** Full brand board for large display (hero) */
   logoFull: "/brand/logo-full.png",
+  /**
+   * Primary image for Google / Open Graph / link previews.
+   * Food photo (not logo) so search & shares pop.
+   */
+  ogImage: "/brand/og-default.jpg",
   /** Purple cupcake wall — sitewide texture */
   pattern: "/brand/pattern.png",
   /** Soft line-art cupcakes for lighter section washes */

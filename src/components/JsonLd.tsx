@@ -8,11 +8,16 @@ export function JsonLd() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": ["Bakery", "LocalBusiness"],
-    name: site.name,
-    alternateName: site.shortName,
+    // shortName first for a cleaner Google knowledge / search identity
+    name: site.shortName,
+    alternateName: [site.name, "Lily's Sweet Treats Haymarket"],
     description: site.description,
     url: site.url,
-    image: `${site.url}${site.logoFull}`,
+    // Lead with food photo so rich results / previews show product, not logo
+    image: [
+      `${site.url}${site.ogImage}`,
+      `${site.url}${site.logoFull}`,
+    ],
     logo: `${site.url}${site.logo}`,
     telephone: site.phone,
     email: site.email,
