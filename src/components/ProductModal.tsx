@@ -64,7 +64,7 @@ export function ProductModal({ product, onClose }: Props) {
   return createPortal(
     <>
       <div
-        className="modal-backdrop fixed inset-0 z-[200] flex items-end justify-center p-0 sm:items-center sm:p-6"
+        className="modal-backdrop fixed inset-0 z-[200] flex items-end justify-center p-0 sm:items-center sm:p-5 md:p-6"
         role="dialog"
         aria-modal="true"
         aria-labelledby="product-modal-title"
@@ -76,76 +76,90 @@ export function ProductModal({ product, onClose }: Props) {
           onClick={onClose}
         />
 
-        <div className="modal-panel relative z-10 flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-t-2xl border border-white bg-white shadow-[var(--shadow-lift)] sm:max-h-[85vh] sm:rounded-2xl">
-          <div className="relative aspect-[3/2] shrink-0 bg-[var(--cream-deep)]">
-            {activeSrc ? (
+        {/*
+          Mobile: stacked (photo → details) for small screens.
+          sm+: horizontal row matching homepage product cards (photo left, copy right).
+        */}
+        <div className="modal-panel product-modal-panel relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-white bg-white shadow-[var(--shadow-lift)] sm:max-h-[min(88vh,42rem)] sm:max-w-4xl sm:flex-row sm:rounded-2xl lg:max-w-5xl">
+          {/* Media column — mirrors card photo emphasis */}
+          <div className="product-modal-media relative flex shrink-0 flex-col bg-[var(--cream-deep)] sm:w-[58%] sm:min-w-0 lg:w-[62%]">
+            <div className="relative aspect-[4/3] w-full sm:aspect-auto sm:min-h-[16rem] sm:flex-1">
+              {activeSrc ? (
+                <button
+                  type="button"
+                  className="group absolute inset-0 cursor-zoom-in"
+                  onClick={() => setLightboxOpen(true)}
+                  aria-label={`Enlarge photo of ${product.name}`}
+                >
+                  <Image
+                    src={activeSrc}
+                    alt={product.name}
+                    fill
+                    quality={90}
+                    className="object-cover transition duration-200 group-hover:scale-[1.02]"
+                    style={{
+                      objectPosition:
+                        activeIndex === 0 && product.imagePosition
+                          ? product.imagePosition
+                          : "center center",
+                    }}
+                    sizes="(max-width: 639px) 100vw, (max-width: 1023px) 55vw, 62vw"
+                    priority
+                  />
+                  <span className="pointer-events-none absolute bottom-2.5 right-2.5 rounded-full bg-white/95 px-2.5 py-1 text-[0.65rem] font-semibold text-[var(--cocoa)] shadow-sm">
+                    Tap to enlarge
+                  </span>
+                </button>
+              ) : (
+                <div className="flex h-full min-h-[12rem] items-center justify-center text-5xl">
+                  {product.emoji}
+                </div>
+              )}
               <button
                 type="button"
-                className="group absolute inset-0 cursor-zoom-in"
-                onClick={() => setLightboxOpen(true)}
-                aria-label={`Enlarge photo of ${product.name}`}
+                onClick={onClose}
+                className="absolute right-2.5 top-2.5 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-lg text-[var(--cocoa)] shadow-sm sm:left-2.5 sm:right-auto"
+                aria-label="Close"
               >
-                <Image
-                  src={activeSrc}
-                  alt={product.name}
-                  fill
-                  quality={90}
-                  className="object-cover object-center transition duration-200 group-hover:scale-[1.02]"
-                  sizes="(max-width: 640px) 100vw, 448px"
-                  priority
-                />
-                <span className="pointer-events-none absolute bottom-2.5 right-2.5 rounded-full bg-white/95 px-2.5 py-1 text-[0.65rem] font-semibold text-[var(--cocoa)] shadow-sm">
-                  Tap to enlarge
-                </span>
+                ×
               </button>
-            ) : (
-              <div className="flex h-full items-center justify-center text-5xl">
-                {product.emoji}
-              </div>
-            )}
-            <button
-              type="button"
-              onClick={onClose}
-              className="absolute right-2.5 top-2.5 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-lg text-[var(--cocoa)] shadow-sm"
-              aria-label="Close"
-            >
-              ×
-            </button>
+              {gallery.length > 1 ? (
+                <p className="pointer-events-none absolute bottom-2.5 left-2.5 rounded-full bg-white/90 px-2.5 py-0.5 text-[0.65rem] font-semibold tabular-nums text-[var(--cocoa)] sm:left-auto sm:right-2.5 sm:bottom-14">
+                  {activeIndex + 1} / {gallery.length}
+                </p>
+              ) : null}
+            </div>
+
             {gallery.length > 1 ? (
-              <p className="pointer-events-none absolute bottom-2.5 left-2.5 rounded-full bg-white/90 px-2.5 py-0.5 text-[0.65rem] font-semibold tabular-nums text-[var(--cocoa)]">
-                {activeIndex + 1} / {gallery.length}
-              </p>
+              <div className="flex gap-2 overflow-x-auto border-t border-[var(--blush)]/40 bg-white/80 px-3 py-2.5 [-ms-overflow-style:none] [scrollbar-width:thin] sm:border-t-0 sm:bg-transparent sm:px-2.5 sm:pb-2.5 sm:pt-0">
+                {gallery.map((src, i) => (
+                  <button
+                    key={src}
+                    type="button"
+                    onClick={() => setActiveIndex(i)}
+                    className={`relative h-14 w-[4.25rem] min-w-[4.25rem] shrink-0 grow-0 overflow-hidden rounded-lg border-2 ${
+                      i === activeIndex
+                        ? "border-[var(--rose)] ring-1 ring-[var(--rose)]/30"
+                        : "border-[var(--blush)]/40 opacity-85 hover:opacity-100"
+                    }`}
+                    aria-label={`Photo ${i + 1} of ${product.name}`}
+                    aria-current={i === activeIndex}
+                  >
+                    <Image
+                      src={src}
+                      alt=""
+                      fill
+                      className="object-cover object-center"
+                      sizes="68px"
+                    />
+                  </button>
+                ))}
+              </div>
             ) : null}
           </div>
 
-          {gallery.length > 1 ? (
-            <div className="flex gap-2.5 overflow-x-auto border-b border-[var(--blush)]/50 px-3 py-2.5 [-ms-overflow-style:none] [scrollbar-width:thin]">
-              {gallery.map((src, i) => (
-                <button
-                  key={src}
-                  type="button"
-                  onClick={() => setActiveIndex(i)}
-                  className={`relative h-14 w-[4.25rem] min-w-[4.25rem] shrink-0 grow-0 overflow-hidden rounded-lg border-2 ${
-                    i === activeIndex
-                      ? "border-[var(--rose)] ring-1 ring-[var(--rose)]/30"
-                      : "border-[var(--blush)]/40 opacity-85 hover:opacity-100"
-                  }`}
-                  aria-label={`Photo ${i + 1} of ${product.name}`}
-                  aria-current={i === activeIndex}
-                >
-                  <Image
-                    src={src}
-                    alt=""
-                    fill
-                    className="object-cover object-center"
-                    sizes="68px"
-                  />
-                </button>
-              ))}
-            </div>
-          ) : null}
-
-          <div className="overflow-y-auto p-5 sm:p-6">
+          {/* Details column */}
+          <div className="product-modal-body min-h-0 flex-1 overflow-y-auto p-5 sm:w-[42%] sm:p-6 lg:w-[38%]">
             <div className="flex items-start justify-between gap-3">
               <h2
                 id="product-modal-title"
@@ -211,7 +225,7 @@ export function ProductModal({ product, onClose }: Props) {
               nut cross-contact is possible on every product. Porch pickup only.
             </p>
 
-            <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
+            <div className="mt-6 flex flex-col gap-2.5 sm:flex-col lg:flex-row">
               <a
                 href={`/order?product=${product.id}`}
                 onClick={onClose}

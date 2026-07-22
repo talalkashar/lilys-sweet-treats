@@ -92,7 +92,7 @@ export function HeroVideo() {
           alt=""
           className="hero-video-poster"
           fetchPriority="high"
-          decoding="async"
+          decoding="sync"
         />
 
         {reducedMotion || failed ? null : (

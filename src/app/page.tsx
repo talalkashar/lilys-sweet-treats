@@ -38,6 +38,8 @@ const storyCollage = [
     src: "/products/peach-main-studio-v2.jpg",
     alt: "Peach cobbler cinnamon roll",
     slot: "wide" as const,
+    // Keep peach toppings in frame (same as menu product crop)
+    objectPosition: "center 22%",
   },
   {
     src: "/products/strawberry-main-studio-v2.jpg",
@@ -143,6 +145,11 @@ export default function Home() {
                     fill
                     quality={90}
                     className="story-photo-img"
+                    style={
+                      photo.objectPosition
+                        ? { objectPosition: photo.objectPosition }
+                        : undefined
+                    }
                     sizes="(max-width: 1024px) 45vw, 340px"
                   />
                 </div>
@@ -180,14 +187,16 @@ export default function Home() {
       <div className="brand-divider" aria-hidden />
 
       {/* MENU */}
-      <section id="menu" className="section-menu section-pad">
-        <div className="shell">
+      <section id="menu" className="section-menu section-pad section-menu--dense">
+        <div className="shell menu-shell">
           <Reveal>
-            <div className="menu-intro max-w-2xl">
+            <div className="menu-intro">
               <p className="section-label">Menu</p>
               <h2 className="section-title mt-2">What we&apos;re baking</h2>
               <p className="prose-soft mt-3">
-                Tap a treat for details, then pre-order in packs of 2, 4, 6, 8, or 12. Flavors come in pairs of two of the same kind — mix pairs in larger packs.
+                Tap a treat for details, then pre-order in packs of 2, 4, 6, 8,
+                or 12. Flavors come in pairs of two of the same kind — mix pairs
+                in larger packs.
               </p>
             </div>
           </Reveal>
@@ -196,74 +205,59 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Reviews */}
+      {/* Reviews — note-style quotes, not equal SaaS cards */}
       <section id="reviews" className="section-reviews section-pad">
-        <div className="section-reviews-glow" aria-hidden />
         <div className="shell relative">
           <Reveal>
             <div className="reviews-header">
-              <p className="section-label">Reviews</p>
+              <p className="section-label">From the porch</p>
               <h2 className="section-title mt-2">What guests say</h2>
+              <p className="prose-soft reviews-header-lead mt-3">
+                Real weekend pickups from neighbors around Haymarket.
+              </p>
             </div>
           </Reveal>
 
-          <div className="reviews-grid mt-10">
-            {reviews.map((review, i) => {
-              const initials = review.name
-                .split(" ")
-                .map((part) => part[0])
-                .join("")
-                .slice(0, 2);
-
-              return (
-                <Reveal key={review.id} delayMs={i * 45}>
-                  <figure
-                    className={`review-card${i === 0 ? " review-card--featured" : ""}`}
+          <div className="reviews-board mt-8">
+            {reviews.map((review, i) => (
+              <Reveal key={review.id} delayMs={i * 40}>
+                <figure
+                  className={`review-note review-note--${(i % 6) + 1}${
+                    i === 0 ? " review-note--featured" : ""
+                  }`}
+                >
+                  <div
+                    className="review-stars"
+                    aria-label={`${review.stars} out of 5 stars`}
                   >
-                    <span className="review-mark" aria-hidden>
-                      “
-                    </span>
-
-                    <div
-                      className="review-stars"
-                      aria-label={`${review.stars} out of 5 stars`}
-                    >
-                      {Array.from({ length: 5 }).map((_, s) => (
-                        <span
-                          key={s}
-                          className={
-                            s < review.stars
-                              ? "review-star review-star--on"
-                              : "review-star"
-                          }
-                          aria-hidden
-                        >
-                          ★
-                        </span>
-                      ))}
-                    </div>
-
-                    <blockquote className="review-quote">
-                      {review.quote}
-                    </blockquote>
-
-                    <figcaption className="review-author">
-                      <span className="review-avatar" aria-hidden>
-                        {initials}
+                    {Array.from({ length: 5 }).map((_, s) => (
+                      <span
+                        key={s}
+                        className={
+                          s < review.stars
+                            ? "review-star review-star--on"
+                            : "review-star"
+                        }
+                        aria-hidden
+                      >
+                        ★
                       </span>
-                      <span className="review-meta">
-                        <span className="review-name">{review.name}</span>
-                        {review.place ? (
-                          <span className="review-place">{review.place}</span>
-                        ) : (
-                          <span className="review-place">Local guest</span>
-                        )}
-                      </span>
-                    </figcaption>
-                  </figure>
-                </Reveal>
-              );
-            })}
+                    ))}
+                  </div>
+
+                  <blockquote className="review-quote">
+                    {review.quote}
+                  </blockquote>
+
+                  <figcaption className="review-author">
+                    <span className="review-name">{review.name}</span>
+                    {review.place ? (
+                      <span className="review-place"> · {review.place}</span>
+                    ) : null}
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>

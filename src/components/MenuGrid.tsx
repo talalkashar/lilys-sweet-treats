@@ -15,7 +15,7 @@ export function MenuGrid() {
 
   return (
     <>
-      <div className="mt-10 space-y-12">
+      <div className="menu-grid-stack">
         {menuCategories.map((cat, catIndex) => {
           const items = productsInCategory(cat.id);
           if (items.length === 0) return null;
@@ -23,10 +23,10 @@ export function MenuGrid() {
           return (
             <section key={cat.id} aria-labelledby={`menu-${cat.id}`}>
               <Reveal delayMs={catIndex * 25}>
-                <div className="mb-4 border-b border-[var(--blush)]/35 pb-2.5">
+                <div className="menu-cat-header">
                   <h3
                     id={`menu-${cat.id}`}
-                    className="font-display text-xl text-[var(--cocoa)]"
+                    className="font-display text-lg text-[var(--cocoa)] sm:text-xl"
                   >
                     {cat.title}
                   </h3>
@@ -36,7 +36,8 @@ export function MenuGrid() {
                 </div>
               </Reveal>
 
-              <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+              {/* Full-width stacked rows — no incomplete multi-col holes */}
+              <div className="menu-product-list">
                 {items.map((p, i) => (
                   <Reveal key={p.id} delayMs={catIndex * 25 + i * 40}>
                     <ProductCard product={p} onOpen={setActive} />

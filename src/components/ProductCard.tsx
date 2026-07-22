@@ -17,38 +17,41 @@ export function ProductCard({ product, onOpen }: Props) {
     : product.price.toFixed(2);
 
   return (
-    <article className="card-product group flex h-full flex-col">
+    <article className="card-product card-product--fill group">
       <button
         type="button"
         onClick={() => onOpen?.(product)}
-        className="flex h-full flex-1 flex-col text-left"
+        className="card-product-hit"
         aria-label={`View ${product.name}`}
       >
-        <div className="relative aspect-[3/2] w-full overflow-hidden bg-[var(--lavender-soft)]">
+        <div className="card-product-media bg-[var(--lavender-soft)]">
           {showImage ? (
             <Image
               src={product.image!}
               alt={product.name}
               fill
               quality={90}
-              className="card-product-img object-cover object-center"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+              className="card-product-img object-cover"
+              style={{
+                objectPosition: product.imagePosition ?? "center center",
+              }}
+              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 62vw, 68vw"
               onError={() => setImgFailed(true)}
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-4xl">
+            <div className="flex h-full min-h-[12rem] items-center justify-center text-4xl">
               <span aria-hidden>{product.emoji}</span>
             </div>
           )}
         </div>
 
-        <div className="card-product-body flex flex-1 flex-col gap-1.5 p-4">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-display text-lg leading-snug text-[var(--cocoa)] sm:text-xl">
+        <div className="card-product-body">
+          <div className="card-product-top">
+            <h3 className="card-product-name font-display text-[var(--cocoa)]">
               {product.name}
             </h3>
             {product.showUnitPrice !== false ? (
-              <p className="card-product-price shrink-0 pt-0.5 text-sm font-semibold tabular-nums text-[var(--rose)]">
+              <p className="card-product-price shrink-0 text-sm font-semibold tabular-nums text-[var(--rose)]">
                 ${priceLabel}
                 <span className="block text-[0.65rem] font-medium normal-case tracking-normal text-[var(--ink-muted)]">
                   each
@@ -56,13 +59,10 @@ export function ProductCard({ product, onOpen }: Props) {
               </p>
             ) : null}
           </div>
-          <p className="line-clamp-2 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+          <p className="card-product-desc text-[var(--cocoa-soft)]">
             {product.description}
           </p>
-          <p className="text-xs font-medium text-[var(--cocoa-soft)]">
-            Pairs of 2 · 2 / 4 / 6 / 8 / 12 packs · mix flavors in twos
-          </p>
-          <span className="card-product-cta mt-auto">
+          <span className="card-product-cta">
             View details
             <span aria-hidden> →</span>
           </span>

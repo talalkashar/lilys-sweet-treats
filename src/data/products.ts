@@ -43,6 +43,11 @@ export type Product = {
    * Main `image` is always shown first; do not duplicate it here.
    */
   images?: string[];
+  /**
+   * CSS object-position for main card/modal crop (e.g. "center 20%" or "center top").
+   * Use when toppings sit high in the frame and object-center clips them.
+   */
+  imagePosition?: string;
   popular?: boolean;
   /**
    * false = hidden from menu, order form, and checkout (soft delete).
@@ -121,6 +126,8 @@ export const products: Product[] = [
     emoji: "🍑",
     // studio = same format/grade as strawberry + sticky sets
     image: "/products/peach-main-studio-v2.jpg",
+    // Toppings/drizzle sit high — keep focal point toward top of frame
+    imagePosition: "center 22%",
     images: [
       "/products/peach-g2-studio-v2.jpg",
       "/products/peach-g3-studio-v2.jpg",
