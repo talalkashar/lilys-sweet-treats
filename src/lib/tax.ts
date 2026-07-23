@@ -49,6 +49,7 @@ export async function calculatePickupTax(
     customer_details: {
       address: {
         line1: site.address.line1,
+        ...(site.address.line2 ? { line2: site.address.line2 } : {}),
         city: site.address.city,
         state: site.address.state,
         postal_code: site.address.zip,

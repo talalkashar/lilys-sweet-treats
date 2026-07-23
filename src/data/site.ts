@@ -39,19 +39,19 @@ export const site = {
   email: "sweettreats0077@gmail.com",
   instagram: "https://www.instagram.com/lilys_sweet_treats_va/",
   /**
-   * Porch pickup street address.
+   * Pickup / mail address (USPS Street Addressing PO Box format).
    * Shown on the order confirmation screen + customer/owner emails.
    * Not listed in the public footer/nav (city-level only there).
    */
   address: {
-    line1: "2307 Gore Drive",
-    line2: "",
+    line1: "14658 Gap Way",
+    line2: "#237",
     city: "Haymarket",
     state: "VA",
-    zip: "20169",
+    zip: "20168",
   },
   /** Single-line for forms / Stripe metadata / confirmation emails */
-  addressLine: "2307 Gore Drive, Haymarket, VA 20169",
+  addressLine: "14658 Gap Way #237, Haymarket, VA 20168",
   locationNote: "Porch pickup in Haymarket, VA.",
   pickupNote: "Porch pickup Friday and Saturday. See weekly schedule for times.",
 
