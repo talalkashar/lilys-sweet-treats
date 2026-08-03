@@ -72,6 +72,45 @@ function defaultProductId(preferred?: string | null) {
   return availableProducts[0]?.id ?? "";
 }
 
+/**
+ * Best-effort cancel of an incomplete PaymentIntent when the customer leaves
+ * the pay step. Uses keepalive so tab-close still has a chance to land.
+ * Server only cancels if status is still open (never cancels a successful charge).
+ * Never throws — checkout UX must not depend on cancel succeeding.
+ */
+function abandonPaymentIntent(
+  paymentIntentId: string | null,
+  clientSecret: string | null,
+): void {
+  if (!paymentIntentId || !clientSecret) return;
+  const body = JSON.stringify({ paymentIntentId, clientSecret });
+  // Prefer fetch+keepalive so Origin is sent (our API requires same-site Origin).
+  try {
+    void fetch("/api/cancel-payment-intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+      keepalive: true,
+    });
+    return;
+  } catch {
+    // fall through
+  }
+  try {
+    if (
+      typeof navigator !== "undefined" &&
+      typeof navigator.sendBeacon === "function"
+    ) {
+      navigator.sendBeacon(
+        "/api/cancel-payment-intent",
+        new Blob([body], { type: "application/json" }),
+      );
+    }
+  } catch {
+    // ignore
+  }
+}
+
 export function OrderForm() {
   const searchParams = useSearchParams();
   const productParam = searchParams.get("product");
@@ -99,9 +138,13 @@ export function OrderForm() {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [step, setStep] = useState<Step>("details");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  /** Last PaymentIntent id — canceled when customer goes back / retries */
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [justAdded, setJustAdded] = useState<string | null>(null);
+  /** Honeypot — leave empty; bots that fill it are rejected server-side */
+  const [websiteTrap, setWebsiteTrap] = useState("");
   const [taxQuote, setTaxQuote] = useState<{
     subtotalLabel: string;
     taxLabel: string;
@@ -109,12 +152,67 @@ export function OrderForm() {
     taxRateLabel: string;
   } | null>(null);
   const highlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** Prevent double-submit race before React re-renders busy=true */
+  const submitLock = useRef(false);
+  /** Stable per "Continue to payment" click-session — changes on Back */
+  const checkoutAttemptId = useRef("");
+
+  function makeAttemptId() {
+    if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+      return crypto.randomUUID();
+    }
+    return `att_${Math.floor(performance.now())}_${checkoutAttemptId.current.length}`;
+  }
+
+  function ensureCheckoutAttemptId() {
+    if (!checkoutAttemptId.current) {
+      checkoutAttemptId.current = makeAttemptId();
+    }
+    return checkoutAttemptId.current;
+  }
+
+  function newCheckoutAttempt() {
+    checkoutAttemptId.current = makeAttemptId();
+  }
+
+  /** Refs so pagehide can cancel without stale closures */
+  const paySessionRef = useRef<{
+    paymentIntentId: string | null;
+    clientSecret: string | null;
+    step: Step;
+  }>({ paymentIntentId: null, clientSecret: null, step: "details" });
+  paySessionRef.current = { paymentIntentId, clientSecret, step };
 
   useEffect(() => {
     return () => {
       if (highlightTimer.current) clearTimeout(highlightTimer.current);
     };
   }, []);
+
+  // Cancel incomplete PI if the customer closes the tab while on the pay step.
+  useEffect(() => {
+    function onLeave() {
+      const s = paySessionRef.current;
+      if (s.step !== "pay") return;
+      abandonPaymentIntent(s.paymentIntentId, s.clientSecret);
+    }
+    window.addEventListener("pagehide", onLeave);
+    return () => {
+      window.removeEventListener("pagehide", onLeave);
+    };
+  }, []);
+
+  function leavePayStep() {
+    const s = paySessionRef.current;
+    abandonPaymentIntent(s.paymentIntentId, s.clientSecret);
+    newCheckoutAttempt();
+    setStep("details");
+    setClientSecret(null);
+    setTaxQuote(null);
+    // Clear id so we do not try to cancel a canceled PI on next continue
+    // (server still sweeps same-email incompletes).
+    setPaymentIntentId(null);
+  }
 
   const builderPack = useMemo(
     () => getPackById(builderPackId) ?? packDeals[0]!,
@@ -259,12 +357,15 @@ export function OrderForm() {
 
   async function onContinueToPayment(e: React.FormEvent) {
     e.preventDefault();
+    if (submitLock.current || busy) return;
+    submitLock.current = true;
     setBusy(true);
     setError(null);
 
     if (resolvedCart.length === 0) {
       setError("Add at least one pack to your order.");
       setBusy(false);
+      submitLock.current = false;
       return;
     }
 
@@ -282,11 +383,18 @@ export function OrderForm() {
           email: contact.email,
           pickupWindow: contact.pickupWindow,
           notes: contact.notes,
+          // Honeypot (must stay empty for real users)
+          website: websiteTrap,
+          // Cancel previous incomplete intent if customer retried
+          previousPaymentIntentId: paymentIntentId,
+          // Double-click protection (same attempt → same Stripe idempotency key)
+          checkoutAttemptId: ensureCheckoutAttemptId(),
         }),
       });
 
       const data = (await res.json()) as {
         clientSecret?: string;
+        paymentIntentId?: string;
         error?: string;
         subtotalLabel?: string;
         taxLabel?: string;
@@ -306,11 +414,15 @@ export function OrderForm() {
         taxRateLabel: data.taxRateLabel || VA_PICKUP_TAX_LABEL,
       });
       setClientSecret(data.clientSecret);
+      if (data.paymentIntentId) {
+        setPaymentIntentId(data.paymentIntentId);
+      }
       setStep("pay");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setBusy(false);
+      submitLock.current = false;
     }
   }
 
@@ -391,11 +503,7 @@ export function OrderForm() {
             taxLabel={taxQuote.taxLabel}
             totalLabel={taxQuote.totalLabel}
             taxRateLabel={taxQuote.taxRateLabel}
-            onBack={() => {
-              setStep("details");
-              setClientSecret(null);
-              setTaxQuote(null);
-            }}
+            onBack={leavePayStep}
           />
         </Elements>
       </div>
@@ -403,7 +511,10 @@ export function OrderForm() {
   }
 
   return (
-    <form onSubmit={onContinueToPayment} className="form-shell p-4 sm:p-6">
+    <form
+      onSubmit={onContinueToPayment}
+      className="form-shell relative p-4 sm:p-6"
+    >
       <div className="mb-5">
         <p className="section-label">Step 1 of 2</p>
         <h3 className="mt-1 font-display text-xl text-[var(--cocoa)] sm:text-2xl">
@@ -460,6 +571,24 @@ export function OrderForm() {
             autoComplete="email"
           />
         </label>
+
+        {/* Honeypot — hidden from humans; bots that fill it are blocked */}
+        <div
+          aria-hidden="true"
+          className="absolute -left-[9999px] h-0 w-0 overflow-hidden opacity-0"
+        >
+          <label>
+            Website
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              value={websiteTrap}
+              onChange={(e) => setWebsiteTrap(e.target.value)}
+            />
+          </label>
+        </div>
 
         {/* 1. Pack size */}
         <div className="sm:col-span-2">

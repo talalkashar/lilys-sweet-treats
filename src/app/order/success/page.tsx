@@ -27,12 +27,32 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  searchParams: Promise<{ payment_intent?: string; redirect_status?: string }>;
+  searchParams: Promise<{
+    payment_intent?: string;
+    payment_intent_client_secret?: string;
+    redirect_status?: string;
+  }>;
 };
+
+/**
+ * Success page must not expose customer PII (email) or trigger owner/customer
+ * emails from a bare payment_intent id. Require the client_secret Stripe puts
+ * in return_url / confirmPayment results — same proof Forge uses.
+ */
+function isValidClientSecret(
+  paymentIntentId: string,
+  clientSecret: string | undefined,
+  actualSecret: string | null | undefined,
+): boolean {
+  if (!clientSecret || !actualSecret) return false;
+  if (!clientSecret.startsWith(paymentIntentId + "_secret_")) return false;
+  return clientSecret === actualSecret;
+}
 
 export default async function OrderSuccessPage({ searchParams }: Props) {
   const params = await searchParams;
   const paymentIntentId = params.payment_intent?.trim();
+  const clientSecret = params.payment_intent_client_secret?.trim();
   const resendConfigured = isResendConfigured();
   const isDev = process.env.NODE_ENV !== "production";
 
@@ -46,57 +66,72 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
     try {
       const stripe = getStripe();
       const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
-      customerEmail = pi.metadata?.customerEmail || pi.receipt_email || null;
 
-      if (pi.status === "succeeded") {
-        status = "succeeded";
-        const notify = await notifyOrderPaidOnce(pi);
-
-        if ("customerSent" in notify && notify.customerSent) {
-          emailSentToCustomer = true;
-        } else if (notify.reason === "already_sent") {
-          emailSentToCustomer = Boolean(
-            "customerSent" in notify ? notify.customerSent : false,
-          );
+      // Without client_secret proof, do not reveal email or send mail from this page.
+      // Stripe webhooks remain the authoritative backup for order emails.
+      if (!isValidClientSecret(paymentIntentId, clientSecret, pi.client_secret)) {
+        if (pi.status === "succeeded" || pi.status === "processing") {
+          status = pi.status === "succeeded" ? "succeeded" : "processing";
+        } else if (params.redirect_status === "succeeded") {
+          status = "succeeded";
+        } else if (params.redirect_status) {
+          status = "failed";
+        } else {
+          status = "unknown";
         }
+      } else {
+        customerEmail = pi.metadata?.customerEmail || pi.receipt_email || null;
 
-        if (!emailSentToCustomer && customerEmail) {
-          emailFailed = true;
-          emailFailReason =
-            "reason" in notify &&
-            notify.reason &&
-            notify.reason !== "already_sent"
-              ? String(notify.reason)
-              : "customer_email_not_confirmed";
-          if (emailFailReason === "missing_resend_key") {
-            console.error(
-              "[success] RESEND_API_KEY is missing/empty — payment OK, emails skipped.",
-              "Fix: add RESEND_API_KEY=re_… to .env.local, restart ./start.sh, then reload this success URL to retry.",
+        if (pi.status === "succeeded") {
+          status = "succeeded";
+          const notify = await notifyOrderPaidOnce(pi);
+
+          if ("customerSent" in notify && notify.customerSent) {
+            emailSentToCustomer = true;
+          } else if (notify.reason === "already_sent") {
+            emailSentToCustomer = Boolean(
+              "customerSent" in notify ? notify.customerSent : false,
             );
           }
-          console.error(
-            "[success] customer email not confirmed",
-            paymentIntentId,
-            emailFailReason,
-            {
-              reason: "reason" in notify ? notify.reason : undefined,
-              ownerSent: "ownerSent" in notify ? notify.ownerSent : undefined,
-              customerSent:
-                "customerSent" in notify ? notify.customerSent : undefined,
-              ownerError:
-                "ownerError" in notify ? notify.ownerError : undefined,
-              customerError:
-                "customerError" in notify ? notify.customerError : undefined,
-            },
-          );
+
+          if (!emailSentToCustomer && customerEmail) {
+            emailFailed = true;
+            emailFailReason =
+              "reason" in notify &&
+              notify.reason &&
+              notify.reason !== "already_sent"
+                ? String(notify.reason)
+                : "customer_email_not_confirmed";
+            if (emailFailReason === "missing_resend_key") {
+              console.error(
+                "[success] RESEND_API_KEY is missing/empty — payment OK, emails skipped.",
+                "Fix: add RESEND_API_KEY=re_… to .env.local, restart ./start.sh, then reload this success URL to retry.",
+              );
+            }
+            console.error(
+              "[success] customer email not confirmed",
+              paymentIntentId,
+              emailFailReason,
+              {
+                reason: "reason" in notify ? notify.reason : undefined,
+                ownerSent: "ownerSent" in notify ? notify.ownerSent : undefined,
+                customerSent:
+                  "customerSent" in notify ? notify.customerSent : undefined,
+                ownerError:
+                  "ownerError" in notify ? notify.ownerError : undefined,
+                customerError:
+                  "customerError" in notify ? notify.customerError : undefined,
+              },
+            );
+          }
+        } else if (
+          pi.status === "processing" ||
+          pi.status === "requires_capture"
+        ) {
+          status = "processing";
+        } else {
+          status = "failed";
         }
-      } else if (
-        pi.status === "processing" ||
-        pi.status === "requires_capture"
-      ) {
-        status = "processing";
-      } else {
-        status = "failed";
       }
     } catch (err) {
       console.error("[success] payment verify failed", err);

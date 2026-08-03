@@ -14,7 +14,9 @@ const securityHeaders = [
     key: "Strict-Transport-Security",
     value: "max-age=63072000; includeSubDomains; preload",
   },
-  // Baseline CSP: allow Stripe + Google Fonts used by next/font
+  // Baseline CSP: allow Stripe + Google Fonts used by next/font.
+  // upgrade-insecure-requests is production-only — on http://localhost Safari
+  // upgrades CSS/JS/images to https://localhost and they all fail (unstyled page).
   {
     key: "Content-Security-Policy",
     value: [
@@ -22,6 +24,7 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.stripe.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: blob: https://*.stripe.com",
+      "media-src 'self' blob:",
       "font-src 'self' data: https://fonts.gstatic.com",
       "connect-src 'self' https://api.stripe.com https://*.stripe.com https://api.resend.com",
       "frame-src https://js.stripe.com https://hooks.stripe.com https://*.stripe.com",
@@ -29,7 +32,9 @@ const securityHeaders = [
       "base-uri 'self'",
       "form-action 'self' https://*.stripe.com",
       "frame-ancestors 'none'",
-      "upgrade-insecure-requests",
+      ...(process.env.NODE_ENV === "production"
+        ? ["upgrade-insecure-requests"]
+        : []),
     ].join("; "),
   },
 ];
@@ -40,7 +45,8 @@ const nextConfig: NextConfig = {
     root: path.resolve(process.cwd()),
   },
   images: {
-    qualities: [75, 90, 95, 100],
+    qualities: [70, 75, 80, 82, 90, 95, 100],
+    formats: ["image/avif", "image/webp"],
   },
   poweredByHeader: false,
   async headers() {
@@ -76,6 +82,25 @@ const nextConfig: NextConfig = {
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      // Long-cache static brand / product media (SWR so updates still refresh)
+      {
+        source: "/brand/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=604800, stale-while-revalidate=2592000",
+          },
+        ],
+      },
+      {
+        source: "/products/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=604800, stale-while-revalidate=2592000",
           },
         ],
       },

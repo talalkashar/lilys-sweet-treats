@@ -29,25 +29,51 @@ export function CheckoutPayment({
 
   async function onPay(e: React.FormEvent) {
     e.preventDefault();
-    if (!stripe || !elements) return;
+    if (!stripe || !elements || busy) return;
 
     setBusy(true);
     setError(null);
 
     const returnUrl = `${window.location.origin}/order/success`;
 
-    const { error: submitError } = await stripe.confirmPayment({
+    // Stay on-page for card declines so the customer can fix the card
+    // without creating another PaymentIntent (reduces incomplete clutter).
+    const { error: submitError, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: returnUrl,
       },
+      redirect: "if_required",
     });
 
-    // If we get here, payment failed (success redirects away)
     if (submitError) {
       setError(submitError.message || "Payment failed. Try again.");
       setBusy(false);
+      return;
     }
+
+    // No redirect was needed — include client_secret so success page can prove
+    // ownership before showing email / triggering confirmation mail (anti-IDOR).
+    if (paymentIntent?.id) {
+      const qs = new URLSearchParams({
+        payment_intent: paymentIntent.id,
+        redirect_status:
+          paymentIntent.status === "succeeded"
+            ? "succeeded"
+            : paymentIntent.status,
+      });
+      if (paymentIntent.client_secret) {
+        qs.set(
+          "payment_intent_client_secret",
+          paymentIntent.client_secret,
+        );
+      }
+      window.location.assign(`${returnUrl}?${qs.toString()}`);
+      return;
+    }
+
+    setError("Payment status unclear. Check your email or try again.");
+    setBusy(false);
   }
 
   return (
