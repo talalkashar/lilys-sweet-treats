@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 /** Bump this when a deploy must replace a cached/old visit. */
-const SITE_VERSION = "2026-08-14-1";
+const SITE_VERSION = "2026-08-14-2";
 const COOKIE = "lst_site_v";
 const RELOAD_FLAG = "lst-fresh";
 

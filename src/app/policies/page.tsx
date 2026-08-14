@@ -49,6 +49,8 @@ export default function PoliciesPage() {
                 Fulfillment is <strong className="text-[var(--cocoa)]">pickup only</strong>{" "}
                 at Atlas Walk in Gainesville — no delivery. Meet us at{" "}
                 <strong className="text-[var(--cocoa)]">{site.addressLine}</strong>.
+                After you pay, text or call {site.phone} to coordinate the
+                meetup.
               </li>
               <li>
                 Menu items and flavors can change weekly. Only products shown as

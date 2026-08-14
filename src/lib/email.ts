@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { site } from "@/data/site";
+import { mapsUrl, site } from "@/data/site";
 
 export type OrderEmailPayload = {
   paymentIntentId: string;
@@ -185,7 +185,9 @@ function customerHtml(order: OrderEmailPayload) {
             <tr>
               <td align="center" style="padding:36px 26px 32px;background-color:${MINT};">
 
-                <p style="margin:0;font-size:34px;line-height:1;color:${COCOA};font-family:Georgia,serif;">✓</p>
+                <img src="${site.url}${site.logo}" width="72" height="72" alt="${escapeHtml(site.name)}" style="display:block;margin:0 auto;border-radius:50%;border:2px solid #fff;" />
+
+                <p style="margin:14px 0 0;font-size:34px;line-height:1;color:${COCOA};font-family:Georgia,serif;">✓</p>
 
                 <h1 style="margin:14px 0 0;font-size:30px;font-weight:500;color:${COCOA};line-height:1.2;letter-spacing:-0.02em;">
                   You&apos;re all set
@@ -233,15 +235,21 @@ function customerHtml(order: OrderEmailPayload) {
                 </table>
 
                 <p style="margin:22px 0 0;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;color:${COCOA};">
-                  Pickup at
+                  Meet us at Atlas Walk
                 </p>
                 <p style="margin:6px 0 0;font-family:system-ui,sans-serif;font-size:14px;line-height:1.45;font-weight:600;color:${ROSE};">
                   ${escapeHtml(order.pickupAddress)}
                 </p>
-
-                <p style="margin:18px 0 0;font-family:system-ui,sans-serif;font-size:14px;color:${SOFT};">
-                  Questions?
+                <p style="margin:8px 0 0;font-family:system-ui,sans-serif;font-size:13px;">
+                  <a href="${mapsUrl()}" style="color:${ROSE};font-weight:600;text-decoration:none;">Open in Maps</a>
+                </p>
+                <p style="margin:14px 0 0;font-family:system-ui,sans-serif;font-size:14px;line-height:1.5;color:${COCOA};">
+                  ${escapeHtml(site.pickupCoordinateNote)}
+                </p>
+                <p style="margin:10px 0 0;font-family:system-ui,sans-serif;font-size:14px;color:${SOFT};">
                   <a href="tel:${site.phone.replace(/\D/g, "")}" style="color:${ROSE};font-weight:600;text-decoration:none;">${escapeHtml(site.phone)}</a>
+                  &nbsp;·&nbsp;
+                  <a href="mailto:${escapeHtml(site.email)}" style="color:${ROSE};font-weight:600;text-decoration:none;">${escapeHtml(site.email)}</a>
                 </p>
 
                 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:26px auto 0;border-collapse:collapse;">
@@ -289,12 +297,15 @@ function customerText(order: OrderEmailPayload) {
     ...moneyLines,
     "",
     `PICKUP WINDOW: ${order.pickupWindow}`,
-    `ADDRESS: ${order.pickupAddress}`,
+    `MEET AT: Atlas Walk — ${order.pickupAddress}`,
+    `MAPS: ${mapsUrl()}`,
     order.notes ? `NOTES: ${order.notes}` : "",
+    "",
+    site.pickupCoordinateNote,
+    `Call or text ${site.phone} or email ${site.email}.`,
     "",
     "Pickup at Atlas Walk only — no delivery. All sales final once baked (see Policies).",
     "Contains common bakery allergens (wheat, eggs, milk, soy; nuts possible).",
-    `Questions? ${site.phone} or ${site.email}`,
     "",
     `— ${site.name}`,
   ]

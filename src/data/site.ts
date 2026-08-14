@@ -54,6 +54,8 @@ export const site = {
   /** Short header tagline (CSS uppercases this) */
   headerTagline: "Atlas Walk pickup",
   pickupNote: "Meet us at Atlas Walk in Gainesville on Friday and Saturday. See weekly schedule for times.",
+  pickupCoordinateNote:
+    "Text or call after you pay so we can coordinate the exact meetup at Atlas Walk.",
 
   /** Weekly baking schedule */
   qualityNote:

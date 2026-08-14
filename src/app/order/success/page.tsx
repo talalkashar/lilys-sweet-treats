@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { site } from "@/data/site";
+import { mapsUrl, site } from "@/data/site";
 import { isResendConfigured } from "@/lib/email";
 import { notifyOrderPaidOnce } from "@/lib/order-notify";
 import { getStripe } from "@/lib/stripe";
@@ -252,30 +252,47 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
         ) : null}
 
         {ok ? (
-          <p className="mt-5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
-            <span className="font-semibold text-[var(--cocoa)]">Pickup</span>
-            <br />
-            Meet us at Atlas Walk
-            <br />
-            <span className="mt-1 block font-semibold text-[var(--cocoa)]">
+          <div className="mt-5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
+            <p className="font-semibold text-[var(--cocoa)]">Pickup</p>
+            <p className="mt-1">Meet us at Atlas Walk</p>
+            <p className="mt-1 font-semibold text-[var(--cocoa)]">
               {site.addressLine}
-            </span>
-            <span className="mt-1 block text-xs">
+            </p>
+            <p className="mt-2">
+              <a
+                className="font-semibold text-[var(--rose)]"
+                href={mapsUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open in Maps
+              </a>
+            </p>
+            <p className="mt-3 text-[var(--cocoa)]">
+              {site.pickupCoordinateNote}
+            </p>
+            <p className="mt-2">
+              <a
+                className="font-semibold text-[var(--rose)]"
+                href={`tel:${site.phone.replace(/\D/g, "")}`}
+              >
+                {site.phone}
+              </a>
+              <span className="px-1.5">·</span>
+              <a
+                className="font-semibold text-[var(--rose)] break-all"
+                href={`mailto:${site.email}`}
+              >
+                {site.email}
+              </a>
+            </p>
+            <p className="mt-2 text-xs">
               {emailSentToCustomer
-                ? "This address is also in your confirmation email."
-                : "We will also share the address by phone or email if needed."}
-            </span>
-          </p>
+                ? "These pickup details are also in your confirmation email."
+                : "We will also share pickup details by phone or email if needed."}
+            </p>
+          </div>
         ) : null}
-        <p className="mt-6 text-sm text-[var(--cocoa-soft)]">
-          Questions?{" "}
-          <a
-            className="font-semibold text-[var(--rose)]"
-            href={`tel:${site.phone.replace(/\D/g, "")}`}
-          >
-            {site.phone}
-          </a>
-        </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link href="/#menu" className="btn-secondary">
             Back to menu

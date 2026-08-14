@@ -39,7 +39,9 @@ export default function OrderPage() {
           <p>
             <strong>Pickup:</strong> Fri 4–6 PM · Sat 9–11 AM
           </p>
-          <p className="order-mobile-schedule-note">Atlas Walk, Gainesville</p>
+          <p className="order-mobile-schedule-note">
+            Atlas Walk, Gainesville · text to coordinate
+          </p>
         </div>
 
         <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,17.5rem)_minmax(0,1fr)] lg:items-start lg:gap-10">
@@ -71,7 +73,8 @@ export default function OrderPage() {
                   ))}
                 </ul>
                 <p className="mt-2 text-xs text-[var(--ink-muted)]">
-                  Meet us at Atlas Walk Way, Gainesville, VA 20155.
+                  Meet us at {site.addressLine}. After you pay, text or call to
+                  coordinate the meetup.
                 </p>
               </div>
 
