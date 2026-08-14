@@ -242,8 +242,8 @@ export default function Home() {
 
           <div className="reviews-board mt-8">
             {reviews.map((review, i) => (
-              <Reveal key={review.id} delayMs={i * 70}>
                 <figure
+                  key={review.id}
                   className={`review-note review-note--${(i % 6) + 1}${
                     i === 0 ? " review-note--featured" : ""
                   }`}
@@ -278,7 +278,6 @@ export default function Home() {
                     ) : null}
                   </figcaption>
                 </figure>
-              </Reveal>
             ))}
           </div>
         </div>

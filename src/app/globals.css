@@ -2288,53 +2288,41 @@ a.footer-detail:hover {
   color: var(--cocoa-soft) !important;
 }
 
-/* Stable grid — CSS columns reflow when cards fade/tilt in, which
-   makes the board jump or clip mid-scroll. */
+/* Packed note board (fill down each column, no row holes) */
 .reviews-board {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  align-items: start;
+  columns: 1;
+  column-gap: 1rem;
 }
 
 @media (min-width: 640px) {
   .reviews-board {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.15rem;
+    columns: 2;
+    column-gap: 1.15rem;
   }
 }
 
 @media (min-width: 1024px) {
   .reviews-board {
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1.25rem;
-  }
-}
-
-.reviews-board > * {
-  min-width: 0;
-}
-
-/* Opacity only — transform here fights the note tilt and used to
-   shove column layout around while scrolling. */
-@media (prefers-reduced-motion: no-preference) {
-  .reviews-board .reveal,
-  .reviews-board .reveal-in {
-    transform: none;
+    columns: 3;
+    column-gap: 1.25rem;
   }
 }
 
 .review-note {
   position: relative;
-  margin: 0;
+  display: inline-flex;
+  width: 100%;
+  margin: 0 0 1rem;
   padding: 1.15rem 1.15rem 1.05rem;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
   border-radius: 0.35rem 0.85rem 0.85rem 0.85rem;
   border: 1px solid rgba(245, 198, 214, 0.45);
   background: #fffefb;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
     0 8px 20px rgba(44, 34, 40, 0.05);
-  display: flex;
   flex-direction: column;
   gap: 0.55rem;
   transition:
@@ -4145,7 +4133,7 @@ html[data-view="mobile"] .mobile-sticky-cta.mobile-sticky-cta--visible {
 
   /* Reviews: 2 columns already at 640 — give notes a bit more air */
   .reviews-board {
-    gap: 1.25rem;
+    column-gap: 1.25rem;
   }
 
   .review-note {
