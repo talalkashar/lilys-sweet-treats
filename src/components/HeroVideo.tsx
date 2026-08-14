@@ -187,7 +187,7 @@ export function HeroVideo() {
         <div className="hero-video-brand">
           <div className="hero-video-logo">
             <Image
-              src="/brand/logo-mark-hero.png"
+              src={site.logo}
               alt={`${site.name} logo`}
               width={1200}
               height={1200}

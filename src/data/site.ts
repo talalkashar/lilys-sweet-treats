@@ -19,9 +19,9 @@ export const site = {
    * Used for sitemap, robots, metadataBase, Open Graph, and JSON-LD.
    */
   url: "https://www.lilyssweettreatsva.com",
-  logo: "/brand/logo.png",
+  logo: "/brand/logo-badge.png",
   /** Full brand board for large display (hero) */
-  logoFull: "/brand/logo-full.png",
+  logoFull: "/brand/logo-badge.png",
   /**
    * Primary image for Google / Open Graph / link previews.
    * Square 1200×1200 food photo (same pattern as FORGE) so LinkedIn

@@ -85,8 +85,8 @@ export const metadata: Metadata = {
     ],
   },
   icons: {
-    icon: [{ url: "/brand/logo-mark.png", type: "image/png" }],
-    apple: [{ url: "/brand/logo-mark.png" }],
+    icon: [{ url: site.logo, type: "image/png" }],
+    apple: [{ url: site.logo }],
   },
   robots: {
     index: true,
