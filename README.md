@@ -3,7 +3,7 @@
 **Live:** https://www.lilyssweettreatsva.com  
 **Repo:** https://github.com/talalkashar/lilys-sweet-treats  
 
-Homemade bakery site — pre-order + porch pickup (Haymarket, VA).  
+Homemade bakery site — pre-order + pickup at Atlas Walk (Gainesville, VA).  
 Stack: Next.js · Stripe (payments + Tax) · Resend (emails) · Vercel.
 
 ---
@@ -42,4 +42,4 @@ Keep **`STRIPE_LIVE_MODE=false`** locally so you don’t charge real cards while
 
 ## Menu source of truth
 
-`src/data/products.ts` — hide with `available: false`, prices $8 / $8.75, packs in `src/data/packs.ts`.
+`src/data/products.ts` — hide with `available: false`, prices $8.75, packs in `src/data/packs.ts`.

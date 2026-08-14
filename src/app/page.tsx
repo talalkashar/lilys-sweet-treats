@@ -24,7 +24,7 @@ export const metadata: Metadata = {
         url: site.ogImage,
         width: 1200,
         height: 1200,
-        alt: "Fresh homemade cinnamon rolls from Lily's Sweet Treats in Haymarket, VA",
+        alt: "Fresh homemade cinnamon rolls from Lily's Sweet Treats in Gainesville, VA",
         type: "image/jpeg",
       },
     ],
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
         url: site.ogImage,
         width: 1200,
         height: 1200,
-        alt: "Fresh homemade cinnamon rolls from Lily's Sweet Treats in Haymarket, VA",
+        alt: "Fresh homemade cinnamon rolls from Lily's Sweet Treats in Gainesville, VA",
       },
     ],
   },
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 const marqueeLines = [
   "Order Monday–Wednesday by noon",
   "Pickup Friday 4–6 PM · Saturday 9–11 AM",
-  "Haymarket, VA · porch pickup only",
+  "Atlas Walk, Gainesville, VA · pickup only",
 ];
 
 const storyCollage = [
@@ -232,10 +232,10 @@ export default function Home() {
         <div className="shell relative">
           <Reveal>
             <div className="reviews-header">
-              <p className="section-label">From the porch</p>
+              <p className="section-label">From neighbors</p>
               <h2 className="section-title mt-2">What guests say</h2>
               <p className="prose-soft reviews-header-lead mt-3">
-                Real weekend pickups from neighbors around Haymarket.
+                Real weekend pickups from neighbors around Gainesville.
               </p>
             </div>
           </Reveal>

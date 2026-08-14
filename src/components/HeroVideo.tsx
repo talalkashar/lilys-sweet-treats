@@ -202,7 +202,7 @@ export function HeroVideo() {
             <span className="hero-video-title-accent">just for you</span>
           </h1>
           <p className="hero-video-sub">
-            Homemade treats for porch pickup in Haymarket, VA.
+            Homemade treats for pickup at Atlas Walk in Gainesville, VA.
           </p>
           <div className="hero-video-actions">
             <Link href="/order" className="btn-primary">

@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 /** Payment confirmation — must not be indexed or listed in sitemaps. */
 export const metadata: Metadata = {
   title: "Order confirmation",
-  description: "Your porch pickup order confirmation.",
+  description: "Your Atlas Walk pickup order confirmation.",
   robots: {
     index: false,
     follow: false,
@@ -255,7 +255,7 @@ export default async function OrderSuccessPage({ searchParams }: Props) {
           <p className="mt-5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
             <span className="font-semibold text-[var(--cocoa)]">Pickup</span>
             <br />
-            Porch pickup at
+            Meet us at Atlas Walk
             <br />
             <span className="mt-1 block font-semibold text-[var(--cocoa)]">
               {site.addressLine}

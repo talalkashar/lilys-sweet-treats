@@ -222,7 +222,7 @@ export function ProductModal({ product, onClose }: Props) {
             <p className="product-allergen-note mt-3">
               Baked with flour, eggs, butter, and sugar. May contain wheat,
               eggs, milk, soy, and nuts. Home kitchen with shared equipment —
-              nut cross-contact is possible on every product. Porch pickup only.
+              nut cross-contact is possible on every product. Pickup only.
             </p>
 
             <div className="mt-6 flex flex-col gap-2.5 sm:flex-col lg:flex-row">

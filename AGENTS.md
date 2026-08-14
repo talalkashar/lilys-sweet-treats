@@ -51,7 +51,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ### Rules of thumb
 
 1. **Hide** products with `available: false` — do not delete unless asked.
-2. **Prices:** $8 no toppings · $8.75 with toppings.
+2. **Prices:** $8.75 per treat.
 3. **Checkout** already reads `availableProducts` — no API changes for menu-only edits.
 4. **Images:** paths start with `/products/...` (files under `public/products/`).
 5. Optional **`images: []`** = extra photos in the product modal gallery.
@@ -70,7 +70,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Tax
 
-- Checkout tax: **Stripe Tax** via `src/lib/tax.ts` (pickup address Haymarket, VA).
+- Checkout tax: **Stripe Tax** via `src/lib/tax.ts` (pickup address Atlas Walk, Gainesville, VA).
 - Cart estimate (client): `src/lib/tax-rate.ts` (6% VA) — final amount always from Stripe Tax.
 - PaymentIntent amount = subtotal + tax; calculation id linked for Stripe Tax reporting.
 - Client finished VA registration — test + live tax calculations return 6.0% (`standard_rated`).

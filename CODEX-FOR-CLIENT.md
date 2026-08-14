@@ -58,13 +58,13 @@ She does **not** FTP upload. She changes GitHub → site updates.
 3. Paste this **system** prompt once:
 
 ```text
-You are helping with Lily's Sweet Treats (Haymarket VA porch pickup bakery).
+You are helping with Lily's Sweet Treats (Gainesville VA Atlas Walk pickup bakery).
 Read CLIENT-HANDOFF.md, PRODUCT-MENU.md, and AGENTS.md first.
 
 Rules:
 - Menu = src/data/products.ts + public/products/ images.
 - Hide with available: false (don't delete unless I say).
-- $8 plain, $8.75 topped.
+- $8.75 per treat.
 - Never commit secrets or .env files.
 - Prefer explaining what you'll change before editing.
 - After changes, commit and push to main so Vercel deploys (when I ask).
@@ -93,7 +93,7 @@ Show Sticky Buns with Nuts again (available true or remove available line). Comm
 ### 6. Practice task C — change a price (optional)
 
 ```text
-Confirm strawberry and peach are $8.75 and sticky without nuts is $8. Don't change if already correct.
+Confirm strawberry, peach, and both sticky bun flavors are $8.75. Don't change if already correct.
 ```
 
 ### 7. Boundaries (5 min)

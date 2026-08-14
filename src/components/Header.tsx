@@ -68,7 +68,7 @@ export function Header() {
               {site.shortName}
             </p>
             <p className="site-header-subtitle hidden text-xs font-medium uppercase tracking-[0.1em] sm:block">
-              Porch pickup only
+              {site.headerTagline}
             </p>
           </div>
         </Link>

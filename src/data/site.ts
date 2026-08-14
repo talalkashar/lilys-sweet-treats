@@ -8,12 +8,12 @@ export const site = {
    * Not the on-page marketing copy.
    */
   description:
-    "Homemade bakery in Haymarket, VA. Pre-order cinnamon rolls, sticky buns, and sweet treats online for porch pickup Friday and Saturday.",
+    "Homemade bakery in Gainesville, VA. Pre-order cinnamon rolls, sticky buns, and sweet treats online for pickup at Atlas Walk Friday and Saturday.",
   /**
    * Search + social title focus (shorter than legal/display name).
    * Used in default <title> / Open Graph where we want a cleaner result.
    */
-  searchTitle: "Lily's Sweet Treats | Homemade Bakery in Haymarket, VA",
+  searchTitle: "Lily's Sweet Treats | Homemade Bakery in Gainesville, VA",
   /**
    * Canonical production origin (www). Apex redirects here via Vercel.
    * Used for sitemap, robots, metadataBase, Open Graph, and JSON-LD.
@@ -39,21 +39,21 @@ export const site = {
   email: "sweettreats0077@gmail.com",
   instagram: "https://www.instagram.com/lilys_sweet_treats_va/",
   /**
-   * Pickup / mail address (USPS Street Addressing PO Box format).
-   * Shown on the order confirmation screen + customer/owner emails.
-   * Not listed in the public footer/nav (city-level only there).
+   * Public plaza meetup (not a home address).
+   * Shown on the order page, confirmation screen, and emails.
    */
   address: {
-    line1: "14658 Gap Way",
-    line2: "#237",
-    city: "Haymarket",
+    line1: "Atlas Walk Way",
+    city: "Gainesville",
     state: "VA",
-    zip: "20168",
+    zip: "20155",
   },
   /** Single-line for forms / Stripe metadata / confirmation emails */
-  addressLine: "14658 Gap Way #237, Haymarket, VA 20168",
-  locationNote: "Porch pickup in Haymarket, VA.",
-  pickupNote: "Porch pickup Friday and Saturday. See weekly schedule for times.",
+  addressLine: "Atlas Walk Way, Gainesville, VA 20155",
+  locationNote: "Pickup at Atlas Walk in Gainesville, VA.",
+  /** Short header tagline (CSS uppercases this) */
+  headerTagline: "Atlas Walk pickup",
+  pickupNote: "Meet us at Atlas Walk in Gainesville on Friday and Saturday. See weekly schedule for times.",
 
   /** Weekly baking schedule */
   qualityNote:
@@ -88,7 +88,7 @@ export const site = {
   maxOrderQuantity: 12,
 } as const;
 
-/** Google Maps search URL for the pickup address (private / email use) */
+/** Google Maps search URL for the plaza pickup address */
 export function mapsUrl() {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.addressLine)}`;
 }

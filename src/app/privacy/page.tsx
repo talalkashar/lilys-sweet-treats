@@ -4,13 +4,13 @@ import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: `How ${site.shortName} collects and uses your information for porch-pickup orders.`,
+  description: `How ${site.shortName} collects and uses your information for pickup orders.`,
   alternates: {
     canonical: "/privacy",
   },
   openGraph: {
     title: `Privacy Policy | ${site.shortName}`,
-    description: `How ${site.shortName} collects and uses your information for porch-pickup orders.`,
+    description: `How ${site.shortName} collects and uses your information for pickup orders.`,
     url: "/privacy",
   },
 };
@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         <p className="section-label">Legal</p>
         <h1 className="section-title mt-2">Privacy Policy</h1>
         <p className="mt-2 text-sm text-[var(--ink-muted)]">
-          Last updated: July 20, 2026
+          Last updated: August 13, 2026
         </p>
 
         <div className="mt-8 space-y-6 text-[var(--cocoa-soft)] leading-relaxed">
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
             </h2>
             <p className="mt-2">
               {site.name} (“we”, “us”) is a home bakery offering pre-orders for
-              porch pickup in Haymarket, VA. Contact:{" "}
+              pickup at Atlas Walk in Gainesville, VA. Contact:{" "}
               <a className="font-semibold text-[var(--rose)]" href={`mailto:${site.email}`}>
                 {site.email}
               </a>{" "}
@@ -76,7 +76,7 @@ export default function PrivacyPage() {
               How we use your information
             </h2>
             <ul className="mt-2 list-disc space-y-1.5 pl-5">
-              <li>Fulfill porch-pickup orders and contact you about pickup.</li>
+              <li>Fulfill pickup orders and contact you about pickup.</li>
               <li>Process payments and collect applicable Virginia sales tax.</li>
               <li>Send order confirmations (email) and bakery order alerts.</li>
               <li>Prevent fraud, rate-limit abuse, and keep the site secure.</li>

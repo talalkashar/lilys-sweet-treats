@@ -845,7 +845,7 @@ export function OrderForm() {
                 {resolvedCart.length} pack
                 {resolvedCart.length === 1 ? "" : "s"} · {totalTreats} treats.
                 Exact sales tax is calculated by Stripe Tax when you continue to
-                payment (Haymarket, VA porch pickup). By continuing you agree to
+                payment (Atlas Walk pickup in Gainesville, VA). By continuing you agree to
                 our{" "}
                 <a
                   href="/policies"

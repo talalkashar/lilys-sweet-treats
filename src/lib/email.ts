@@ -112,7 +112,7 @@ function ownerHtml(order: OrderEmailPayload) {
         <h1 style="margin:8px 0 0;font-size:24px;font-weight:600;">Paid order ready to bake</h1>
       </div>
       <div style="padding:24px;color:#2c2228;font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55;">
-        <p style="margin:0 0 16px;">Someone just paid online for porch pickup.</p>
+        <p style="margin:0 0 16px;">Someone just paid online for pickup at Atlas Walk.</p>
         <table style="width:100%;border-collapse:collapse;">
           <tr><td style="padding:8px 0;color:#8a7a82;width:38%;vertical-align:top;">Order</td><td style="padding:8px 0;font-weight:600;">${formatOrderLinesHtml(order.productName)}<br/><span style="font-weight:500;color:#8a7a82;">${escapeHtml(order.quantity)}</span></td></tr>
           ${
@@ -292,7 +292,7 @@ function customerText(order: OrderEmailPayload) {
     `ADDRESS: ${order.pickupAddress}`,
     order.notes ? `NOTES: ${order.notes}` : "",
     "",
-    "Porch pickup only — no delivery. All sales final once baked (see Policies).",
+    "Pickup at Atlas Walk only — no delivery. All sales final once baked (see Policies).",
     "Contains common bakery allergens (wheat, eggs, milk, soy; nuts possible).",
     `Questions? ${site.phone} or ${site.email}`,
     "",

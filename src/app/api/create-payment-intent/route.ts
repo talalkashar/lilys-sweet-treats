@@ -183,7 +183,7 @@ export async function POST(req: Request) {
           },
         },
         receipt_email: email,
-        description: `${orderSummary} (porch pickup)`.slice(0, 900),
+        description: `${orderSummary} (Atlas Walk pickup)`.slice(0, 900),
         // Bank statement line (suffix; account name is set in Stripe Dashboard)
         statement_descriptor_suffix: "LILYS TREATS",
         hooks: {
@@ -206,7 +206,7 @@ export async function POST(req: Request) {
           customerEmail: email,
           pickupWindow,
           notes,
-          fulfillment: "porch_pickup",
+          fulfillment: "local_pickup",
           pickupAddress: site.addressLine,
           subtotalCents: String(tax.subtotalCents),
           taxCents: String(tax.taxCents),

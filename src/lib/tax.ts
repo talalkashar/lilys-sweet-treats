@@ -33,8 +33,8 @@ export type TaxBreakdown = {
 };
 
 /**
- * Real sales tax for porch-pickup via Stripe Tax.
- * Location = bakery address (customer picks up in Haymarket, VA).
+ * Real sales tax for plaza pickup via Stripe Tax.
+ * Location = Atlas Walk meetup (customer picks up in Gainesville, VA).
  * Throws if Stripe Tax is not activated or the API call fails — we never
  * invent a charge amount that Stripe Tax did not calculate.
  */
@@ -49,7 +49,6 @@ export async function calculatePickupTax(
     customer_details: {
       address: {
         line1: site.address.line1,
-        ...(site.address.line2 ? { line2: site.address.line2 } : {}),
         city: site.address.city,
         state: site.address.state,
         postal_code: site.address.zip,
@@ -80,7 +79,7 @@ export async function calculatePickupTax(
   const taxability = breakdown?.taxability_reason;
 
   // Fail closed when Stripe is not collecting VA tax (misconfigured registration).
-  // Prepared bakery food for porch pickup in Haymarket must charge sales tax.
+  // Prepared bakery food for pickup in Gainesville must charge sales tax.
   if (
     subtotalCents > 0 &&
     taxCents === 0 &&
@@ -95,7 +94,7 @@ export async function calculatePickupTax(
 
   if (subtotalCents > 0 && taxCents === 0) {
     console.warn(
-      "[tax] Stripe Tax returned $0 for Haymarket pickup",
+      "[tax] Stripe Tax returned $0 for Gainesville pickup",
       taxability,
       calculation.id,
     );
@@ -151,7 +150,7 @@ export function stripeTaxErrorMessage(err: unknown): {
     return {
       status: 503,
       error:
-        "Sales tax is not fully set up in Stripe yet. In the Stripe Dashboard go to Tax → Get started, enable Stripe Tax, register Virginia (Haymarket pickup), then try again.",
+        "Sales tax is not fully set up in Stripe yet. In the Stripe Dashboard go to Tax → Get started, enable Stripe Tax, register Virginia (Gainesville pickup), then try again.",
     };
   }
 

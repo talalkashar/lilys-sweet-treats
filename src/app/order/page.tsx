@@ -7,14 +7,14 @@ import { site } from "@/data/site";
 export const metadata: Metadata = {
   title: "Order pickup",
   description:
-    "Pre-order and pay online for porch pickup in Haymarket, VA. Order Monday–Wednesday by noon for Friday or Saturday pickup.",
+    "Pre-order and pay online for pickup at Atlas Walk in Gainesville, VA. Order Monday–Wednesday by noon for Friday or Saturday pickup.",
   alternates: {
     canonical: "/order",
   },
   openGraph: {
     title: `Order pickup | ${site.shortName}`,
     description:
-      "Pre-order and pay online for porch pickup in Haymarket, VA. Order Monday–Wednesday by noon for Friday or Saturday pickup.",
+      "Pre-order and pay online for pickup at Atlas Walk in Gainesville, VA. Order Monday–Wednesday by noon for Friday or Saturday pickup.",
     url: "/order",
   },
 };
@@ -39,7 +39,7 @@ export default function OrderPage() {
           <p>
             <strong>Pickup:</strong> Fri 4–6 PM · Sat 9–11 AM
           </p>
-          <p className="order-mobile-schedule-note">Haymarket porch pickup</p>
+          <p className="order-mobile-schedule-note">Atlas Walk, Gainesville</p>
         </div>
 
         <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,17.5rem)_minmax(0,1fr)] lg:items-start lg:gap-10">
@@ -48,7 +48,7 @@ export default function OrderPage() {
             <h1 className="section-title mt-2">Order for pickup</h1>
             <p className="prose-soft mt-3">
               Choose flavors and pack sizes, then pay here. Pickup is Friday or
-              Saturday in Haymarket.
+              Saturday at Atlas Walk in Gainesville.
             </p>
 
             <div className="mt-6 hidden space-y-3 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:block">
@@ -71,7 +71,7 @@ export default function OrderPage() {
                   ))}
                 </ul>
                 <p className="mt-2 text-xs text-[var(--ink-muted)]">
-                  Full address is on your confirmation after payment.
+                  Meet us at Atlas Walk Way, Gainesville, VA 20155.
                 </p>
               </div>
 

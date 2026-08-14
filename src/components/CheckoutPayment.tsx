@@ -107,7 +107,7 @@ export function CheckoutPayment({
           </span>
         </div>
         <p className="mt-2 text-xs leading-relaxed text-[var(--ink-muted)]">
-          Sales tax calculated by Stripe Tax for porch pickup in Haymarket, VA.
+          Sales tax calculated by Stripe Tax for pickup at Atlas Walk, Gainesville, VA.
           Your card is charged this total (subtotal + tax).
         </p>
       </div>

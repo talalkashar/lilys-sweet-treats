@@ -67,7 +67,7 @@ export function Footer() {
             <div className="footer-brand-text">
               <p className="footer-brand-name font-display">{site.name}</p>
               <p className="footer-brand-blurb">
-                Porch pickup in Haymarket, VA · No delivery
+                Pickup at Atlas Walk, Gainesville, VA · No delivery
               </p>
             </div>
           </div>

@@ -20,8 +20,7 @@ Checkout, tax, and email **automatically** use whatever is listed as available i
 
 | Type | Unit price |
 |------|------------|
-| No toppings (e.g. sticky bun without nuts) | **$8** |
-| With toppings (frosting, fruit, nuts, etc.) | **$8.75** |
+| All treats (rolls and sticky buns) | **$8.75** |
 
 Customers buy **packs only** (2 / 4 / 6 / 8 / 12), filled in **pairs of 2 of the same flavor** (mix pairs in larger packs) — defined in `src/data/packs.ts`.
 
@@ -88,7 +87,7 @@ Tips:
 {
   id: "blueberry-cinnamon-rolls",           // unique, lowercase, hyphens
   name: "Blueberry Cinnamon Rolls",
-  price: 8.75,                              // 8 or 8.75
+  price: 8.75,                              // unit price per treat
   category: "rolls",                        // "rolls" | "sticky" | "specialty"
   description: "Soft rolls with blueberry filling and cream cheese frosting.",
   emoji: "🫐",
@@ -123,7 +122,7 @@ Do **not** change an `id` after people may have linked `/order?product=that-id`.
 |-------|----------|---------|
 | `id` | yes | Stable key for URLs & checkout |
 | `name` | yes | Label customers see |
-| `price` | yes | Unit $ (8 or 8.75) |
+| `price` | yes | Unit $ (8.75) |
 | `showUnitPrice` | optional | `false` hides the per-treat price while pack totals still use it |
 | `category` | yes | `rolls` · `sticky` · `specialty` |
 | `description` | yes | Short blurb |
@@ -168,7 +167,7 @@ Task: [describe change, e.g. "Hide sticky buns with nuts" or
 Rules:
 - Only edit products.ts / story.ts / public images unless something is broken.
 - Use available: false to hide; don't delete unless asked.
-- Topped treats $8.75, plain $8.
+- Treats are $8.75 each.
 - Keep product ids URL-safe and stable.
 - Run a quick build check if you change TypeScript.
 ```
@@ -182,7 +181,7 @@ Rules:
 | Strawberry Cinnamon Rolls | $8.75 | On menu |
 | Caramel Peach Cobbler Cinnamon Rolls | $8.75 | On menu |
 | Sticky Buns with Nuts | $8.75 | On menu |
-| Sticky Buns without Nuts | $8 | On menu |
+| Sticky Buns without Nuts | $8.75 | On menu |
 | Apple Caramel Cinnamon Rolls | $8.75 | Hidden (`available: false`) |
 | Cake pops / Alfajores | — | Hidden |
 

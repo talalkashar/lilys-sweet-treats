@@ -9,7 +9,7 @@ export function JsonLd() {
     "@context": "https://schema.org",
     "@type": ["Bakery", "LocalBusiness"],
     name: site.name,
-    alternateName: "Lily's Sweet Treats Haymarket",
+    alternateName: "Lily's Sweet Treats Gainesville",
     description: site.description,
     url: site.url,
     // Lead with food photo so rich results / previews show product, not logo
@@ -22,9 +22,9 @@ export function JsonLd() {
     email: site.email,
     priceRange: "$$",
     servesCuisine: "Bakery",
-    // City-level only — full street address is private (porch pickup, not a storefront)
     address: {
       "@type": "PostalAddress",
+      streetAddress: site.address.line1,
       addressLocality: site.address.city,
       addressRegion: site.address.state,
       postalCode: site.address.zip,
@@ -32,14 +32,14 @@ export function JsonLd() {
     },
     areaServed: {
       "@type": "City",
-      name: "Haymarket",
+      name: "Gainesville",
       containedInPlace: {
         "@type": "State",
         name: "Virginia",
       },
     },
     sameAs: [site.instagram],
-    // Porch pickup windows — not a full retail storefront
+    // Weekend pickup windows at Atlas Walk — not a full retail storefront
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",

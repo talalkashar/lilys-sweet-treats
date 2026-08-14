@@ -4,9 +4,7 @@
  * Full how-to for humans + AI agents: PRODUCT-MENU.md (repo root)
  * ═══════════════════════════════════════════════════════════════════════════
  *
- * Pricing (unit, each treat):
- *   - No toppings → $8
- *   - With toppings → $8.75
+ * Pricing (unit, each treat): $8.75
  * Sold in packs only (2 / 4 / 6 / 8 / 12). Flavors in pairs of 2 — see src/data/packs.ts
  *
  * Quick actions:
@@ -91,7 +89,7 @@ export const menuCategories: MenuCategory[] = [
  * Order here = order on the menu (within each category section).
  */
 export const products: Product[] = [
-  // ── Cinnamon rolls (topped $8.75) ────────────────────────────────────────
+  // ── Cinnamon rolls ($8.75) ──────────────────────────────────────────────
   {
     id: "strawberry-cinnamon-rolls",
     name: "Strawberry Cinnamon Rolls",
@@ -175,7 +173,7 @@ export const products: Product[] = [
   {
     id: "sticky-buns-without-nuts",
     name: "Sticky Buns without Nuts",
-    price: 8,
+    price: 8.75,
     category: "sticky",
     description: "Classic sticky bun and caramel, no nuts.",
     emoji: "🌀",

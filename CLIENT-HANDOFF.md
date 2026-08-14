@@ -211,7 +211,7 @@ Update products.ts and keep ids URL-safe. Summarize what you changed.
 **Check tax still works (dev):**
 
 ```text
-Don't deploy. Explain how Stripe Tax works for porch pickup and what env vars production needs.
+Don't deploy. Explain how Stripe Tax works for Atlas Walk pickup and what env vars production needs.
 ```
 
 ### Local test (optional)
@@ -240,10 +240,9 @@ Or on GitHub: edit file → Commit to `main` → wait for Vercel.
 
 | Rule | Value |
 |------|--------|
-| Plain (no toppings) | **$8** each |
-| Topped | **$8.75** each |
+| All treats | **$8.75** each |
 | Packs | 4 / 8 / party tray 12 (`packs.ts`) |
-| Sales tax | Stripe Tax, Haymarket VA porch pickup (~6%) |
+| Sales tax | Stripe Tax, Atlas Walk Gainesville VA pickup (~6%) |
 | Charge amount | **Subtotal + tax** (shown at payment) |
 
 Checkout re-prices on the **server** — customers can’t hack lower prices.

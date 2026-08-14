@@ -1,5 +1,5 @@
 /**
- * Client-safe tax helpers for porch-pickup orders in Haymarket, VA.
+ * Client-safe tax helpers for pickup orders in Gainesville, VA.
  *
  * Combined rate for Prince William County / Northern Virginia:
  * 4.3% state + 1% local + 0.7% regional transit = 6.0%.

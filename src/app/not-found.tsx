@@ -17,7 +17,7 @@ export default function NotFound() {
       <h1 className="section-title mt-2">Page not found</h1>
       <p className="prose-soft mx-auto mt-3 text-center">
         That page does not exist. Head back for this week&apos;s menu or place a
-        porch pickup order.
+        pickup order.
       </p>
       <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
         <Link href="/" className="btn-primary">

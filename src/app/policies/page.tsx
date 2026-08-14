@@ -4,13 +4,13 @@ import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Order Policies",
-  description: `Pickup, refunds, allergens, and sales tax for ${site.shortName} porch pickup.`,
+  description: `Pickup, refunds, allergens, and sales tax for ${site.shortName} pickup at Atlas Walk.`,
   alternates: {
     canonical: "/policies",
   },
   openGraph: {
     title: `Order Policies | ${site.shortName}`,
-    description: `Pickup, refunds, allergens, and sales tax for ${site.shortName} porch pickup.`,
+    description: `Pickup, refunds, allergens, and sales tax for ${site.shortName} pickup at Atlas Walk.`,
     url: "/policies",
   },
 };
@@ -22,7 +22,7 @@ export default function PoliciesPage() {
         <p className="section-label">Legal</p>
         <h1 className="section-title mt-2">Order policies</h1>
         <p className="mt-2 text-sm text-[var(--ink-muted)]">
-          Last updated: July 20, 2026 · Porch pickup only · Haymarket, VA
+          Last updated: August 13, 2026 · Pickup only · Atlas Walk, Gainesville, VA
         </p>
 
         <div className="mt-8 space-y-6 text-[var(--cocoa-soft)] leading-relaxed">
@@ -46,10 +46,9 @@ export default function PoliciesPage() {
                 .
               </li>
               <li>
-                Fulfillment is <strong className="text-[var(--cocoa)]">porch pickup only</strong> —
-                no delivery. The full street address is shown after payment and
-                in your confirmation email (not listed publicly on the homepage
-                for privacy).
+                Fulfillment is <strong className="text-[var(--cocoa)]">pickup only</strong>{" "}
+                at Atlas Walk in Gainesville — no delivery. Meet us at{" "}
+                <strong className="text-[var(--cocoa)]">{site.addressLine}</strong>.
               </li>
               <li>
                 Menu items and flavors can change weekly. Only products shown as
@@ -69,8 +68,8 @@ export default function PoliciesPage() {
               </li>
               <li>
                 <strong className="text-[var(--cocoa)]">Virginia sales tax</strong>{" "}
-                is calculated by Stripe Tax for porch pickup at our Haymarket
-                location and is shown before you pay. Your card is charged{" "}
+                is calculated by Stripe Tax for pickup at Atlas Walk in
+                Gainesville and is shown before you pay. Your card is charged{" "}
                 <strong className="text-[var(--cocoa)]">subtotal + tax</strong>.
               </li>
               <li>
@@ -160,7 +159,7 @@ export default function PoliciesPage() {
               Food safety
             </h2>
             <p className="mt-2">
-              Treats are homemade for same-week porch pickup. Refrigerate or
+              Treats are homemade for same-week pickup. Refrigerate or
               follow any care notes we provide, and enjoy promptly. We are not
               responsible for improper storage after pickup.
             </p>
