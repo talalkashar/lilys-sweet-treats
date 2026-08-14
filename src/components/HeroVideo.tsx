@@ -189,8 +189,8 @@ export function HeroVideo() {
             <Image
               src="/brand/logo-mark-hero.png"
               alt={`${site.name} logo`}
-              width={1254}
-              height={1254}
+              width={1200}
+              height={1200}
               priority
               quality={95}
               className="hero-video-logo-img"

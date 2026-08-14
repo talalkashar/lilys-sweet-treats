@@ -60,7 +60,7 @@ export function Footer() {
                 src={site.logo}
                 alt=""
                 fill
-                className="object-cover object-center"
+                className="object-contain object-center"
                 sizes="80px"
               />
             </span>

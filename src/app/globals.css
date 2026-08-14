@@ -902,8 +902,8 @@ textarea.field {
   height: var(--logo-header);
   flex-shrink: 0;
   overflow: hidden;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(245, 198, 214, 0.55);
+  border-radius: 50%;
+  border: none;
   background: var(--white);
   box-shadow: 0 2px 8px rgba(155, 123, 201, 0.12);
 }
@@ -2725,7 +2725,8 @@ body:has(.hero-video) .site-header {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 1.15rem;
+  border-radius: 50%;
+  background: #fff;
 }
 
 .hero-video-title {

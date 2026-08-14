@@ -58,7 +58,7 @@ export function Header() {
               src={site.logo}
               alt={`${site.name} logo`}
               fill
-              className="object-cover object-center"
+              className="object-contain object-center"
               sizes="80px"
               priority
             />
