@@ -49,13 +49,14 @@ export const site = {
     zip: "20155",
   },
   /** Single-line for forms / Stripe metadata / confirmation emails */
-  addressLine: "Atlas Walk Way, Gainesville, VA 20155",
-  locationNote: "Pickup at Atlas Walk in Gainesville, VA.",
+  addressLine: "Atlas Walk Way, Gainesville / Haymarket, VA 20155",
+  locationNote: "Pickup at Atlas Walk Way, Gainesville / Haymarket, VA.",
   /** Short header tagline (CSS uppercases this) */
-  headerTagline: "Atlas Walk pickup",
-  pickupNote: "Meet us at Atlas Walk in Gainesville on Friday and Saturday. See weekly schedule for times.",
+  headerTagline: "Atlas Walkway · Gainesville / Haymarket",
+  pickupNote:
+    "Meet us at Atlas Walk Way in Gainesville / Haymarket on Friday and Saturday. See weekly schedule for times.",
   pickupCoordinateNote:
-    "Text or call after you pay so we can coordinate the exact meetup at Atlas Walk.",
+    "Text or call after you pay so we can coordinate the exact meetup at Atlas Walk Way, Gainesville / Haymarket.",
 
   /** Weekly baking schedule */
   qualityNote:

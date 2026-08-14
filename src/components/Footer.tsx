@@ -67,7 +67,7 @@ export function Footer() {
             <div className="footer-brand-text">
               <p className="footer-brand-name font-display">{site.name}</p>
               <p className="footer-brand-blurb">
-                Pickup at Atlas Walk, Gainesville · text to coordinate
+                Pickup at Atlas Walk Way, Gainesville / Haymarket · text to coordinate
               </p>
             </div>
           </div>

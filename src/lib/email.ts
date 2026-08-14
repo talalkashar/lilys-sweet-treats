@@ -112,7 +112,7 @@ function ownerHtml(order: OrderEmailPayload) {
         <h1 style="margin:8px 0 0;font-size:24px;font-weight:600;">Paid order ready to bake</h1>
       </div>
       <div style="padding:24px;color:#2c2228;font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55;">
-        <p style="margin:0 0 16px;">Someone just paid online for pickup at Atlas Walk.</p>
+        <p style="margin:0 0 16px;">Someone just paid online for pickup at Atlas Walk Way, Gainesville / Haymarket.</p>
         <table style="width:100%;border-collapse:collapse;">
           <tr><td style="padding:8px 0;color:#8a7a82;width:38%;vertical-align:top;">Order</td><td style="padding:8px 0;font-weight:600;">${formatOrderLinesHtml(order.productName)}<br/><span style="font-weight:500;color:#8a7a82;">${escapeHtml(order.quantity)}</span></td></tr>
           ${
@@ -235,7 +235,7 @@ function customerHtml(order: OrderEmailPayload) {
                 </table>
 
                 <p style="margin:22px 0 0;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;color:${COCOA};">
-                  Meet us at Atlas Walk
+                  Meet us at Atlas Walk Way, Gainesville / Haymarket
                 </p>
                 <p style="margin:6px 0 0;font-family:system-ui,sans-serif;font-size:14px;line-height:1.45;font-weight:600;color:${ROSE};">
                   ${escapeHtml(order.pickupAddress)}
@@ -297,14 +297,14 @@ function customerText(order: OrderEmailPayload) {
     ...moneyLines,
     "",
     `PICKUP WINDOW: ${order.pickupWindow}`,
-    `MEET AT: Atlas Walk — ${order.pickupAddress}`,
+    `MEET AT: Atlas Walk Way, Gainesville / Haymarket — ${order.pickupAddress}`,
     `MAPS: ${mapsUrl()}`,
     order.notes ? `NOTES: ${order.notes}` : "",
     "",
     site.pickupCoordinateNote,
     `Call or text ${site.phone} or email ${site.email}.`,
     "",
-    "Pickup at Atlas Walk only — no delivery. All sales final once baked (see Policies).",
+    "Pickup at Atlas Walk Way, Gainesville / Haymarket only — no delivery. All sales final once baked (see Policies).",
     "Contains common bakery allergens (wheat, eggs, milk, soy; nuts possible).",
     "",
     `— ${site.name}`,

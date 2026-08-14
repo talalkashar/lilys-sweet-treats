@@ -183,7 +183,7 @@ export async function POST(req: Request) {
           },
         },
         receipt_email: email,
-        description: `${orderSummary} (Atlas Walk pickup)`.slice(0, 900),
+        description: `${orderSummary} (Atlas Walk Way, Gainesville / Haymarket)`.slice(0, 900),
         // Bank statement line (suffix; account name is set in Stripe Dashboard)
         statement_descriptor_suffix: "LILYS TREATS",
         hooks: {

@@ -32,7 +32,7 @@ export default function PrivacyPage() {
             </h2>
             <p className="mt-2">
               {site.name} (“we”, “us”) is a home bakery offering pre-orders for
-              pickup at Atlas Walk in Gainesville, VA. Contact:{" "}
+              pickup at Atlas Walk Way, Gainesville / Haymarket, VA. Contact:{" "}
               <a className="font-semibold text-[var(--rose)]" href={`mailto:${site.email}`}>
                 {site.email}
               </a>{" "}

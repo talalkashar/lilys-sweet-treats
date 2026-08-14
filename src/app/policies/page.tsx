@@ -22,7 +22,7 @@ export default function PoliciesPage() {
         <p className="section-label">Legal</p>
         <h1 className="section-title mt-2">Order policies</h1>
         <p className="mt-2 text-sm text-[var(--ink-muted)]">
-          Last updated: August 13, 2026 · Pickup only · Atlas Walk, Gainesville, VA
+          Last updated: August 14, 2026 · Pickup only · Atlas Walk Way, Gainesville / Haymarket
         </p>
 
         <div className="mt-8 space-y-6 text-[var(--cocoa-soft)] leading-relaxed">
@@ -47,7 +47,7 @@ export default function PoliciesPage() {
               </li>
               <li>
                 Fulfillment is <strong className="text-[var(--cocoa)]">pickup only</strong>{" "}
-                at Atlas Walk in Gainesville — no delivery. Meet us at{" "}
+                at Atlas Walk Way, Gainesville / Haymarket — no delivery. Meet us at{" "}
                 <strong className="text-[var(--cocoa)]">{site.addressLine}</strong>.
                 After you pay, text or call {site.phone} to coordinate the
                 meetup.

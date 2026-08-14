@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 const marqueeLines = [
   "Order Monday–Wednesday by noon",
   "Pickup Friday 4–6 PM · Saturday 9–11 AM",
-  "Atlas Walk, Gainesville, VA · pickup only",
+  "Atlas Walk Way, Gainesville / Haymarket · pickup only",
 ];
 
 const storyCollage = [

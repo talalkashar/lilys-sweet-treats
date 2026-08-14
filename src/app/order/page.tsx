@@ -7,14 +7,14 @@ import { site } from "@/data/site";
 export const metadata: Metadata = {
   title: "Order pickup",
   description:
-    "Pre-order and pay online for pickup at Atlas Walk in Gainesville, VA. Order Monday–Wednesday by noon for Friday or Saturday pickup.",
+    "Pre-order and pay online for pickup at Atlas Walk Way, Gainesville / Haymarket, VA. Order Monday–Wednesday by noon for Friday or Saturday pickup.",
   alternates: {
     canonical: "/order",
   },
   openGraph: {
     title: `Order pickup | ${site.shortName}`,
     description:
-      "Pre-order and pay online for pickup at Atlas Walk in Gainesville, VA. Order Monday–Wednesday by noon for Friday or Saturday pickup.",
+      "Pre-order and pay online for pickup at Atlas Walk Way, Gainesville / Haymarket, VA. Order Monday–Wednesday by noon for Friday or Saturday pickup.",
     url: "/order",
   },
 };
@@ -40,7 +40,7 @@ export default function OrderPage() {
             <strong>Pickup:</strong> Fri 4–6 PM · Sat 9–11 AM
           </p>
           <p className="order-mobile-schedule-note">
-            Atlas Walk, Gainesville · text to coordinate
+            Atlas Walk Way, Gainesville / Haymarket · text to coordinate
           </p>
         </div>
 
@@ -50,7 +50,7 @@ export default function OrderPage() {
             <h1 className="section-title mt-2">Order for pickup</h1>
             <p className="prose-soft mt-3">
               Choose flavors and pack sizes, then pay here. Pickup is Friday or
-              Saturday at Atlas Walk in Gainesville.
+              Saturday at Atlas Walk Way, Gainesville / Haymarket.
             </p>
 
             <div className="mt-6 hidden space-y-3 text-sm leading-relaxed text-[var(--cocoa-soft)] sm:block">
