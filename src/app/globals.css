@@ -2317,7 +2317,7 @@ a.footer-detail:hover {
   break-inside: avoid;
   -webkit-column-break-inside: avoid;
   page-break-inside: avoid;
-  border-radius: 0.35rem 0.85rem 0.85rem 0.85rem;
+  border-radius: var(--radius-lg);
   border: 1px solid rgba(245, 198, 214, 0.45);
   background: #fffefb;
   box-shadow:
@@ -2337,38 +2337,16 @@ a.footer-detail:hover {
     0 14px 32px rgba(44, 34, 40, 0.09);
 }
 
-/* Slight organic tilt + paper tints (no layout shift on reduced motion) */
-@media (prefers-reduced-motion: no-preference) {
-  .review-note--1 {
-    transform: rotate(-0.6deg);
-  }
-  .review-note--2 {
-    transform: rotate(0.5deg);
-    background: #fff9fc;
-  }
-  .review-note--3 {
-    transform: rotate(-0.35deg);
-    background: #fbf8ff;
-  }
-  .review-note--4 {
-    transform: rotate(0.7deg);
-  }
-  .review-note--5 {
-    transform: rotate(-0.45deg);
-    background: #fffaf6;
-  }
-  .review-note--6 {
-    transform: rotate(0.4deg);
-  }
+.review-note--2 {
+  background: #fff9fc;
+}
 
-  .review-note--1:hover,
-  .review-note--2:hover,
-  .review-note--3:hover,
-  .review-note--4:hover,
-  .review-note--5:hover,
-  .review-note--6:hover {
-    transform: translateY(-2px) rotate(0deg);
-  }
+.review-note--3 {
+  background: #fbf8ff;
+}
+
+.review-note--5 {
+  background: #fffaf6;
 }
 
 .review-note--featured {
