@@ -56,6 +56,25 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
       {
+        // HTML pages: browsers must revalidate so old visits see the live build
+        source: "/:path((?!api|_next|brand|products|og\\.jpg|favicon\\.ico|images).*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "private, no-cache, no-store, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
+        source: "/",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "private, no-cache, no-store, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
         // Never cache API responses
         source: "/api/:path*",
         headers: [

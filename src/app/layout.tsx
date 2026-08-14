@@ -5,9 +5,13 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { JsonLd } from "@/components/JsonLd";
 import { MobileStickyCta } from "@/components/MobileStickyCta";
+import { ForceFresh } from "@/components/ForceFresh";
 import { ViewMode } from "@/components/ViewMode";
 import { site } from "@/data/site";
 import "./globals.css";
+
+/** Always serve current HTML — do not let a year-long CDN copy stick around. */
+export const dynamic = "force-dynamic";
 
 const display = Cormorant_Garamond({
   variable: "--font-display",
@@ -124,6 +128,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col antialiased">
         <JsonLd />
+        <ForceFresh />
         <ViewMode />
         <BakeryAtmosphere />
 
