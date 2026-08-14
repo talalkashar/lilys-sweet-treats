@@ -902,8 +902,8 @@ textarea.field {
   height: var(--logo-header);
   flex-shrink: 0;
   overflow: hidden;
-  border-radius: 50%;
-  border: none;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(245, 198, 214, 0.55);
   background: var(--white);
   box-shadow: 0 2px 8px rgba(155, 123, 201, 0.12);
 }
@@ -2252,7 +2252,7 @@ a.footer-detail:hover {
 /* ---------- Guest reviews (porch-note board, not equal SaaS cards) ---------- */
 .section-reviews {
   position: relative;
-  overflow: hidden;
+  overflow-x: clip;
   border-block: 1px solid rgba(245, 198, 214, 0.28);
   background:
     linear-gradient(
@@ -2288,30 +2288,40 @@ a.footer-detail:hover {
   color: var(--cocoa-soft) !important;
 }
 
-/* Masonry-ish note board */
+/* Stable grid — CSS columns reflow when cards fade/tilt in, which
+   makes the board jump or clip mid-scroll. */
 .reviews-board {
-  display: columns;
-  columns: 1;
-  column-gap: 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: start;
 }
 
 @media (min-width: 640px) {
   .reviews-board {
-    columns: 2;
-    column-gap: 1.15rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.15rem;
   }
 }
 
 @media (min-width: 1024px) {
   .reviews-board {
-    columns: 3;
-    column-gap: 1.25rem;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.25rem;
   }
 }
 
 .reviews-board > * {
-  break-inside: avoid;
-  margin-bottom: 1rem;
+  min-width: 0;
+}
+
+/* Opacity only — transform here fights the note tilt and used to
+   shove column layout around while scrolling. */
+@media (prefers-reduced-motion: no-preference) {
+  .reviews-board .reveal,
+  .reviews-board .reveal-in {
+    transform: none;
+  }
 }
 
 .review-note {
@@ -2725,8 +2735,7 @@ body:has(.hero-video) .site-header {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 50%;
-  background: #fff;
+  border-radius: 1.15rem;
 }
 
 .hero-video-title {
@@ -4136,7 +4145,7 @@ html[data-view="mobile"] .mobile-sticky-cta.mobile-sticky-cta--visible {
 
   /* Reviews: 2 columns already at 640 — give notes a bit more air */
   .reviews-board {
-    column-gap: 1.25rem;
+    gap: 1.25rem;
   }
 
   .review-note {
