@@ -1,8 +1,7 @@
 /**
  * Pack / tray deals.
- * Checkout sells pack sizes only. Flavors are filled in **pairs of 2**
- * of the same flavor (no singles). Larger packs = multiple pairs
- * (same flavor or mixed flavors, two at a time).
+ * Checkout sells pack sizes only. Each treat in a pack can be any
+ * available flavor (a 2-pack can be strawberry + peach).
  *
  * Pricing = sum(unit price per treat) − savingsPerTreat × count
  * (server recalculates — never trust the client total).
@@ -27,7 +26,7 @@ export const packDeals: PackDeal[] = [
     quantity: 2,
     label: "2-pack",
     displayName: "2-pack",
-    blurb: "One pair — two of the same flavor.",
+    blurb: "Two treats — mix flavors or match them.",
     savingsPerTreat: 0,
   },
   {
@@ -35,7 +34,7 @@ export const packDeals: PackDeal[] = [
     quantity: 4,
     label: "4-pack",
     displayName: "4-pack",
-    blurb: "Two pairs — same flavor, or two different flavors.",
+    blurb: "Four treats — mix any flavors.",
     savingsPerTreat: 0,
   },
   {
@@ -43,7 +42,7 @@ export const packDeals: PackDeal[] = [
     quantity: 6,
     label: "6-pack",
     displayName: "6-pack",
-    blurb: "Three pairs — mix flavors in twos.",
+    blurb: "Six treats — mix any flavors.",
     savingsPerTreat: 0,
   },
   {
@@ -51,7 +50,7 @@ export const packDeals: PackDeal[] = [
     quantity: 8,
     label: "8-pack",
     displayName: "8-pack",
-    blurb: "Four pairs — great for sharing.",
+    blurb: "Eight treats — mix any flavors.",
     savingsPerTreat: 0.5,
   },
   {
@@ -59,7 +58,7 @@ export const packDeals: PackDeal[] = [
     quantity: 12,
     label: "12-pack",
     displayName: "Party tray",
-    blurb: "Six pairs — party tray, mix flavors in twos.",
+    blurb: "Twelve treats — mix any flavors.",
     savingsPerTreat: 1,
     featured: true,
   },
@@ -67,9 +66,14 @@ export const packDeals: PackDeal[] = [
 
 export const defaultPackId = packDeals.find((pack) => !pack.productIds)!.id;
 
-/** How many flavor-pair slots a pack has (quantity ÷ 2) */
+/** How many flavor slots a pack has (one per treat) */
+export function treatSlotsForPack(pack: PackDeal): number {
+  return pack.quantity;
+}
+
+/** @deprecated Use treatSlotsForPack — packs are no longer pair-locked */
 export function pairSlotsForPack(pack: PackDeal): number {
-  return Math.floor(pack.quantity / 2);
+  return treatSlotsForPack(pack);
 }
 
 export function packDealsForProduct(productId: string) {
@@ -164,17 +168,24 @@ export function packPriceCentsFromTreatPrices(
   return Math.max(minCents, fullCents - saveCents);
 }
 
-/** Each entry is one pair’s unit price (2 treats of that price) */
+/** Each entry is one treat’s unit price (or a legacy pair price). */
 export function packPriceCentsFromPairUnitPrices(
   pairUnitPrices: number[],
   pack: PackDeal,
 ) {
-  const slots = pairSlotsForPack(pack);
-  if (pairUnitPrices.length !== slots) {
-    throw new Error(`Expected ${slots} pair prices, got ${pairUnitPrices.length}`);
+  if (pairUnitPrices.length === pack.quantity) {
+    return packPriceCentsFromTreatPrices(pairUnitPrices, pack);
   }
-  const treatPrices = pairUnitPrices.flatMap((p) => [p, p]);
-  return packPriceCentsFromTreatPrices(treatPrices, pack);
+  const pairSlots = Math.floor(pack.quantity / 2);
+  if (pairUnitPrices.length === pairSlots) {
+    return packPriceCentsFromTreatPrices(
+      pairUnitPrices.flatMap((p) => [p, p]),
+      pack,
+    );
+  }
+  throw new Error(
+    `Expected ${pack.quantity} treat prices (or ${pairSlots} pair prices), got ${pairUnitPrices.length}`,
+  );
 }
 
 export function packPriceDollarsFromPairUnitPrices(
@@ -198,18 +209,28 @@ export function formatPackLabel(pack: PackDeal) {
 }
 
 /**
- * Human composition e.g. "2× Strawberry + 2× Peach" or "4× Sticky buns"
+ * Human composition e.g. "1× Strawberry + 1× Peach" or "4× Sticky buns"
  */
-export function formatPairComposition(
-  pairNames: string[],
-): string {
+export function formatTreatComposition(treatNames: string[]): string {
   const counts = new Map<string, number>();
-  for (const name of pairNames) {
-    counts.set(name, (counts.get(name) || 0) + 2);
+  for (const name of treatNames) {
+    counts.set(name, (counts.get(name) || 0) + 1);
   }
   return Array.from(counts.entries())
     .map(([name, n]) => `${n}× ${name}`)
     .join(" + ");
+}
+
+/** @deprecated Use formatTreatComposition */
+export function formatPairComposition(names: string[]): string {
+  return formatTreatComposition(names);
+}
+
+export function packPriceDollarsFromTreatUnitPrices(
+  treatUnitPrices: number[],
+  pack: PackDeal,
+) {
+  return packPriceCentsFromTreatPrices(treatUnitPrices, pack) / 100;
 }
 
 export const maxPacksPerOrder = 8;
@@ -218,4 +239,4 @@ export const packSizesCopy =
   "2-pack · 4-pack · 6-pack · 8-pack · party tray (12)";
 export const packSizesShort = "2, 4, 6, 8, or 12";
 export const pairRuleCopy =
-  "Flavors come in pairs of 2 of the same kind. No singles — a 4-pack is two pairs (same flavor or two different).";
+  "Pick a flavor for each treat. A 2-pack can be two of the same, or one strawberry and one peach.";

@@ -18,7 +18,7 @@ import {
   packDeals,
   packPriceDollarsFromPairUnitPrices,
   pairRuleCopy,
-  pairSlotsForPack,
+  treatSlotsForPack,
   type PackDeal,
 } from "@/data/packs";
 import { site } from "@/data/site";
@@ -34,7 +34,7 @@ const stripePromise = loadStripe(getStripePublishableKey());
 type CartLine = {
   id: string;
   packId: string;
-  /** One product id per pair (2 treats of that flavor) */
+  /** One product id per treat */
   pairProductIds: string[];
 };
 
@@ -128,10 +128,10 @@ export function OrderForm() {
   const [builderPackId, setBuilderPackId] = useState(
     () => packDeals.find((p) => p.quantity === 4)?.id ?? packDeals[0]!.id,
   );
-  /** Flavor for each pair slot in the builder */
+  /** Flavor for each treat in the builder */
   const [pairSlots, setPairSlots] = useState<string[]>(() => {
     const pack = packDeals.find((p) => p.quantity === 4) ?? packDeals[0]!;
-    const n = pairSlotsForPack(pack);
+    const n = treatSlotsForPack(pack);
     return Array.from({ length: n }, () => starterId);
   });
 
@@ -219,7 +219,7 @@ export function OrderForm() {
     [builderPackId],
   );
 
-  const slotsNeeded = pairSlotsForPack(builderPack);
+  const slotsNeeded = treatSlotsForPack(builderPack);
 
   const builderPairProducts = useMemo(() => {
     return pairSlots.map(
@@ -245,7 +245,7 @@ export function OrderForm() {
       .map((line) => {
         const pack = getPackById(line.packId);
         if (!pack) return null;
-        if (line.pairProductIds.length !== pairSlotsForPack(pack)) return null;
+        if (line.pairProductIds.length !== treatSlotsForPack(pack)) return null;
         const pairProducts = line.pairProductIds.map(
           (id) => availableProducts.find((p) => p.id === id)!,
         );
@@ -316,7 +316,7 @@ export function OrderForm() {
   function selectPackSize(pack: PackDeal) {
     setBuilderPackId(pack.id);
     setError(null);
-    const n = pairSlotsForPack(pack);
+    const n = treatSlotsForPack(pack);
     setPairSlots((prev) =>
       Array.from({ length: n }, (_, i) => prev[i] || prev[0] || starterId),
     );
@@ -328,7 +328,7 @@ export function OrderForm() {
       return;
     }
     if (pairSlots.length !== slotsNeeded || pairSlots.some((id) => !id)) {
-      setError("Pick a flavor for every pair in this pack.");
+      setError("Pick a flavor for every treat in this pack.");
       return;
     }
     // Validate products exist
@@ -521,7 +521,7 @@ export function OrderForm() {
           Your order
         </h3>
         <p className="mt-1.5 text-sm leading-relaxed text-[var(--cocoa-soft)]">
-          {pairRuleCopy} Pick a pack size, choose each pair&apos;s flavor, then
+          {pairRuleCopy} Pick a pack size, choose each treat&apos;s flavor, then
           add it to your cart. Add more packs anytime.
         </p>
       </div>
@@ -598,7 +598,6 @@ export function OrderForm() {
           <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-5">
             {packDeals.map((pack) => {
               const selected = pack.id === builderPackId;
-              const pairs = pairSlotsForPack(pack);
               return (
                 <button
                   key={pack.id}
@@ -619,7 +618,7 @@ export function OrderForm() {
                     {pack.displayName}
                   </span>
                   <span className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-                    {pack.quantity} treats · {pairs} pair{pairs === 1 ? "" : "s"}
+                    {pack.quantity} treat{pack.quantity === 1 ? "" : "s"}
                   </span>
                   <span className="mt-1 text-xs leading-snug text-[var(--cocoa-soft)]">
                     {pack.blurb}
@@ -634,15 +633,15 @@ export function OrderForm() {
         <div className="sm:col-span-2">
           <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
             <p className="text-sm font-medium text-[var(--cocoa)]">
-              2. Choose flavor for each pair
+              2. Choose flavor for each treat
               <span className="font-normal text-[var(--ink-muted)]">
                 {" "}
-                · {builderPack.displayName} ({slotsNeeded} pair
+                · {builderPack.displayName} ({slotsNeeded} treat
                 {slotsNeeded === 1 ? "" : "s"})
               </span>
             </p>
             <label className="flex items-center gap-2 text-xs text-[var(--cocoa-soft)]">
-              <span className="whitespace-nowrap">Fill all pairs:</span>
+              <span className="whitespace-nowrap">Fill all treats:</span>
               <select
                 className="field !py-1.5 !text-xs"
                 value=""
@@ -650,7 +649,7 @@ export function OrderForm() {
                   if (e.target.value) fillAllPairs(e.target.value);
                   e.target.value = "";
                 }}
-                aria-label="Fill all pairs with one flavor"
+                aria-label="Fill all treats with one flavor"
               >
                 <option value="">Same flavor…</option>
                 {flavorOptions}
@@ -661,17 +660,11 @@ export function OrderForm() {
           <div className="grid gap-2.5 sm:grid-cols-2">
             {Array.from({ length: slotsNeeded }, (_, i) => (
               <label
-                key={`pair-${builderPackId}-${i}`}
+                key={`treat-${builderPackId}-${i}`}
                 className="block rounded-2xl border border-[var(--blush)]/70 bg-white px-3.5 py-3"
               >
                 <span className="mb-1.5 flex items-center justify-between gap-2 text-sm font-medium text-[var(--cocoa)]">
-                  <span>
-                    Pair {i + 1}
-                    <span className="font-normal text-[var(--ink-muted)]">
-                      {" "}
-                      · 2 treats, same flavor
-                    </span>
-                  </span>
+                  <span>Treat {i + 1}</span>
                 </span>
                 <select
                   value={pairSlots[i] || starterId}
@@ -709,8 +702,7 @@ export function OrderForm() {
             </div>
           </div>
           <p className="mt-2 text-xs leading-relaxed text-[var(--ink-muted)]">
-            Example: a 4-pack can be 4× strawberry, or 2× strawberry + 2× peach.
-            You cannot put just one treat of a flavor — always pairs of two.
+            Example: a 2-pack can be 2× strawberry, or 1× strawberry + 1× peach.
           </p>
         </div>
 
@@ -727,7 +719,7 @@ export function OrderForm() {
 
           {resolvedCart.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-[var(--blush)] bg-[var(--cream)]/60 px-4 py-6 text-center text-sm text-[var(--ink-muted)]">
-              No packs yet. Choose a size, pick each pair&apos;s flavor, then tap{" "}
+              No packs yet. Choose a size, pick each treat&apos;s flavor, then tap{" "}
               <strong className="text-[var(--cocoa)]">Add pack</strong>.
             </div>
           ) : (

@@ -6,7 +6,6 @@ import {
   maxPacksPerOrder,
   packDeals,
   packPriceCentsFromPairUnitPrices,
-  pairSlotsForPack,
   type PackDeal,
 } from "@/data/packs";
 import { site } from "@/data/site";
@@ -14,10 +13,11 @@ import { site } from "@/data/site";
 export type OrderLineInput = {
   packId?: string;
   /**
-   * Flavor for each pair slot (length = pack.quantity / 2).
-   * Each entry = two treats of that flavor.
+   * Flavor for each treat (length = pack.quantity).
+   * Also accepts a legacy pair list (length = quantity / 2).
    */
   pairProductIds?: string[];
+  treatProductIds?: string[];
   /** Legacy: entire pack is one flavor */
   productId?: string;
   quantity?: number;
@@ -28,6 +28,7 @@ export type OrderInput = {
   productId?: string;
   packId?: string;
   pairProductIds?: string[];
+  treatProductIds?: string[];
   quantity?: number;
   name?: string;
   phone?: string;
@@ -38,7 +39,7 @@ export type OrderInput = {
 
 export type ValidOrderLine = {
   pack: PackDeal;
-  /** One product id per pair slot */
+  /** One product id per treat */
   pairProductIds: string[];
   pairProducts: (typeof availableProducts)[number][];
   quantity: number;
@@ -84,12 +85,13 @@ function normalizeLineInputs(body: OrderInput): OrderLineInput[] {
   if (Array.isArray(body.items) && body.items.length > 0) {
     return body.items;
   }
-  if (body.productId || body.packId || body.pairProductIds) {
+  if (body.productId || body.packId || body.pairProductIds || body.treatProductIds) {
     return [
       {
         productId: body.productId,
         packId: body.packId,
         pairProductIds: body.pairProductIds,
+        treatProductIds: body.treatProductIds,
         quantity: body.quantity,
       },
     ];
@@ -109,30 +111,39 @@ function parseLine(
     };
   }
 
-  const slots = pairSlotsForPack(pack);
-  let pairIds: string[] = [];
+  const treatSlots = pack.quantity;
+  const pairSlots = Math.floor(pack.quantity / 2);
+  let treatIds: string[] = [];
 
-  if (Array.isArray(raw.pairProductIds) && raw.pairProductIds.length > 0) {
-    pairIds = raw.pairProductIds.map(String);
+  if (Array.isArray(raw.treatProductIds) && raw.treatProductIds.length > 0) {
+    treatIds = raw.treatProductIds.map(String);
+  } else if (Array.isArray(raw.pairProductIds) && raw.pairProductIds.length > 0) {
+    const ids = raw.pairProductIds.map(String);
+    if (ids.length === treatSlots) {
+      treatIds = ids;
+    } else if (ids.length === pairSlots) {
+      treatIds = ids.flatMap((id) => [id, id]);
+    } else {
+      treatIds = ids;
+    }
   } else if (raw.productId) {
-    // Legacy mono-flavor: fill every pair with that product
-    pairIds = Array.from({ length: slots }, () => String(raw.productId));
+    treatIds = Array.from({ length: treatSlots }, () => String(raw.productId));
   } else {
     return {
       ok: false,
-      error: "Choose a flavor pair for every slot in the pack.",
+      error: "Choose a flavor for every treat in the pack.",
     };
   }
 
-  if (pairIds.length !== slots) {
+  if (treatIds.length !== treatSlots) {
     return {
       ok: false,
-      error: `A ${pack.label} needs exactly ${slots} flavor pair${slots === 1 ? "" : "s"} (${pack.quantity} treats, two of each chosen flavor).`,
+      error: `A ${pack.label} needs exactly ${treatSlots} flavor${treatSlots === 1 ? "" : "s"} (one per treat).`,
     };
   }
 
   const pairProducts: (typeof availableProducts)[number][] = [];
-  for (const id of pairIds) {
+  for (const id of treatIds) {
     const product = getProduct(id);
     if (!product) {
       return { ok: false, error: "Invalid flavor in pack" };
@@ -160,7 +171,7 @@ function parseLine(
     ok: true,
     line: {
       pack,
-      pairProductIds: pairIds,
+      pairProductIds: treatIds,
       pairProducts,
       quantity: pack.quantity,
       packLabel,
@@ -173,7 +184,7 @@ function parseLine(
 
 /**
  * Server-side order validation. Never trust client prices.
- * Packs are pair-based: each pair = 2 of the same flavor.
+ * Each treat in a pack can be any available flavor.
  */
 export function validateOrderInput(body: OrderInput):
   | { ok: true; data: ValidOrder }

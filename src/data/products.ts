@@ -5,7 +5,7 @@
  * ═══════════════════════════════════════════════════════════════════════════
  *
  * Pricing (unit, each treat): $8.75
- * Sold in packs only (2 / 4 / 6 / 8 / 12). Flavors in pairs of 2 — see src/data/packs.ts
+ * Sold in packs only (2 / 4 / 6 / 8 / 12). Mix flavors per treat — see src/data/packs.ts
  *
  * Quick actions:
  *   - HIDE a product: set available: false  (keeps data for later)

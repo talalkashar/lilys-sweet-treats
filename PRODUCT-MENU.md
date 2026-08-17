@@ -22,7 +22,7 @@ Checkout, tax, and email **automatically** use whatever is listed as available i
 |------|------------|
 | All treats (rolls and sticky buns) | **$8.75** |
 
-Customers buy **packs only** (2 / 4 / 6 / 8 / 12), filled in **pairs of 2 of the same flavor** (mix pairs in larger packs) — defined in `src/data/packs.ts`.
+Customers buy **packs only** (2 / 4 / 6 / 8 / 12). Each treat can be a different flavor — defined in `src/data/packs.ts`.
 
 ---
 

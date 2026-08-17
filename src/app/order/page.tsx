@@ -86,7 +86,7 @@ export default function OrderPage() {
                   2-pack · 4-pack · 6-pack · 8-pack · Party tray (12)
                 </p>
                 <p className="mt-1 text-xs text-[var(--ink-muted)]">
-                  Flavors in pairs of 2 (same flavor per pair). Mix pairs in larger packs.
+                  Mix flavors however you like — even a 2-pack can be two different treats.
                 </p>
               </div>
             </div>
