@@ -8,7 +8,6 @@ import { CheckoutPayment } from "@/components/CheckoutPayment";
 import {
   availableProducts,
   menuCategories,
-  productsInCategory,
 } from "@/data/products";
 import {
   formatPackLabel,
@@ -16,8 +15,10 @@ import {
   getPackById,
   maxPacksPerOrder,
   packDeals,
+  packDealsForProduct,
   packPriceDollarsFromPairUnitPrices,
   pairRuleCopy,
+  productsEligibleForPack,
   treatSlotsForPack,
   type PackDeal,
 } from "@/data/packs";
@@ -70,6 +71,15 @@ function defaultProductId(preferred?: string | null) {
     return preferred;
   }
   return availableProducts[0]?.id ?? "";
+}
+
+function defaultPackIdForProduct(productId: string) {
+  const deals = packDealsForProduct(productId);
+  return (
+    deals.find((pack) => pack.quantity === 4)?.id ??
+    deals[0]?.id ??
+    packDeals[0]!.id
+  );
 }
 
 /**
@@ -125,14 +135,19 @@ export function OrderForm() {
   });
 
   /** Pack size currently being built */
-  const [builderPackId, setBuilderPackId] = useState(
-    () => packDeals.find((p) => p.quantity === 4)?.id ?? packDeals[0]!.id,
+  const [builderPackId, setBuilderPackId] = useState(() =>
+    defaultPackIdForProduct(starterId),
   );
   /** Flavor for each treat in the builder */
   const [pairSlots, setPairSlots] = useState<string[]>(() => {
-    const pack = packDeals.find((p) => p.quantity === 4) ?? packDeals[0]!;
+    const pack =
+      packDeals.find((p) => p.id === defaultPackIdForProduct(starterId)) ??
+      packDeals[0]!;
+    const eligible = productsEligibleForPack(pack);
+    const flavor =
+      eligible.some((p) => p.id === starterId) ? starterId : eligible[0]?.id ?? starterId;
     const n = treatSlotsForPack(pack);
-    return Array.from({ length: n }, () => starterId);
+    return Array.from({ length: n }, () => flavor);
   });
 
   const [cart, setCart] = useState<CartLine[]>([]);
@@ -316,9 +331,14 @@ export function OrderForm() {
   function selectPackSize(pack: PackDeal) {
     setBuilderPackId(pack.id);
     setError(null);
+    const eligible = productsEligibleForPack(pack);
+    const fallback = eligible[0]?.id ?? starterId;
     const n = treatSlotsForPack(pack);
     setPairSlots((prev) =>
-      Array.from({ length: n }, (_, i) => prev[i] || prev[0] || starterId),
+      Array.from({ length: n }, (_, i) => {
+        const id = prev[i] || prev[0] || fallback;
+        return eligible.some((p) => p.id === id) ? id : fallback;
+      }),
     );
   }
 
@@ -429,7 +449,9 @@ export function OrderForm() {
   const flavorOptions = (
     <>
       {menuCategories.map((cat) => {
-        const items = productsInCategory(cat.id);
+        const items = productsEligibleForPack(builderPack).filter(
+          (p) => p.category === cat.id,
+        );
         if (items.length === 0) return null;
         return (
           <optgroup key={cat.id} label={cat.title}>
@@ -702,7 +724,7 @@ export function OrderForm() {
             </div>
           </div>
           <p className="mt-2 text-xs leading-relaxed text-[var(--ink-muted)]">
-            Example: a 2-pack can be 2× strawberry, or 1× strawberry + 1× peach.
+            Example: a 4-pack can be four of one flavor, or four different treats.
           </p>
         </div>
 

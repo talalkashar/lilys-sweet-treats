@@ -22,9 +22,28 @@ Checkout, tax, and email **automatically** use whatever is listed as available i
 |------|------------|
 | All treats (rolls and sticky buns) | **$8.75** |
 
-Customers buy **packs only** (2 / 4 / 6 / 8 / 12). Each treat can be a different flavor — defined in `src/data/packs.ts`.
+Customers buy **packs only** (4 / 6 / 8 / 12). Each treat can be a different flavor — defined in `src/data/packs.ts`.
 
 ---
+
+## Coming soon (list without a price)
+
+Use this when a treat should appear on the homepage menu but **cannot be ordered yet** and you do not want to guess a price:
+
+```ts
+{
+  id: "banana-bread",
+  name: "Banana Bread",
+  category: "specialty",
+  comingSoon: true,
+  // no price
+  description: "Moist banana bread, baked in small batches. Pricing coming soon.",
+  emoji: "🍌",
+  ingredients: ["Ripe bananas"],
+}
+```
+
+It shows “Coming soon” on the card and modal, and is **left off the order form and checkout**. To start selling: add `price: 8.75` (or the real unit price) and remove `comingSoon`.
 
 ## Hide a product (soft delete — recommended)
 
@@ -122,8 +141,9 @@ Do **not** change an `id` after people may have linked `/order?product=that-id`.
 |-------|----------|---------|
 | `id` | yes | Stable key for URLs & checkout |
 | `name` | yes | Label customers see |
-| `price` | yes | Unit $ (8.75) |
+| `price` | yes for live items | Unit $ (8.75). Omit for `comingSoon` |
 | `showUnitPrice` | optional | `false` hides the per-treat price while pack totals still use it |
+| `comingSoon` | optional | `true` lists the item on the menu with “Coming soon”, no price, not orderable |
 | `category` | yes | `rolls` · `sticky` · `specialty` |
 | `description` | yes | Short blurb |
 | `emoji` | yes | Fallback if image missing |
@@ -141,7 +161,7 @@ Edit section titles in `menuCategories` in the same file if needed:
 
 - `rolls` → Cinnamon rolls  
 - `sticky` → Sticky buns  
-- `specialty` → Specialty treats  
+- `specialty` → Seasonal items  
 
 ---
 
@@ -182,6 +202,7 @@ Rules:
 | Caramel Peach Cobbler Cinnamon Rolls | $8.75 | On menu |
 | Sticky Buns with Nuts | $8.75 | On menu |
 | Sticky Buns without Nuts | $8.75 | On menu |
+| Banana Bread | $22 loaf | On menu (sold as a loaf, not in mixed packs) |
 | Apple Caramel Cinnamon Rolls | $8.75 | Hidden (`available: false`) |
 | Cake pops / Alfajores | — | Hidden |
 

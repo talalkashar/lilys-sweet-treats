@@ -5,8 +5,8 @@ import { ProductCard } from "@/components/ProductCard";
 import { ProductModal } from "@/components/ProductModal";
 import { Reveal } from "@/components/Reveal";
 import {
+  listedProductsInCategory,
   menuCategories,
-  productsInCategory,
   type Product,
 } from "@/data/products";
 
@@ -17,7 +17,7 @@ export function MenuGrid() {
     <>
       <div className="menu-grid-stack">
         {menuCategories.map((cat, catIndex) => {
-          const items = productsInCategory(cat.id);
+          const items = listedProductsInCategory(cat.id);
           if (items.length === 0) return null;
 
           return (

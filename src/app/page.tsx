@@ -216,9 +216,9 @@ export default function Home() {
               <p className="section-label">Menu</p>
               <h2 className="section-title mt-2">What we&apos;re baking</h2>
               <p className="prose-soft mt-3">
-                Tap a treat for details, then pre-order in packs of 2, 4, 6, 8,
-                or 12. Mix flavors however you like — a 2-pack can be two of
-                the same, or one of each.
+                Tap a treat for details, then pre-order a 4-pack, 6-pack,
+                8-pack, or party tray of 12. Every pack is a variety pack —
+                pick a flavor for each treat.
               </p>
             </div>
           </Reveal>

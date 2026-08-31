@@ -84,10 +84,10 @@ export const site = {
   ],
 
   /**
-   * Pack checkout only (2 / 4 / 6 / 8 / 12). Kept for copy fallbacks.
+   * Pack checkout only (4 / 6 / 8 / 12). Kept for copy fallbacks.
    * Real pack definitions live in `src/data/packs.ts`.
    */
-  minOrderQuantity: 2,
+  minOrderQuantity: 4,
   maxOrderQuantity: 12,
 } as const;
 

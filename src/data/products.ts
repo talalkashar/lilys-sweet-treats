@@ -23,10 +23,15 @@ export type Product = {
   id: string;
   /** Display name on menu + order form */
   name: string;
-  /** Unit price in dollars (e.g. 8 or 8.75) */
-  price: number;
+  /** Unit price in dollars (e.g. 8 or 8.75). Omit for coming-soon items. */
+  price?: number;
   /** Set false to hide the per-treat price while retaining pack calculations */
   showUnitPrice?: boolean;
+  /**
+   * true = listed on the menu as “Coming soon”, no price, not orderable.
+   * Use instead of guessing a price before the treat is for sale.
+   */
+  comingSoon?: boolean;
   description: string;
   emoji: string;
   /** Which menu section: rolls | sticky | specialty */
@@ -79,8 +84,8 @@ export const menuCategories: MenuCategory[] = [
   },
   {
     id: "specialty",
-    title: "Specialty treats",
-    blurb: "Giftable favorites, with new specials mixed in weekly.",
+    title: "Seasonal items",
+    blurb: "Limited and rotating treats that come and go with the season.",
   },
 ];
 
@@ -187,7 +192,18 @@ export const products: Product[] = [
     ingredients: ["Caramel", "Cinnamon"],
   },
 
-  // ── Specialty (paused) ───────────────────────────────────────────────────
+  // ── Specialty ────────────────────────────────────────────────────────────
+  {
+    id: "banana-bread",
+    name: "Banana Bread",
+    price: 22,
+    category: "specialty",
+    description:
+      "Moist banana bread, baked in small batches. Sold as a whole loaf.",
+    emoji: "🍌",
+    image: "/products/banana-bread-main-studio-v2.jpg",
+    ingredients: ["Ripe bananas", "Walnuts"],
+  },
   {
     id: "cake-pops",
     name: "Cake Pop Bouquet",
@@ -222,15 +238,39 @@ export function getProductGallery(product: Product): string[] {
   return list;
 }
 
-/** Products customers can see and order right now */
-export function isProductAvailable(product: Product) {
+/** On the public menu (includes coming-soon teasers; excludes soft-hidden) */
+export function isProductListed(product: Product) {
   return product.available !== false;
 }
 
+/** Products customers can order right now */
+export function isProductAvailable(
+  product: Product,
+): product is Product & { price: number } {
+  return (
+    isProductListed(product) &&
+    product.comingSoon !== true &&
+    typeof product.price === "number"
+  );
+}
+
+export function showsUnitPrice(product: Product) {
+  return (
+    product.comingSoon !== true &&
+    product.showUnitPrice !== false &&
+    typeof product.price === "number"
+  );
+}
+
+export const listedProducts = products.filter(isProductListed);
 export const availableProducts = products.filter(isProductAvailable);
 
 export function productsInCategory(categoryId: Product["category"]) {
   return availableProducts.filter((p) => p.category === categoryId);
+}
+
+export function listedProductsInCategory(categoryId: Product["category"]) {
+  return listedProducts.filter((p) => p.category === categoryId);
 }
 
 export function getProduct(id: string) {

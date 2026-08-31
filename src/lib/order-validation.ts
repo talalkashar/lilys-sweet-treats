@@ -107,7 +107,7 @@ function parseLine(
     return {
       ok: false,
       error:
-        "Each cart item needs a pack size: 2-pack, 4-pack, 6-pack, 8-pack, or party tray (12).",
+        "Each cart item needs a pack size: 4-pack, 6-pack, 8-pack, party tray (12), or banana loaf.",
     };
   }
 
@@ -154,6 +154,17 @@ function parseLine(
         ok: false,
         error: `${product.name} is not available in a ${pack.label}.`,
       };
+    }
+    if (!pack.productIds) {
+      const exclusive = packDeals.some(
+        (deal) => deal.productIds?.includes(product.id),
+      );
+      if (exclusive) {
+        return {
+          ok: false,
+          error: `${product.name} is sold on its own, not in a mixed pack.`,
+        };
+      }
     }
     pairProducts.push(product);
   }

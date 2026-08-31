@@ -1,14 +1,16 @@
+import { availableProducts } from "@/data/products";
+
 /**
  * Pack / tray deals.
- * Checkout sells pack sizes only. Each treat in a pack can be any
- * available flavor (a 2-pack can be strawberry + peach).
+ * Checkout sells pack sizes only (4 / 6 / 8 / 12). Each treat in a pack
+ * can be any mixable flavor — variety packs, pick flavors one by one.
  *
  * Pricing = sum(unit price per treat) − savingsPerTreat × count
  * (server recalculates — never trust the client total).
  */
 export type PackDeal = {
   id: string;
-  /** How many treats in the pack (always even — pair-based) */
+  /** How many treats (or loaves) in the pack */
   quantity: number;
   label: string;
   displayName: string;
@@ -22,19 +24,11 @@ export type PackDeal = {
 
 export const packDeals: PackDeal[] = [
   {
-    id: "pack-2",
-    quantity: 2,
-    label: "2-pack",
-    displayName: "2-pack",
-    blurb: "Two treats — mix flavors or match them.",
-    savingsPerTreat: 0,
-  },
-  {
     id: "pack-4",
     quantity: 4,
     label: "4-pack",
     displayName: "4-pack",
-    blurb: "Four treats — mix any flavors.",
+    blurb: "Variety pack — pick a flavor for each treat.",
     savingsPerTreat: 0,
   },
   {
@@ -42,7 +36,7 @@ export const packDeals: PackDeal[] = [
     quantity: 6,
     label: "6-pack",
     displayName: "6-pack",
-    blurb: "Six treats — mix any flavors.",
+    blurb: "Variety pack — pick a flavor for each treat.",
     savingsPerTreat: 0,
   },
   {
@@ -50,7 +44,7 @@ export const packDeals: PackDeal[] = [
     quantity: 8,
     label: "8-pack",
     displayName: "8-pack",
-    blurb: "Eight treats — mix any flavors.",
+    blurb: "Variety pack — pick a flavor for each treat.",
     savingsPerTreat: 0.5,
   },
   {
@@ -58,9 +52,18 @@ export const packDeals: PackDeal[] = [
     quantity: 12,
     label: "12-pack",
     displayName: "Party tray",
-    blurb: "Twelve treats — mix any flavors.",
+    blurb: "Variety tray — pick a flavor for each treat.",
     savingsPerTreat: 1,
     featured: true,
+  },
+  {
+    id: "loaf-banana-bread",
+    quantity: 1,
+    label: "loaf",
+    displayName: "Banana loaf",
+    blurb: "One whole loaf — $22.",
+    savingsPerTreat: 0,
+    productIds: ["banana-bread"],
   },
 ];
 
@@ -76,10 +79,30 @@ export function pairSlotsForPack(pack: PackDeal): number {
   return treatSlotsForPack(pack);
 }
 
+export function exclusiveProductIds() {
+  const ids = new Set<string>();
+  for (const pack of packDeals) {
+    for (const id of pack.productIds ?? []) ids.add(id);
+  }
+  return ids;
+}
+
+/** Packs a product can actually be sold in */
 export function packDealsForProduct(productId: string) {
-  return packDeals.filter(
-    (pack) => !pack.productIds || pack.productIds.includes(productId),
+  const exclusive = packDeals.filter((pack) =>
+    pack.productIds?.includes(productId),
   );
+  if (exclusive.length > 0) return exclusive;
+  return packDeals.filter((pack) => !pack.productIds);
+}
+
+/** Flavors allowed in a pack (exclusive items stay on their own packs) */
+export function productsEligibleForPack(pack: PackDeal) {
+  if (pack.productIds?.length) {
+    return availableProducts.filter((p) => pack.productIds!.includes(p.id));
+  }
+  const exclusive = exclusiveProductIds();
+  return availableProducts.filter((p) => !exclusive.has(p.id));
 }
 
 export function getPackDeal(
@@ -88,15 +111,9 @@ export function getPackDeal(
 ) {
   if (!id) return undefined;
 
-  const normalizedId =
-    id === "pack-2-sticky-buns-with-nuts" ||
-    id === "pack-2-sticky-buns-without-nuts"
-      ? "pack-2"
-      : id;
-
   return packDeals.find(
     (pack) =>
-      pack.id === normalizedId &&
+      pack.id === id &&
       (!pack.productIds ||
         (Boolean(productId) && pack.productIds.includes(productId!))),
   );
@@ -105,12 +122,7 @@ export function getPackDeal(
 /** Resolve pack by id only (universal packs — preferred for pair carts) */
 export function getPackById(id: string | null | undefined) {
   if (!id) return undefined;
-  const normalizedId =
-    id === "pack-2-sticky-buns-with-nuts" ||
-    id === "pack-2-sticky-buns-without-nuts"
-      ? "pack-2"
-      : id;
-  return packDeals.find((pack) => pack.id === normalizedId);
+  return packDeals.find((pack) => pack.id === id);
 }
 
 export function getPackByQuantity(quantity: number, productId?: string) {
@@ -236,7 +248,7 @@ export function packPriceDollarsFromTreatUnitPrices(
 export const maxPacksPerOrder = 8;
 
 export const packSizesCopy =
-  "2-pack · 4-pack · 6-pack · 8-pack · party tray (12)";
-export const packSizesShort = "2, 4, 6, 8, or 12";
+  "4-pack · 6-pack · 8-pack · party tray (12)";
+export const packSizesShort = "4, 6, 8, or 12";
 export const pairRuleCopy =
-  "Pick a flavor for each treat. A 2-pack can be two of the same, or one strawberry and one peach.";
+  "Every pack is a variety pack. Pick a flavor for each treat — mix or match."

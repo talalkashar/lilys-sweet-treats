@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import type { Product } from "@/data/products";
+import { showsUnitPrice, type Product } from "@/data/products";
 
 type Props = {
   product: Product;
@@ -12,9 +12,12 @@ type Props = {
 export function ProductCard({ product, onOpen }: Props) {
   const [imgFailed, setImgFailed] = useState(false);
   const showImage = Boolean(product.image) && !imgFailed;
-  const priceLabel = Number.isInteger(product.price)
-    ? product.price.toFixed(0)
-    : product.price.toFixed(2);
+  const priceLabel =
+    typeof product.price === "number"
+      ? Number.isInteger(product.price)
+        ? product.price.toFixed(0)
+        : product.price.toFixed(2)
+      : null;
 
   return (
     <article className="card-product card-product--fill group">
@@ -50,7 +53,11 @@ export function ProductCard({ product, onOpen }: Props) {
             <h3 className="card-product-name font-display text-[var(--cocoa)]">
               {product.name}
             </h3>
-            {product.showUnitPrice !== false ? (
+            {product.comingSoon ? (
+              <p className="card-product-price shrink-0 text-right text-sm font-semibold text-[var(--rose)]">
+                Coming soon
+              </p>
+            ) : showsUnitPrice(product) && priceLabel ? (
               <p className="card-product-price shrink-0 text-sm font-semibold tabular-nums text-[var(--rose)]">
                 ${priceLabel}
                 <span className="block text-[0.65rem] font-medium normal-case tracking-normal text-[var(--ink-muted)]">

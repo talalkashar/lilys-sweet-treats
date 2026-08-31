@@ -3,7 +3,11 @@
 import Image from "next/image";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { getProductGallery, type Product } from "@/data/products";
+import {
+  getProductGallery,
+  showsUnitPrice,
+  type Product,
+} from "@/data/products";
 import { packDealsForProduct, packPriceDollars } from "@/data/packs";
 
 type Props = {
@@ -59,6 +63,8 @@ export function ProductModal({ product, onClose }: Props) {
   if (!product || !mounted) return null;
 
   const activeSrc = gallery[activeIndex];
+  const unitPrice = product.price;
+  const comingSoon = product.comingSoon === true;
 
   // Portal to body so sticky header (z-50) cannot cover the modal.
   return createPortal(
@@ -167,12 +173,16 @@ export function ProductModal({ product, onClose }: Props) {
               >
                 {product.name}
               </h2>
-              {product.showUnitPrice !== false ? (
+              {comingSoon ? (
+                <p className="shrink-0 text-right text-sm font-semibold text-[var(--rose)]">
+                  Coming soon
+                </p>
+              ) : showsUnitPrice(product) && typeof unitPrice === "number" ? (
                 <p className="shrink-0 text-sm font-semibold tabular-nums text-[var(--rose)]">
                   $
-                  {Number.isInteger(product.price)
-                    ? product.price.toFixed(0)
-                    : product.price.toFixed(2)}
+                  {Number.isInteger(unitPrice)
+                    ? unitPrice.toFixed(0)
+                    : unitPrice.toFixed(2)}
                   <span className="block text-[0.65rem] font-medium text-[var(--ink-muted)]">
                     each
                   </span>
@@ -183,30 +193,42 @@ export function ProductModal({ product, onClose }: Props) {
               {product.description}
             </p>
 
-            <div className="mt-4 rounded-xl border border-[var(--blush)]/60 bg-[var(--cream)]/80 px-3.5 py-3">
-              <p className="text-xs font-bold uppercase tracking-wider text-[var(--rose)]">
-                Pack deals
-              </p>
-              <ul className="mt-2 space-y-1.5 text-sm text-[var(--cocoa)]">
-                {packDealsForProduct(product.id).map((pack) => (
-                  <li
-                    key={pack.id}
-                    className="flex items-baseline justify-between gap-2"
-                  >
-                    <span>
-                      <span className="font-semibold">{pack.displayName}</span>
-                      <span className="text-[var(--ink-muted)]">
-                        {" "}
-                        · {pack.quantity} treats
+            {comingSoon || typeof unitPrice !== "number" ? (
+              <div className="mt-4 rounded-xl border border-[var(--blush)]/60 bg-[var(--cream)]/80 px-3.5 py-3">
+                <p className="text-xs font-bold uppercase tracking-wider text-[var(--rose)]">
+                  Coming soon
+                </p>
+                <p className="mt-1.5 text-sm text-[var(--cocoa-soft)]">
+                  Not on the order form yet. Check back for pricing and pickup
+                  dates.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-4 rounded-xl border border-[var(--blush)]/60 bg-[var(--cream)]/80 px-3.5 py-3">
+                <p className="text-xs font-bold uppercase tracking-wider text-[var(--rose)]">
+                  Pack deals
+                </p>
+                <ul className="mt-2 space-y-1.5 text-sm text-[var(--cocoa)]">
+                  {packDealsForProduct(product.id).map((pack) => (
+                    <li
+                      key={pack.id}
+                      className="flex items-baseline justify-between gap-2"
+                    >
+                      <span>
+                        <span className="font-semibold">{pack.displayName}</span>
+                        <span className="text-[var(--ink-muted)]">
+                          {" "}
+                          · {pack.quantity} treats
+                        </span>
                       </span>
-                    </span>
-                    <span className="shrink-0 font-semibold tabular-nums text-[var(--rose)]">
-                      ${packPriceDollars(product.price, pack).toFixed(2)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                      <span className="shrink-0 font-semibold tabular-nums text-[var(--rose)]">
+                        ${packPriceDollars(unitPrice, pack).toFixed(2)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {product.ingredients.length > 0 ? (
               <div className="product-ingredients mt-4">
@@ -226,13 +248,21 @@ export function ProductModal({ product, onClose }: Props) {
             </p>
 
             <div className="mt-6 flex flex-col gap-2.5 sm:flex-col lg:flex-row">
-              <a
-                href={`/order?product=${product.id}`}
-                onClick={onClose}
-                className="btn-primary min-h-11 flex-1 text-center"
-              >
-                Order a pack
-              </a>
+              {comingSoon ? (
+                <p className="btn-primary min-h-11 flex-1 cursor-default text-center opacity-70">
+                  Coming soon
+                </p>
+              ) : (
+                <a
+                  href={`/order?product=${product.id}`}
+                  onClick={onClose}
+                  className="btn-primary min-h-11 flex-1 text-center"
+                >
+                  {packDealsForProduct(product.id).some((pack) => pack.quantity === 1)
+                    ? "Order this loaf"
+                    : "Order a pack"}
+                </a>
+              )}
               <button
                 type="button"
                 onClick={onClose}
