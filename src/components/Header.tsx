@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -54,26 +53,19 @@ export function Header() {
           onClick={() => setOpen(false)}
         >
           <span className="logo-mark">
-            <Image
-              src={site.logo}
-              alt={`${site.name} logo`}
-              fill
-              className="object-contain object-center"
-              sizes="80px"
-              priority
-            />
+            <img src={site.logo} alt={`${site.name} logo`} />
           </span>
           <div className="min-w-0 leading-tight">
-            <p className="site-header-title truncate font-display text-lg sm:text-xl">
+            <p className="site-header-title truncate font-display text-xl sm:text-2xl">
               {site.shortName}
             </p>
-            <p className="site-header-subtitle hidden text-xs font-medium uppercase tracking-[0.1em] sm:block">
+            <p className="site-header-subtitle hidden text-sm font-medium uppercase tracking-[0.1em] sm:block">
               {site.headerTagline}
             </p>
           </div>
         </Link>
 
-        <nav className="header-nav-desktop hidden items-center text-base font-medium lg:flex">
+        <nav className="header-nav-desktop hidden items-center text-lg font-medium lg:flex">
           {links.map((l) => (
             <Link key={l.href} href={l.href} className="header-nav-link">
               {l.label}

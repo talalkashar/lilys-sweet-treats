@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { site } from "@/data/site";
 
 /** Bump when media is re-exported so reloads never show a stale poster/video pair. */
@@ -183,20 +182,8 @@ export function HeroVideo() {
         <div className="hero-video-vignette" aria-hidden />
       </div>
 
-      <div className="hero-video-content shell">
+      <div className="hero-video-content">
         <div className="hero-video-brand">
-          <div className="hero-video-logo">
-            <Image
-              src={site.logo}
-              alt={`${site.name} logo`}
-              width={1200}
-              height={1200}
-              priority
-              quality={95}
-              className="hero-video-logo-img"
-              sizes="(max-width: 640px) min(42vw, 9.5rem), min(28vw, 11rem)"
-            />
-          </div>
           <h1 className="hero-video-title">
             Baked with love{" "}
             <span className="hero-video-title-accent">just for you</span>

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { site } from "@/data/site";
 
 function InstagramIcon({ className }: { className?: string }) {
@@ -56,13 +55,7 @@ export function Footer() {
         <div className="footer-top">
           <div className="footer-brand">
             <span className="logo-mark logo-mark--footer">
-              <Image
-                src={site.logo}
-                alt=""
-                fill
-                className="object-contain object-center"
-                sizes="80px"
-              />
+              <img src={site.logo} alt="" />
             </span>
             <div className="footer-brand-text">
               <p className="footer-brand-name font-display">{site.name}</p>
