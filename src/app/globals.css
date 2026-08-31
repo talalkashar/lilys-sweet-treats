@@ -3122,7 +3122,7 @@ body:has(.hero-video) .site-header {
 
   /* Header: slightly shorter, logo left · menu right */
   .site-header-bar {
-    height: 5.15rem;
+    height: 5.75rem;
     column-gap: 0.5rem;
     padding-inline: 0; /* shell already pads */
   }
@@ -3133,13 +3133,13 @@ body:has(.hero-video) .site-header {
   }
 
   .site-header-brand .logo-mark {
-    width: 3.65rem;
-    height: 3.65rem;
+    width: 5.25rem;
+    height: 5.25rem;
   }
 
   .site-header-title {
-    font-size: 1.15rem !important;
-    max-width: 12.5rem;
+    font-size: 1.25rem !important;
+    max-width: none;
   }
 
   .site-header-actions {
@@ -3605,16 +3605,10 @@ html[data-view="mobile"] .site-header--over-hero {
   -webkit-backdrop-filter: none !important;
 }
 
-html[data-view="mobile"] .site-header--over-hero .site-header-title,
-html[data-view="mobile"] .site-header--over-hero .site-header-subtitle {
-  display: none !important;
-}
-
 html[data-view="mobile"] .site-header--over-hero .logo-mark {
-  width: 3.65rem;
-  height: 3.65rem;
+  width: 5.25rem;
+  height: 5.25rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
-  border: 1.5px solid rgba(255, 255, 255, 0.55);
 }
 
 html[data-view="mobile"] .site-header--over-hero .header-menu-btn {
@@ -3844,20 +3838,13 @@ html[data-view="mobile"] .card-product-cta {
   }
 
   .site-header--over-hero .site-header-bar {
-    height: 3.75rem;
-  }
-
-  /* Logo only on mobile over hero — drop wordmark so less covers video */
-  .site-header--over-hero .site-header-title,
-  .site-header--over-hero .site-header-subtitle {
-    display: none;
+    height: 5.75rem;
   }
 
   .site-header--over-hero .logo-mark {
-    width: 3.65rem;
-    height: 3.65rem;
+    width: 5.25rem;
+    height: 5.25rem;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
-    border: 1.5px solid rgba(255, 255, 255, 0.55);
   }
 
   /* Frosted round menu control — sits on video without a white plate */
@@ -3886,12 +3873,12 @@ html[data-view="mobile"] .card-product-cta {
 /* Tablet header: slightly more chrome room than phone, still hamburger nav */
 @media (min-width: 768px) and (max-width: 1023px) {
   .site-header--over-hero .site-header-bar {
-    height: 4.1rem;
+    height: 6.25rem;
   }
 
   .site-header--over-hero .logo-mark {
-    width: 4.25rem;
-    height: 4.25rem;
+    width: 5.75rem;
+    height: 5.75rem;
   }
 
   .site-header-menu a {
@@ -3938,9 +3925,8 @@ html[data-view="mobile"] .card-product-cta {
   }
 
   .site-header--scrolled .logo-mark {
-    width: 3rem;
-    height: 3rem;
-    border-color: transparent;
+    width: 5.25rem;
+    height: 5.25rem;
   }
 }
 
@@ -3948,7 +3934,7 @@ html[data-view="mobile"] .card-product-cta {
 /* Hero content top padding under transparent header — keep title clear of logo */
 @media (max-width: 767px) {
   .hero-video-content {
-    padding-top: clamp(5.25rem, 16vw, 6.5rem);
+    padding-top: clamp(6.5rem, 18vw, 8rem);
   }
 }
 
@@ -4025,19 +4011,18 @@ html[data-view="mobile"] .mobile-sticky-cta.mobile-sticky-cta--visible {
     );
   }
 
-  /* Header: keep wordmark when scrolled; logo-only still over hero (shared rule) */
   .site-header-bar {
-    height: 5.5rem;
+    height: 6.25rem;
   }
 
   .site-header--scrolled .site-header-title {
     display: block;
-    font-size: 1.3rem !important;
+    font-size: 1.5rem !important;
   }
 
   .site-header--scrolled .logo-mark {
-    width: 4.25rem;
-    height: 4.25rem;
+    width: 5.75rem;
+    height: 5.75rem;
   }
 
   /* Schedule / love banner — roomy but not phone-cramped */

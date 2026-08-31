@@ -59,7 +59,7 @@ export function Header() {
             <p className="site-header-title truncate font-display text-xl sm:text-2xl">
               {site.shortName}
             </p>
-            <p className="site-header-subtitle hidden text-sm font-medium uppercase tracking-[0.1em] sm:block">
+            <p className="site-header-subtitle text-[0.65rem] font-medium uppercase tracking-[0.08em] sm:text-sm sm:tracking-[0.1em]">
               {site.headerTagline}
             </p>
           </div>
