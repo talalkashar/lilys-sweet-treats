@@ -141,6 +141,9 @@ export default function Home() {
               We bake your order fresh for the weekend.
             </p>
           </div>
+          <p className="love-allergen-disclaimer">
+            ** OUR PRODUCTS MAY CONTAIN ALLERGENS **
+          </p>
         </div>
       </section>
 

@@ -1697,6 +1697,18 @@ a.footer-detail:hover {
   line-height: 1.45;
 }
 
+/* Same type as "CUSTOM FLAVORS" (.section-label): Outfit, uppercase, rose */
+.love-allergen-disclaimer {
+  margin: 1.1rem 0 0;
+  font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rose);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
 @media (max-width: 640px) {
   .love-floater--d4,
   .love-floater--d5,
