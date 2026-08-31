@@ -1700,12 +1700,12 @@ a.footer-detail:hover {
 /* Same type as "CUSTOM FLAVORS" (.section-label): Outfit, uppercase, rose */
 .love-allergen-disclaimer {
   margin: 1.1rem 0 0;
-  font-size: clamp(0.8rem, 1.6vw, 0.95rem);
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-size: clamp(1.15rem, 2.8vw, 1.55rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--rose);
-  line-height: 1.4;
+  line-height: 1.35;
   text-wrap: balance;
 }
 
